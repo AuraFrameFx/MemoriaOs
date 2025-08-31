@@ -1,14 +1,13 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+  //  alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 // Added to specify Java version for this subproject
@@ -23,8 +22,8 @@ android {
     compileSdk = 36
     defaultConfig {
         minSdk = 33
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
+
+          consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -47,12 +46,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-        }
-    }
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -61,6 +54,9 @@ android {
 }
 
 dependencies {
+    // ✅ CRITICAL: Add Compose BOM platform first!
+    implementation(platform(libs.androidx.compose.bom))
+
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
@@ -92,6 +88,7 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

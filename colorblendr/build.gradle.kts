@@ -1,12 +1,13 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    id("org.jetbrains.dokka")
-    id("com.diffplug.spotless")
+    alias(libs.plugins.android.library) version "9.0.0-alpha02"
+    alias(libs.plugins.kotlin.android)      // Activated and aliased
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)                // Use alias
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+
 }
 
 // Added to specify Java version for this subproject
@@ -15,9 +16,6 @@ java {
         languageVersion.set(JavaLanguageVersion.of(24))
     }
 }
-
-// REMOVED: jvmToolchain(24) - Using local JDK via JAVA_HOME instead
-// This prevents auto-provisioning and uses local installation
 
 android {
     namespace = "dev.aurakai.auraframefx.colorblendr"
@@ -48,6 +46,8 @@ android {
         viewBinding = false  // Genesis Protocol - Compose only
     }
 
+    // Removed android { kotlin { ... } } block as compilerOptions are handled by root build.gradle.kts
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
@@ -60,12 +60,12 @@ android {
     }
 }
 
-// Consistent JVM target for Java and Kotlin
-kotlin {
-    jvmToolchain(24)
-}
+
 
 dependencies {
+    // ✅ CRITICAL FIX: Add Compose BOM platform first!
+    implementation(platform(libs.androidx.compose.bom))
+
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
@@ -91,13 +91,14 @@ dependencies {
 
     // Testing
     testImplementation(libs.bundles.testing)
-    testImplementation(libs.junit.engine)
+    testImplementation(libs.junit.engine) // Changed from testRuntimeOnly for consistency
     androidTestImplementation(libs.bundles.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

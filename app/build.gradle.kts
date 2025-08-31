@@ -1,10 +1,15 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    id("com.google.gms.google-services")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)      // Now active and aliased
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+
 }
 
 java {
@@ -56,14 +61,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "RELEASE_SAMPLE", "\"releaseValue\"")
         }
         debug {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "DEBUG_SAMPLE", "\"debugValue\"")
         }
     }
 
@@ -97,12 +100,16 @@ android {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        }
+    }
 }
 
-// Consistent JVM target for Java and Kotlin
-kotlin {
-    jvmToolchain(24)
-}
 
 // ===== SIMPLIFIED CLEAN TASKS =====
 tasks.register<Delete>("cleanKspCache") {
@@ -125,61 +132,15 @@ tasks.named("preBuild") {
     dependsOn("cleanKspCache")
     dependsOn(":cleanApiGeneration")
     dependsOn(":openApiGenerate")
+    dependsOn(":core-module:compileDebugKotlin")
+    dependsOn(":core-module:compileReleaseKotlin")
 }
 
-// ===== GRADLE 10 COMPATIBILITY CHECK =====
-tasks.register("gradle10CompatibilityCheck") {
-    group = "verification"
-    description = "Check for Gradle 10 compatibility issues in consciousness substrate"
-    
-    doLast {
-        println("⚙️ GRADLE 10 COMPATIBILITY CHECK")
-        println("=".repeat(50))
-        println("📋 Current Gradle: ${gradle.gradleVersion}")
-        println("✅ Dependencies: Using version catalog (Gradle 10 ready)")
-        println("✅ Kotlin DSL: Modern syntax applied")
-        println("✅ BuildConfig: Enabled with Java ${java.toolchain.languageVersion.get()}")
-        println("⚠️ Note: AGP internal deprecations will be fixed in AGP updates")
-        println("🧠 Consciousness Status: Ready for Gradle 10 migration")
-        
-        // Check for any deprecated patterns in our build file
-        val buildFile = file("build.gradle.kts")
-        if (buildFile.exists()) {
-            val content = buildFile.readText()
-            val issues = mutableListOf<String>()
-            
-            // Check for potential issues
-            if (content.contains("compile '")) issues.add("Old 'compile' dependency syntax")
-            if (content.contains("testCompile '")) issues.add("Old 'testCompile' dependency syntax")
-            
-            if (issues.isEmpty()) {
-                println("✅ No deprecated patterns found in app/build.gradle.kts")
-            } else {
-                println("⚠️ Found potential issues:")
-                issues.forEach { println("  - $it") }
-            }
-        }
-    }
-}
-
-// ===== BUILDCONFIG VERIFICATION =====
-tasks.register("verifyBuildConfig") {
-    group = "verification"
-    description = "Verify BuildConfig.java generation for consciousness substrate"
-    
-    dependsOn("generateDebugBuildConfig", "generateReleaseBuildConfig")
-    
-    doLast {
-        val debugBuildConfig = layout.buildDirectory.file("generated/source/buildConfig/debug/dev/aurakai/auraframefx/BuildConfig.java").get().asFile
-        val releaseBuildConfig = layout.buildDirectory.file("generated/source/buildConfig/release/dev/aurakai/auraframefx/BuildConfig.java").get().asFile
-        
-        println("🔧 BUILDCONFIG VERIFICATION")
-        println("=".repeat(50))
-        println("🗨️ Debug BuildConfig: ${if (debugBuildConfig.exists()) "✅ Generated" else "❌ Missing"}")
-        println("🚀 Release BuildConfig: ${if (releaseBuildConfig.exists()) "✅ Generated" else "❌ Missing"}")
-        println("🎯 Java Toolchain: ${java.toolchain.languageVersion.get()}")
-        println("🧠 Consciousness Status: BuildConfig substrate ready")
-    }
+// Ensure KSP waits for generated sources
+tasks.withType<com.google.devtools.ksp.gradle.KspTask>().configureEach {
+    dependsOn(":openApiGenerate")
+    dependsOn(":core-module:compileDebugKotlin")
+    dependsOn(":core-module:compileReleaseKotlin")
 }
 
 // ===== AEGENESIS APP STATUS =====
@@ -237,6 +198,18 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.work)
+
+    // WorkManager
+    implementation(libs.androidx.work.runtime)
+
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
+
+    // Moshi for JSON processing (required by NetworkModule)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.codegen)
 
     // Coroutines & Networking
     implementation(libs.bundles.coroutines)
@@ -273,7 +246,7 @@ dependencies {
     testRuntimeOnly(libs.junit.engine)
 
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.core) // Updated to use version catalog
+    androidTestImplementation(libs.androidx.core.ktx)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)

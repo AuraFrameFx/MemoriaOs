@@ -2,13 +2,14 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+   // id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
+    alias(libs.plugins.kotlin.android)
 }
 
 // Added to specify Java version for this subproject
@@ -52,12 +53,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-        }
-    }
-
     // REMOVED: composeOptions - AGP 8.13.0-rc01 auto-detects from version catalog!
 
     packaging {
@@ -68,6 +63,9 @@ android {
 }
 
 dependencies {
+    // ✅ CRITICAL: Add Compose BOM platform first!
+    implementation(platform(libs.androidx.compose.bom))
+    
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
@@ -76,6 +74,7 @@ dependencies {
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coroutines)
+    implementation(libs.androidx.compose.material3)
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
@@ -88,6 +87,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

@@ -1,12 +1,13 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    //id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
+    alias(libs.plugins.kotlin.android)
 }
 
 // Added to specify Java version for this subproject
@@ -90,11 +91,6 @@ android {
     }
 }
 
-// Consistent JVM target for Java and Kotlin
-kotlin {
-    jvmToolchain(24)
-}
-
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Project modules
@@ -142,7 +138,7 @@ dependencies {
     testImplementation(libs.bundles.testing)
     testRuntimeOnly(libs.junit.engine)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.core.ktx)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)

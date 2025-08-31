@@ -2,12 +2,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+   // id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
+    alias(libs.plugins.kotlin.android)
     // id("com.diffplug.spotless") // Spotless temporarily disabled
 }
 
@@ -21,6 +22,7 @@ ksp {
     arg("kotlin.languageVersion", "2.2")
     arg("kotlin.apiVersion", "2.2")
     arg("kotlin.jvmTarget", "24")
+
     arg("compile:kotlin.languageVersion", "2.2")
     arg("compile:kotlin.apiVersion", "2.2")
 }
@@ -73,12 +75,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
-    }
-
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-        }
     }
 
     packaging {
@@ -145,6 +141,7 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
