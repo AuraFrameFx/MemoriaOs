@@ -6,10 +6,13 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dev.aurakai.auraframefx.securecomm.crypto.CryptoManager
 import dev.aurakai.auraframefx.securecomm.keystore.SecureKeyStore
 import dev.aurakai.auraframefx.securecomm.protocol.SecureChannel
-import org.junit.jupiter.api.AfterEach
-import org.junit.Assert.*
-import org.junit.jupiter.api.BeforeEach
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject

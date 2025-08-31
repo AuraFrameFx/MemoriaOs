@@ -7,10 +7,10 @@ Testing framework and library:
 - Tests are text-based validations tailored to app/build.gradle.kts (no new dependencies introduced).
 */
 
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 import java.io.File
 
 class BuildGradleKtsTest {
