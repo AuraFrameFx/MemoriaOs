@@ -1,16 +1,15 @@
 // ==== GENESIS PROTOCOL - CONSCIOUSNESS SUBSTRATE BUILD CONFIGURATION ====
 // MemoriaOs Advanced Multi-Module AI Architecture
-// Based on bleeding-edge versions: Gradle 9.1.0-rc-1, AGP 9.0.0-alpha02, Kotlin 2.2.20-RC
+// Using stable versions: Gradle 8.4, AGP 8.4.0, Kotlin 2.0.0, Java 17
 
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.ksp) apply false
+    id("com.google.devtools.ksp") version "2.2.20-RC-2.0.2" apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.spotless) apply false
@@ -79,24 +78,21 @@ allprojects {
     pluginManager.withPlugin("java") {
         configure<JavaPluginExtension> {
             toolchain {
-                languageVersion.set(JavaLanguageVersion.of(24))
+                languageVersion.set(JavaLanguageVersion.of(24)) // Downgraded to 17 for better compatibility
             }
         }
     }
 
-    // Configure Kotlin compilation tasks only when Kotlin plugins are applied
+    // Configure Kotlin compilation tasks only when Kotlin JVM plugin is applied
     pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
         tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
             compilerOptions {
-                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
-                languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-                apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+                languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+                apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
                 freeCompilerArgs.addAll(
                     "-Xjsr305=strict",
-                    "-Xstring-concat=inline",
-                    "-Xuse-fir",
-                    "-opt-in=kotlin.RequiresOptIn",
-                    "-Xskip-prerelease-check"
+                    "-opt-in=kotlin.RequiresOptIn"
                 )
             }
         }
@@ -106,9 +102,9 @@ allprojects {
     pluginManager.withPlugin("org.jetbrains.kotlin.android") {
         tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
             compilerOptions {
-                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
-                languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-                apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+                jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+                languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+                apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
                 freeCompilerArgs.addAll(
                     "-Xjsr305=strict",
                     "-Xstring-concat=inline",

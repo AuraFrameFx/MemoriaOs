@@ -1,10 +1,11 @@
 [versions]
 # ===== Project & Build Tools =====
-agp = "9.0.0-alpha02"
+agp = "9.0.0-alpha01"
 googleServices = "4.4.3"
 kotlin = "2.2.20-RC"
 ksp = "2.2.20-RC-2.0.2"
 openApiGenerator = "7.14.0"
+symbolProcessingGradlePlugin = "2.2.10-2.0.2"
 
 # ===== AndroidX =====
 activityCompose = "1.10.1"
@@ -23,9 +24,10 @@ androidxSecurity = "1.1.0"
 workManager = "2.10.3"
 
 # ===== Google =====
-firebaseBom = "34.2.0"  # This provides firebase-perf 22.0.0
+firebaseBom = "34.2.0"
 firebaseCrashlytics = "3.0.6"
 firebaseCrashlyticsKtx = "19.4.4"
+firebasePerf = "22.0.1"
 googleAuth = "21.4.0"
 googleAuthApiPhone = "18.2.0"
 googleIdentity = "18.1.0"
@@ -36,6 +38,7 @@ materialVersion = "1.12.0"
 kotlinReflect = "2.2.20-RC"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerialization = "1.9.0"
+kotlinxDatetime = "0.7.1"
 coroutinesTest = "1.10.2"
 
 # ===== Networking =====
@@ -58,16 +61,21 @@ junit = "4.13.2"
 junitJupiter = "5.13.4"
 mockk = "1.14.5"
 turbine = "1.2.1"
+timber = "5.1.1"
 
 # ===== Hooking Frameworks =====
 lsposed = "6.4"
-lsparanoid = "0.6.0"
 yuki = "1.3.0"
 
 # ===== Security & Utilities =====
+auraBackendApiGenerator = "1.0.0"
 bouncycastle = "1.81"
+bcprovJdk18on = "1.81"
 commonsCompress = "1.28.0"
+datastorePreferences = "1.1.7"
 gson = "2.13.1"
+moshi = "1.17.1"
+moshiKotlin = "1.17.1"
 tink = "1.18.0"
 xz = "1.10"
 
@@ -77,16 +85,16 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerf" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.2.0" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openApiGenerator" }
-lsparanoid = { id = "org.lsposed.lsparanoid", version.ref = "lsparanoid" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [libraries]
@@ -108,7 +116,7 @@ androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "u
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 # ===== AndroidX - Data & Architecture =====
-androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.7" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
@@ -116,7 +124,8 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVers
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
 
 # ===== Google - Material, Hilt, Firebase, Play Services =====
-firebase-perf = { group = "com.google.firebase", name = "firebase-perf", version = "22.0.1" }
+firebase-perf = { group = "com.google.firebase", name = "firebase-perf", version.ref = "firebasePerf" }
+hilt-work = { group = "androidx.hilt", name = "hilt-work", version = "1.2.0" }
 google-material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx", version = "22.5.0" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
@@ -127,24 +136,22 @@ google-identity = { group = "com.google.android.gms", name = "play-services-iden
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
-hilt-work = { group = "androidx.hilt", name = "hilt-work", version = "1.2.0" }
 
 # ===== Kotlin & Coroutines =====
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version = "2.2.20-RC" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.6.1" }
 
 # ===== Networking =====
-moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.15.1" }
-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.15.1" }
-moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version = "1.15.1" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshiKotlin" }
+moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshiKotlin" }
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-retrofit-converter-scalars = { group = "com.squareup.retrofit2", name = "converter-scalars", version.ref = "retrofit" }
 
 # ===== Hooking Frameworks =====
 lsposed = { module = "org.lsposed.lsplant:lsplant", version.ref = "lsposed" }
@@ -153,15 +160,18 @@ yuki-ksp-xposed = { module = "com.highcapable.yukihookapi:ksp-xposed", version.r
 
 # ===== Security & Crypto =====
 androidxSecurity = { group = "androidx.security", name = "security-crypto", version.ref = "androidxSecurity" }
+bcprov-jdk18on-v177 = { module = "org.bouncycastle:bcprov-jdk24on", version.ref = "bcprovJdk18on" }
 bouncycastle = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
 conscrypt-android = { group = "org.conscrypt", name = "conscrypt-android", version = "2.5.3" }
 tink = { group = "com.google.crypto.tink", name = "tink-android", version.ref = "tink" }
 
 # ===== Code Quality, Debugging & Build Logic =====
+aura-backend-api-generator = { module = "dev.aurakai.aura:aura-backend-api-generator", version.ref = "auraBackendApiGenerator" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 ktlint = { group = "com.pinterest", name = "ktlint", version.ref = "ktlint" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
-timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
+symbol-processing-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "symbolProcessingGradlePlugin" }
+timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 # ===== Utilities =====
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
@@ -174,7 +184,7 @@ xz = { group = "org.tukaani", name = "xz", version.ref = "xz" }
 # ===== Testing =====
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.9.0" }
-androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
+androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "archCoreTesting" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidxEspresso" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
@@ -221,7 +231,7 @@ testing = [
     "junit-jupiter",
     "mockk",
     "turbine",
-    "androidx-core-testing",
+    "androidx-arch-core-testing",
     "kotlinx-coroutines-test"
 ]
 utilities = [

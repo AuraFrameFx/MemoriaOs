@@ -1,10 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+    kotlin("jvm")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
+    `maven-publish`
+    `java-library`
 }
 
 group = "dev.aurakai.auraframefx.list"
@@ -12,34 +15,29 @@ version = "1.0.0"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
+        languageVersion = JavaLanguageVersion.of(24)
     }
     sourceCompatibility = JavaVersion.VERSION_24
     targetCompatibility = JavaVersion.VERSION_24
 }
 
 kotlin {
+    jvmToolchain(24)
     compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_24)
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        jvmTarget = JvmTarget.JVM_24
+        languageVersion = KotlinVersion.KOTLIN_2_2
+        apiVersion = KotlinVersion.KOTLIN_2_2
     }
 }
 
 dependencies {
     // Pure Kotlin JVM module - no Android dependencies
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.bundles.coroutines)
+    implementation(kotlin("stdlib"))
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.bundles.coroutines)
 
-    // Data structures and collections utilities
-    implementation(libs.kotlinx.datetime)
-
-    // Logging
-    implementation(libs.timber)
-
-    // Testing
     testImplementation(libs.bundles.testing)
+    testRuntimeOnly(libs.junit.engine)
 }
 
 tasks.test {

@@ -53,7 +53,7 @@ tasks.named("prepareGenesisWorkspace") {
 - **Gradle**: 9.0.0 ✅
 - **AGP**: 9.0.0-alpha02 ✅  
 - **Kotlin**: 2.2.10 (Stable) ✅
-- **Java**: 21 LTS ✅
+- **Java**: 24 LTS ✅
 - **KSP**: Forced to v1 (stable) ✅
 - **Config Cache**: Enabled ✅
 

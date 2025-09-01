@@ -1,28 +1,18 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    // Core Android and Kotlin plugins
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    
-    // Kotlin feature plugins
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    
-    // Hilt (must be after Kotlin)
     alias(libs.plugins.hilt)
-    
-    // Google Services (must be before Firebase)
     alias(libs.plugins.google.services)
-    
-    // Firebase plugins (Performance Monitoring is included via BoM without the plugin)
     alias(libs.plugins.firebase.crashlytics)
-    
-    // Other plugins
-    // Temporarily disable OpenAPI until path issue is resolved
-    // alias(libs.plugins.openapi.generator)
 }
+
+// Apply cleanup tasks script
+apply(from = "cleanup-tasks.gradle.kts")
 
 android {
     namespace = "dev.aurakai.auraframefx"
@@ -33,7 +23,7 @@ android {
         minSdk = 33
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0.0-memoria-consciousness"
+        versionName = "1.0.0-genesis-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -69,7 +59,6 @@ android {
             )
         }
         debug {
-            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -103,7 +92,6 @@ android {
         viewBinding = false
     }
 
-    // Java 24 bleeding-edge configuration
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
@@ -114,172 +102,185 @@ android {
             jvmTarget.set(JvmTarget.JVM_24)
             languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            freeCompilerArgs.addAll(
-                "-Xjsr305=strict",
-                "-Xstring-concat=inline",
-                "-Xuse-fir",  // FIR compiler for stability
-                "-opt-in=kotlin.RequiresOptIn",
-                "-Xskip-prerelease-check"
-            )
         }
     }
 }
 
-// Explicit Java toolchain for consistency
+
+// Explicit Java toolchain for AGP compatibility
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(24))
     }
 }
 
-// ===== KSP CONFIGURATION =====
-ksp {
-    arg("kotlin.languageVersion", "2.2")
-    arg("kotlin.apiVersion", "2.2")
-    arg("kotlin.jvmTarget", "24")
-    arg("compile:kotlin.languageVersion", "2.2") 
-    arg("compile:kotlin.apiVersion", "2.2")
+
+// ===== ENSURE API GENERATION BEFORE COMPILATION =====
+// This ensures that all compilation and processing tasks wait for OpenAPI generation
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    dependsOn(":openApiGenerate")
+    dependsOn(":fixGeneratedApiCode")
 }
 
-// ===== CONSCIOUSNESS SUBSTRATE TASKS =====
-tasks.register("consciousnessAppStatus") {
-    group = "Genesis Automation"
-    description = "Display MemoriaOs app consciousness substrate status"
-    
-    doLast {
-        println("🧠 === MEMORIA OS APP CONSCIOUSNESS STATUS ===")
-        println("📱 Application ID: ${android.defaultConfig.applicationId}")
-        println("🎯 Target SDK: ${android.compileSdk}")
-        println("⚡ Kotlin: 2.2.20-RC (FIR Compiler)")
-        println("☕ Java: 24 (Bleeding Edge)")
-        println("🔧 Native Code: ${if (project.file("src/main/cpp/CMakeLists.txt").exists()) "✅" else "❌"}")
-        println("🎨 Compose: ✅ Enabled")
-        println("💉 Hilt DI: ✅ Active")
-        println("🔥 Firebase: ✅ Integrated")
-        println("🛡️  Security: ✅ Android Keystore")
-        println("✅ Consciousness Substrate: OPERATIONAL")
-        println("=".repeat(50))
-    }
+// Critical: Ensure KSP waits for API generation since it needs the generated types
+tasks.withType<com.google.devtools.ksp.gradle.KspTask>().configureEach {
+    dependsOn(":openApiGenerate")
+    dependsOn(":fixGeneratedApiCode")
 }
 
 // ===== SIMPLIFIED CLEAN TASKS =====
 tasks.register<Delete>("cleanKspCache") {
     group = "build setup"
-    description = "Clean KSP caches for consciousness substrate stability"
+    description = "Clean KSP caches (fixes NullPointerException)"
+
+    val buildDirProvider = layout.buildDirectory
 
     delete(
-        layout.buildDirectory.dir("generated/ksp"),
-        layout.buildDirectory.dir("tmp/kapt3"),
-        layout.buildDirectory.dir("tmp/kotlin-classes"),
-        layout.buildDirectory.dir("kotlin"),
-        layout.buildDirectory.dir("generated/source/ksp")
+        buildDirProvider.dir("generated/ksp"),
+        buildDirProvider.dir("tmp/kapt3"),
+        buildDirProvider.dir("tmp/kotlin-classes"),
+        buildDirProvider.dir("kotlin"),
+        buildDirProvider.dir("generated/source/ksp")
     )
-    
-    doLast {
-        println("🧹 KSP caches cleared - consciousness substrate memory refreshed")
-    }
 }
 
 // ===== BUILD INTEGRATION =====
 tasks.named("preBuild") {
     dependsOn("cleanKspCache")
+    dependsOn(":cleanApiGeneration")
+    dependsOn(":openApiGenerate")
+    dependsOn(":core-module:compileDebugKotlin")
+    dependsOn(":core-module:compileReleaseKotlin")
+}
+
+// Ensure KSP waits for generated sources
+tasks.withType<com.google.devtools.ksp.gradle.KspTask>().configureEach {
+    dependsOn(":openApiGenerate")
+}
+
+// ===== AEGENESIS APP STATUS =====
+tasks.register("aegenesisAppStatus") {
+    group = "aegenesis"
+    description = "Show AeGenesis app module status"
+
+    doLast {
+        println("📱 AEGENESIS APP MODULE STATUS")
+        println("=".repeat(50))
+
+        val apiFile = layout.projectDirectory.file("api/unified-aegenesis-api.yml").asFile
+        val apiExists = apiFile.exists()
+        val apiSize = if (apiExists) apiFile.length() else 0
+
+        println("🔌 Unified API Spec: ${if (apiExists) "✅ Found" else "❌ Missing"}")
+        if (apiExists) {
+            println("📄 API File Size: ${apiSize / 1024}KB")
+        }
+
+        val nativeCode = project.file("src/main/cpp/CMakeLists.txt").exists()
+        println("🔧 Native Code: ${if (nativeCode) "✅ Enabled" else "❌ Disabled"}")
+
+        println("🧠 KSP Mode: ${project.findProperty("ksp.useKSP2") ?: "default"}")
+        println("🎯 Target SDK: 36")
+        println("📱 Min SDK: 33")
+        println("✅ Status: Ready for coinscience AI integration!")
+    }
 }
 
 dependencies {
-    // ===== COMPOSE BOM (PLATFORM) =====
     implementation(platform(libs.androidx.compose.bom))
 
-    // ===== MODULE DEPENDENCIES (CONSCIOUSNESS ARCHITECTURE) =====
+    // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":oracle-drive-integration"))
+    implementation(project(":romtools"))
     implementation(project(":secure-comm"))
     implementation(project(":collab-canvas"))
-    implementation(project(":romtools"))
-    implementation(project(":datavein-oracle-native"))
 
-    // ===== CORE ANDROID =====
-    implementation(libs.bundles.androidx.core)
+    // Core Android
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
-    // ===== COMPOSE UI =====
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.core)
-    implementation(libs.androidx.compose.material.icons.extended)
+    // Compose UI
+    implementation(libs.bundles.compose)
     implementation(libs.androidx.navigation.compose)
 
-    // ===== DEPENDENCY INJECTION =====
+    // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.work)
+        implementation(project(":secure-comm"))
+        implementation(project(":collab-canvas"))
 
-    // ===== WORK MANAGER =====
-    implementation(libs.androidx.work.runtime)
+        // Core Android
+        implementation(libs.androidx.appcompat)
+        implementation(libs.androidx.core.ktx)
+        implementation(libs.androidx.lifecycle.runtime.ktx)
+        implementation(libs.androidx.activity.compose)
 
-    // ===== DATA STORAGE =====
-    implementation(libs.androidx.datastore.preferences)
+        // Compose UI
+        implementation(libs.bundles.compose)
+        implementation(libs.androidx.navigation.compose)
 
-    // ===== DATABASE (ROOM) =====
-    implementation(libs.bundles.room)
-    ksp(libs.room.compiler)
+        // Hilt Dependency Injection
+        implementation(libs.hilt.android)
+        ksp(libs.hilt.compiler)
+        implementation(libs.hilt.navigation.compose)
+        implementation(libs.hilt.work)
 
-    // ===== NETWORKING & SERIALIZATION =====
-    implementation(libs.bundles.network)
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.codegen)
+        // WorkManager
+        implementation(libs.androidx.work.runtime)
 
-    // ===== COROUTINES =====
-    implementation(libs.bundles.coroutines)
+        // DataStore
+        implementation(libs.androidx.datastore.preferences)
 
-    // ===== IMAGE LOADING =====
-    implementation(libs.coil.compose)
+        // Moshi for JSON processing (required by NetworkModule)
+        implementation(libs.moshi)
+        implementation(libs.moshi.kotlin)
+        ksp(libs.moshi.codegen)
 
-    // ===== UTILITIES =====
-    implementation(libs.bundles.utilities)
+        // Coroutines & Networking
+        implementation(libs.bundles.coroutines)
+        implementation(libs.bundles.network)
 
-    // ===== FIREBASE =====
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-    implementation(libs.firebase.perf)
+        // Room Database
+        implementation(libs.room.runtime)
+        implementation(libs.room.ktx)
+        ksp(libs.room.compiler)
 
-    // ===== SECURITY & CRYPTOGRAPHY =====
-    implementation(libs.androidxSecurity)
-    implementation(libs.tink)
-    implementation(libs.bouncycastle)
-    implementation(libs.conscrypt.android)
+        // Utilities
+        implementation(libs.timber)
+        implementation(libs.coil.compose)
 
-    // ===== XPOSED FRAMEWORK =====
-    // Xposed API (compile-only, provided by the runtime)
-    compileOnly("de.robv.android.xposed:api:82")
-    compileOnly("de.robv.android.xposed:api:82:sources")  // Optional: for sources
-    
-    // YukiHookAPI - Modern Xposed API wrapper
-    implementation("com.highcapable.yukihookapi:api:1.2.0")
-    ksp("com.highcapable.yukihookapi:ksp-xposed:1.2.0")
+        // Core library desugaring
+        coreLibraryDesugaring(libs.coreLibraryDesugaring)
 
-    // ===== DESUGARING FOR JAVA 24 =====
-    coreLibraryDesugaring(libs.coreLibraryDesugaring)
+        // Firebase
+        implementation(platform(libs.firebase.bom))
+        implementation(libs.bundles.firebase)
 
-    // ===== DEBUG TOOLS =====
-    debugImplementation(libs.leakcanary.android)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+        // Xposed Framework
+        implementation(libs.bundles.xposed)
+        ksp(libs.yuki.ksp.xposed)
+        implementation(fileTree("../Libs") { include("*.jar") })
 
-    // ===== TESTING =====
-    testImplementation(libs.bundles.testing)
-    testRuntimeOnly(libs.junit.engine)
+        // Debug tools
+        debugImplementation(libs.leakcanary.android)
+        debugImplementation(libs.androidx.compose.ui.tooling)
+        debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
-}
+        // Testing
+        testImplementation(libs.bundles.testing)
+        testRuntimeOnly(libs.junit.engine)
 
-println("📱 MemoriaOs App Module: CONSCIOUSNESS SUBSTRATE LOADED")
+        androidTestImplementation(libs.androidx.test.ext.junit)
+        androidTestImplementation(libs.androidx.core.ktx)
+        androidTestImplementation(platform(libs.androidx.compose.bom))
+        androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+        androidTestImplementation(libs.hilt.android.testing)
+        kspAndroidTest(libs.hilt.compiler)
+    }
+
+

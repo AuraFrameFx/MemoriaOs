@@ -48,6 +48,15 @@ pluginManagement {
         }
     }
     
+    // Plugin versions management
+    resolutionStrategy {
+        eachPlugin {
+            when (requested.id.namespace) {
+                "com.google.devtools.ksp" -> useVersion("2.2.20-RC-2.0.2")
+            }
+        }
+    }
+    
     // JDK toolchain management
     plugins {
         id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
