@@ -10,6 +10,7 @@ import dev.aurakai.auraframefx.BuildConfig
 import dev.aurakai.auraframefx.di.qualifiers.BaseUrl
 import dev.aurakai.auraframefx.network.AuraApiService
 import dev.aurakai.auraframefx.network.api.AuthApi
+import dev.aurakai.auraframefx.utils.AppCoroutineDispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

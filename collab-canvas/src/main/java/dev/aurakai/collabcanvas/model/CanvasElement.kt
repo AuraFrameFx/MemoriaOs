@@ -1,15 +1,12 @@
 package dev.aurakai.collabcanvas.model
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.asAndroidPath
+import com.google.gson.*
 import java.lang.reflect.Type
 
 /**

@@ -6,12 +6,14 @@ import dev.aurakai.auraframefx.model.AiRequest
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import io.mockk.mockk
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.async
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 // Mock implementations for dependencies
 class MockVertexAIClient

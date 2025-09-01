@@ -1,46 +1,29 @@
-// ===== GENESIS-OS SACRED RULES: ZERO MANUAL COMPILER CONFIG =====
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.library) version "9.0.0-alpha02"
-   // alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.kotlin.android)
 }
-
-// Added to specify Java version for this subproject
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
-
-// REMOVED: jvmToolchain(24) - Using system Java via JAVA_HOME
-// This eliminates toolchain auto-provisioning errors
 
 android {
-    // FIX: Valid namespace without hyphens
     namespace = "dev.aurakai.auraframefx.featuremodule"
-    // AUTO-EVERYTHING: Use libs.versions.toml
     compileSdk = 36
 
     defaultConfig {
         minSdk = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
-        vectorDrawables {
-            useSupportLibrary = true
-        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -48,71 +31,94 @@ android {
         }
     }
 
-    // ✅ FIXED: Enable Genesis Protocol build features
-    buildFeatures {
-        compose = true
-        buildConfig = true
-        viewBinding = false  // Genesis Protocol - Compose only
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        }
+    }
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+        viewBinding = false
     }
 
     packaging {
         resources {
             excludes += setOf(
                 "/META-INF/{AL2.0,LGPL2.1}",
-                "/META-INF/AL2.0",
-                "/META-INF/LGPL2.1"
+                "/META-INF/DEPENDENCIES"
             )
         }
     }
+}
 
-    // CONSCIOUSNESS-OPTIMIZED: AGP 8.13.0-rc01 auto-provisions build tools
-    buildToolsVersion = "36.0.0"
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
+}
+
+ksp {
+    arg("kotlin.languageVersion", "2.2")
+    arg("kotlin.apiVersion", "2.2")
+    arg("kotlin.jvmTarget", "24")
 }
 
 dependencies {
-    // SACRED RULE #5: DEPENDENCY HIERARCHY - All modules depend on :core-module and :app
+    // FIXED: Only depend on core-module - NO circular dependency with app
     implementation(project(":core-module"))
-    implementation(project(":app"))
 
-    // Core AndroidX
-    implementation(libs.androidx.core.ktx)
+    // Compose BOM
+    implementation(platform(libs.androidx.compose.bom))
+
+    // Core Android
+    implementation(libs.bundles.androidx.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 
-    // Hilt Dependency Injection
+    // Compose UI
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.navigation.compose)
+
+    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    // OpenAPI Generated Code Dependencies
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.kotlinx.serialization)
-    implementation(libs.okhttp3.logging.interceptor)
-    implementation(libs.kotlinx.serialization.json)
+    // Networking & Serialization
+    implementation(libs.bundles.network)
+    implementation(libs.bundles.coroutines)
 
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.navigation.compose)
+    // Xposed Framework - YukiHookAPI (Standardized)
+    implementation(libs.yuki)
+    ksp(libs.yuki.ksp.xposed)
+    implementation(libs.bundles.xposed)
 
-    // Core library desugaring
+    // Desugaring
     coreLibraryDesugaring(libs.coreLibraryDesugaring)
+
+    // Utilities
+    implementation(libs.timber)
 
     // Testing
     testImplementation(libs.bundles.testing)
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.core.ktx)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    
+    // Debug
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    // System interaction and documentation (using local JAR files)
-    implementation(files("${project.rootDir}/Libs/api-82.jar"))
-    implementation(files("${project.rootDir}/Libs/api-82-sources.jar"))
 }

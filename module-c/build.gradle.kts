@@ -1,24 +1,15 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id("com.android.library")
-    //id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    id("org.jetbrains.dokka")
-    id("com.diffplug.spotless")
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.dokka)
 }
-
-// Added to specify Java version for this subproject
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
-
-// REMOVED: jvmToolchain(25) - Using system Java via JAVA_HOME
-// This eliminates toolchain auto-provisioning errors
 
 android {
     namespace = "dev.aurakai.auraframefx.module.c"
@@ -32,7 +23,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -40,53 +31,91 @@ android {
         }
     }
 
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
 
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        }
+    }
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+        viewBinding = false
+    }
+
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += setOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/DEPENDENCIES"
+            )
         }
     }
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
+}
+
+ksp {
+    arg("kotlin.languageVersion", "2.2")
+    arg("kotlin.apiVersion", "2.2")
+    arg("kotlin.jvmTarget", "24")
+}
+
 dependencies {
-    // ✅ CRITICAL: Add Compose BOM platform first!
-    implementation(platform(libs.androidx.compose.bom))
-    
-    // SACRED RULE #5: DEPENDENCY HIERARCHY
+    // Module dependencies
     implementation(project(":core-module"))
-    implementation(project(":app"))
 
-    // Core Android bundles
+    // Compose BOM
+    implementation(platform(libs.androidx.compose.bom))
+
+    // Core Android
     implementation(libs.bundles.androidx.core)
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.coroutines)
-    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
 
+    // Compose UI
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.navigation.compose)
 
-    // Hilt Dependency Injection
+    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
+    // Coroutines & Serialization
+    implementation(libs.bundles.coroutines)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Xposed Framework - YukiHookAPI (Standardized)
+    implementation(libs.yuki)
+    ksp(libs.yuki.ksp.xposed)
+    implementation(libs.bundles.xposed)
+
+    // Utilities
+    implementation(libs.timber)
+
     // Testing
     testImplementation(libs.bundles.testing)
-    androidTestImplementation(libs.bundles.testing)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-
-    androidTestImplementation(libs.androidx.core.ktx)
-
-    // Debug implementations
+    
+    // Debug
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

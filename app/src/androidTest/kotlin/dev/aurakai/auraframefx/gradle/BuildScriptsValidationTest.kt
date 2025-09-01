@@ -1,8 +1,8 @@
-import io.mockk.*
-import org.junit.After
+import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.Test
+import org.junit.After
+import io.mockk.*
 import java.io.File
 import java.util.Properties
 

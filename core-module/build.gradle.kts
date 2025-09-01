@@ -1,14 +1,11 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.compose)
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -17,70 +14,69 @@ android {
 
     defaultConfig {
         minSdk = 33
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
+
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
-    buildFeatures {
-        compose = true
-        buildConfig = true
-        viewBinding = false
-    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
 
-    packaging {
-        resources { // This packaging block can be removed if there are no specific packaging resource rules
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
         }
     }
 
-    sourceSets {
-        getByName("main") {
-            kotlin.srcDirs(file("build/generated/source/openapi/src/main/kotlin")) // Corrected to function call
-        }
+    buildFeatures {
+        buildConfig = true
     }
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
+}
+
+ksp {
+    arg("kotlin.languageVersion", "2.2")
+    arg("kotlin.apiVersion", "2.2")
+    arg("kotlin.jvmTarget", "24")
+}
+
 dependencies {
-    // Core Kotlin libraries
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlin.reflect)
+    // Core Android
+    implementation(libs.bundles.androidx.core)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Coroutines & Serialization
     implementation(libs.bundles.coroutines)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.datetime)
 
-    // Networking (for the generated Retrofit client)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.kotlinx.serialization)
-    implementation(libs.retrofit.converter.scalars)
-    implementation(libs.okhttp3.logging.interceptor)
-
-    // Apache Oltu OAuth (required by generated OAuth classes)
-    implementation(libs.apache.oltu.oauth2.client)
-    implementation(libs.apache.oltu.oauth2.common)
-
     // Utilities
-    implementation(libs.gson)
-
-    // Security
+    implementation(libs.timber)
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-
-    androidTestImplementation(libs.androidx.core.ktx)
-}
-
-// This ensures that Kotlin compilation tasks run after the openApiGenerate task.
-// It's good practice, although registering the source set might already establish this dependency.
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    dependsOn(":openApiGenerate")
+    testImplementation(libs.bundles.testing)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 }

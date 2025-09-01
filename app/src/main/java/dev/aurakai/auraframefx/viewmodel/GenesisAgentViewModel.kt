@@ -2,7 +2,6 @@ package dev.aurakai.auraframefx.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.aurakai.auraframefx.ai.task.HistoricalTask
 import dev.aurakai.auraframefx.model.AgentPriority
 import dev.aurakai.auraframefx.model.AgentRole
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 // import javax.inject.Singleton // ViewModels should use @HiltViewModel
 

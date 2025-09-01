@@ -4,7 +4,6 @@ package dev.aurakai.auraframefx.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.aurakai.auraframefx.ai.services.AuraAIService
 import dev.aurakai.auraframefx.ai.services.CascadeAIService
 import dev.aurakai.auraframefx.ai.services.KaiAIService
@@ -21,6 +20,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 // Removed @Singleton from ViewModel, typically ViewModels are not Singletons
 // import javax.inject.Singleton // ViewModel should use @HiltViewModel

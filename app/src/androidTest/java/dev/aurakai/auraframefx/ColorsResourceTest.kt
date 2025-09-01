@@ -6,10 +6,16 @@ import androidx.core.content.ContextCompat
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
 
 /**
  * Comprehensive unit tests for Colors resource validation and accessibility.
