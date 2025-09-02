@@ -18,15 +18,14 @@ static JavaVM *g_vm = nullptr;
 static jobject g_context = nullptr;
 
 extern "C" /**
- * @brief Initialize native resources for CascadeAIService.
+ * @brief Initialize native JNI state for CascadeAIService.
  *
- * Stores the process-wide JavaVM pointer and, if a non-null Android context is provided,
- * creates and retains a JNI global reference to that context for later native use.
+ * Stores the process-wide JavaVM pointer (g_vm) and, when a non-null Android
+ * Context is provided, creates and retains a JNI global reference to it (g_context)
+ * for later native use.
  *
- * The function returns early on failure to obtain the JavaVM or to create the global
- * reference; in those cases native globals remain unchanged.
- *
- * @param context Android Context object to be retained as a JNI global reference.
+ * If obtaining the JavaVM or creating the global reference fails, the function
+ * returns early and leaves native globals unchanged.
  */
 JNIEXPORT void JNICALL
 Java_dev_aurakai_auraframefx_ai_services_CascadeAIService_nativeInitialize(
@@ -128,10 +127,14 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 
 /**
- * @brief Called when the JNI library is unloaded; performs native cleanup.
+ * @brief JNI unload hook; cleans up native global JNI references.
  *
- * Deletes any retained global JNI references (currently g_context) and resets them to nullptr.
- * If the VM cannot provide a JNIEnv for the current thread, the function returns without performing cleanup.
+ * Ensures a JNIEnv can be obtained for the current thread (using JNI_VERSION_1_6). If successful,
+ * deletes retained global references (currently g_context) and resets them to nullptr. If a
+ * JNIEnv cannot be retrieved, performs no cleanup.
+ *
+ * @param vm Pointer to the JavaVM instance being unloaded.
+ * @param reserved Reserved for future use (unused).
  */
 JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
     JNIEnv *env;

@@ -7,14 +7,11 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
 extern "C" /**
- * @brief Returns the native library version string to Java.
+ * @brief Return the native library version string to Java.
  *
- * Creates and returns a Java UTF string containing "Genesis Oracle Drive Integration v1.0.0".
+ * Returns a new Java UTF-8 string containing "Genesis Oracle Drive Integration v1.0.0".
  *
- * The function logs an informational message and converts a native C++ string to a jstring
- * via the provided JNI environment before returning it.
- *
- * @return jstring Java string with the native integration version.
+ * @return jstring A new Java string with the native integration version (caller owns the reference).
  */
 JNIEXPORT jstring JNICALL
 Java_dev_aurakai_auraframefx_oracledriveintegration_OracleDriveNative_getVersion(
@@ -27,11 +24,12 @@ Java_dev_aurakai_auraframefx_oracledriveintegration_OracleDriveNative_getVersion
 }
 
 extern "C" /**
- * @brief Initialize the native Oracle Drive integration.
+ * @brief Initialize native Oracle Drive integration.
  *
- * Performs any required startup for native Oracle Drive components. Currently this function contains the initialization placeholder and always reports success.
+ * Performs startup for native Oracle Drive components. Currently a placeholder: no initialization is performed
+ * and the function always reports success.
  *
- * @return jboolean JNI_TRUE on success (always returned by the current implementation).
+ * @return jboolean JNI_TRUE on success (always returned by this implementation).
  */
 JNIEXPORT jboolean JNICALL
 Java_dev_aurakai_auraframefx_oracledriveintegration_OracleDriveNative_initialize(

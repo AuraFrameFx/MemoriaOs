@@ -29,17 +29,24 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
         return "genesis_user"
     }
 
+    /**
+     * Indicates whether the application is running in a secure (production) mode.
+     *
+     * Defaults to `false` in this implementation (development-friendly, non-secure behavior).
+     *
+     * @return `true` when running in secure/production mode; `false` otherwise.
+     */
     override fun isSecureMode(): Boolean {
         return false // Default to non-secure for development
     }
 
     /**
-     * Determines whether access to the given resource is allowed.
+     * Checks whether the caller is allowed to access the specified resource.
      *
-     * This development-default implementation always grants access.
+     * Development-default implementation that always grants access.
      *
      * @param resource Identifier of the resource being checked.
-     * @return `true` when access is permitted (always for this default).
+     * @return True if access is permitted (always true for this default implementation).
      */
     override fun validateAccess(resource: String): Boolean {
         return true // Default allow for development
@@ -62,13 +69,13 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
     }
 
     /**
-     * Records a security event.
+     * Record a security event (development stub).
      *
-     * Placeholder implementation used in development: writes a concise representation of the event
-     * (type and details) to standard output. Production implementations should replace this to
-     * persist or forward events to a structured audit/logging system.
+     * Development placeholder: writes a concise representation of the event (type and details)
+     * to standard output. This implementation does not persist, structure, or forward events;
+     * production implementations should persist or forward events to an audit/logging system.
      *
-     * @param event The security event to record.
+     * @param event The security event to record; not persisted by this implementation.
      */
     override fun logSecurityEvent(event: SecurityEvent) {
         // Log security events (placeholder implementation)

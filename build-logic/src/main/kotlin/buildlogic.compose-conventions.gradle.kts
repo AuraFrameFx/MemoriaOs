@@ -16,16 +16,17 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 class BuildLogicComposeConventionPlugin : Plugin<Project> {
     /**
-     * Applies Compose-focused conventions to the given Gradle project.
+     * Applies Compose-centered Gradle conventions to the given Android library project.
      *
-     * Configures the project as an Android library with Jetpack Compose enabled and sets up
+     * Configures the project as an Android library with Jetpack Compose enabled, sets the
      * Compose compiler extension version, packaging exclusions, Java toolchain and source/target
-     * compatibility (Java 24), Kotlin source-set opt-ins for experimental Compose APIs, a standard
-     * set of Compose/lifecycle/navigation/hilt dependencies resolved from the `libs` version catalog,
-     * and Kotlin compiler options (Kotlin 2.2, JVM target 24, and Compose compiler/plugin flags).
+     * compatibility (Java 24), Kotlin source-set opt-ins for Compose experimental APIs, a
+     * curated set of Compose/lifecycle/navigation/Hilt dependencies from the `libs` version
+     * catalog, and Kotlin compiler options (Kotlin 2.2, JVM target 24, and Compose compiler flags).
      *
-     * Note: this function reads entries from the version catalog named `libs` using `.get()` on lookups;
-     * missing catalog entries will throw an exception at project configuration time.
+     * Note: this function resolves entries from the `libs` version catalog using `.get()` on lookups;
+     * missing entries will throw at configuration time. The method mutates the project by applying
+     * plugins, configuring extensions, and adding dependencies.
      */
     override fun apply(target: Project) {
         with(target) {

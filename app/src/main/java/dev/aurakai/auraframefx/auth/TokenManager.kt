@@ -55,14 +55,15 @@ class TokenManager @Inject constructor(
         }
 
     /**
-     * Stores the access and refresh tokens and records their expiry time.
+     * Persist the given access and refresh tokens and record when they expire.
      *
-     * The expiry timestamp is computed as the current system time plus `expiresInSeconds`
-     * (converted to milliseconds) and saved under KEY_TOKEN_EXPIRY.
+     * The expiry timestamp is computed as System.currentTimeMillis() + (expiresInSeconds * 1000)
+     * and stored (milliseconds since epoch) under KEY_TOKEN_EXPIRY.
      *
-     * @param accessToken The new access token to persist.
-     * @param refreshToken The new refresh token to persist.
-     * @param expiresInSeconds Time-to-live for the tokens, in seconds, from now. */
+     * @param accessToken New access token to store.
+     * @param refreshToken New refresh token to store.
+     * @param expiresInSeconds Time-to-live for the tokens in seconds from now; used to compute the stored expiry timestamp.
+     */
     fun updateTokens(
         accessToken: String,
         refreshToken: String,

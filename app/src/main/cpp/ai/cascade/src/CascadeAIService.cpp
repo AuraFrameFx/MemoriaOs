@@ -14,10 +14,10 @@ namespace genesis::cascade {
     class CascadeAIService::Impl {
     public:
         /**
- * @brief Default constructor for CascadeAIService::Impl.
+ * @brief Default-constructs the implementation object.
  *
- * Performs a default construction of the implementation object, leaving JNI-related
- * state (e.g., stored JavaVM and context) unset until initialize(...) is called.
+ * Leaves JNI-related members (JavaVM pointer and global context reference) unset;
+ * any JNI resources are established by initialize(...) and must be released via shutdown().
  */
 Impl() = default;
 
@@ -100,14 +100,14 @@ Impl() = default;
     };
 
     /**
-     * @brief Processes a textual request and returns a JSON-formatted response.
+     * @brief Process a textual request and produce a JSON-formatted response.
      *
-     * Builds a fixed JSON response indicating success, agent name, version, and a short
-     * message, then returns it as a Java string.
+     * Builds and returns a fixed UTF-8 JSON object describing a successful response
+     * from the native Cascade agent. The provided `request` is not parsed or acted
+     * upon; it is used only for logging/context.
      *
-     * @param request The incoming request payload as a UTF-8 std::string; used only to
-     *                include logging context.
-     * @return jstring A new Java string containing the JSON response (e.g. `{"status":"success", "agent":"Cascade", "version":"1.0.0", "response":"Request processed by Cascade AI agent"}`).
+     * @param request Incoming request payload as a UTF-8 std::string (used only for logging).
+     * @return jstring A new local Java string containing the JSON response (UTF-8). The caller receives a newly created jstring and should follow JNI local reference lifetime rules.
      */
     jstring CascadeAIService::Impl::processRequest(JNIEnv *env, const std::string &request) {
         LOGI("Processing request: %s", request.c_str());
@@ -132,9 +132,12 @@ Impl() = default;
     CascadeAIService::CascadeAIService() : pImpl_(std::make_unique<Impl>()) {}
 
     /**
- * @brief Destroys the CascadeAIService instance.
+ * @brief Destroy the CascadeAIService.
  *
- * Defaulted destructor that releases the owned implementation and associated native resources.
+ * Defaulted destructor that destroys the internal implementation object.
+ * Does not perform JNI cleanup or release global Java references — call
+ * shutdown() before destruction to ensure JNI resources (for example the
+ * global Android context) are released.
  */
 CascadeAIService::~CascadeAIService() = default;
 

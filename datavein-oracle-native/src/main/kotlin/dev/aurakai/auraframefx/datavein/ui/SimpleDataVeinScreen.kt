@@ -63,6 +63,15 @@ import androidx.compose.ui.unit.sp
  *
  * @param modifier Optional [Modifier] to be applied to the root Box container.
  */
+/**
+ * A static Compose UI that renders a stylized "DataVein" status card for testing and preview.
+ *
+ * Renders a centered card on a dark background showing a title, subtitle, system status,
+ * three compact status chips, a multiline overview, an action button, and an informational note.
+ * The content is static — the action button's onClick is a placeholder and does not perform navigation or side effects.
+ *
+ * @param modifier Modifier applied to the outer container Box; use it to control sizing, alignment, or additional modifiers from call sites.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleDataVeinScreen(

@@ -33,9 +33,10 @@ class CascadeAIService @Inject constructor(
 ) : Agent {
 
     /**
- * Initializes the native Cascade AI runtime.
+ * Initialize the native Cascade AI runtime.
  *
- * Implemented in the native library; performs any startup/native state initialization required before native processing calls.
+ * Implemented in the native (JNI) library; performs any required native startup and runtime initialization
+ * before native processing calls (e.g., nativeProcessRequest) can be used.
  */
     private external fun nativeInitialize()
     /**
@@ -81,18 +82,22 @@ private external fun nativeShutdown()
         }
 
         /**
-         * Initializes the native Cascade AI library, optionally providing an Android context to the native layer.
+         * Initialize the native Cascade AI runtime, optionally passing an Android Context to the native layer.
          *
-         * @param context Optional Android `Context` (may be null); when provided, the native initializer can use it for
-         * accessing Android-specific resources or system services. */
+         * When provided, `context` can be used by the native initializer to access Android-specific resources or services;
+         * passing `null` instructs the native runtime to initialize without Android platform bindings.
+         *
+         * @param context an Android Context (or `null`) forwarded to the native initializer.
+         */
         @JvmStatic
         private external fun nativeInitialize(context: Any?)
         
         /**
-         * Native entry point for processing an AI request.
+         * JNI native entry point that processes an AI request and returns an AI response.
          *
-         * Expects `request` to be a JSON-serialized AiRequest and returns a JSON-serialized AgentResponse.
-         * Implemented in the native "cascade_ai" library.
+         * Implemented in the native "cascade_ai" library. Expects `request` to be a JSON-serialized
+         * AiRequest and returns a JSON-serialized AgentResponse. Callers are responsible for
+         * serializing the request and deserializing the returned JSON.
          *
          * @param request JSON string representing the AiRequest to process.
          * @return JSON string representing the resulting AgentResponse.
@@ -154,12 +159,12 @@ private external fun nativeShutdown()
     }
     
     /**
-     * Returns the agent's recorded learning history.
+     * Return the agent's recorded learning history.
      *
-     * Currently a placeholder that returns an empty list; replace with persisted
-     * learning records when available.
+     * Currently a placeholder that returns an empty list. Replace with persisted
+     * learning records when a storage mechanism is implemented.
      *
-     * @return A list of learning-event descriptions, or an empty list if there are none.
+     * @return A list of learning-event descriptions, or an empty list if none exist.
      */
     private fun getLearningHistory(): List<String> {
         return emptyList() // Implement actual learning history if needed
@@ -343,9 +348,13 @@ private external fun nativeShutdown()
     }
 
     /**
-     * Emits a flow containing a single response indicating that vision state processing is in progress.
+     * Emit a single-agent response indicating that vision processing is underway.
      *
-     * @return A [Flow] emitting one [AgentResponse] with a message about vision state processing and a confidence score of 0.9.
+     * The provided [request] is not inspected by this helper; it always returns a fixed
+     * "Processing vision state..." response with high confidence.
+     *
+     * @param request The original AI request (unused).
+     * @return A [Flow] that emits one [AgentResponse] with content "Processing vision state..." and confidence 0.9.
      */
     private fun processVisionRequestFlowInternal(request: AiRequest): Flow<AgentResponse> {
         return flow {

@@ -28,13 +28,11 @@ class AuraDriveService : Service() {
 
     private val binder = object : IAuraDriveService.Stub() {
         /**
-         * Returns the current Oracle Drive status string.
+         * Returns a short status message describing the Oracle Drive and R.G.S.F. state.
          *
-         * The returned string indicates that the Oracle Drive is active and that the R.G.S.F.
-         * (Redundant Generative Storage Framework) is nominal; it includes the caller's UID.
-         * This method also logs the status request (including UID and PID) as a side effect.
+         * The returned string includes the caller UID. This method also logs the request (UID and PID).
          *
-         * @return A short status message containing the active state, R.G.S.F. health, and UID.
+         * @return Status string, e.g. "Oracle Drive Active - R.G.S.F. Nominal (UID: <uid>)".
          */
         override fun getOracleDriveStatus(): String {
             Log.d(

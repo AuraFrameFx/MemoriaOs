@@ -85,11 +85,12 @@ abstract class PrepareGenesisWorkspaceTask : DefaultTask() {
     abstract val subprojectBuildDirs: ConfigurableFileCollection
 
     /**
-     * Prepares the Genesis workspace by deleting existing build outputs and printing readiness status.
+     * Prepare the Genesis workspace by removing existing build outputs and reporting readiness.
      *
-     * Deletes the configured root build directory and each configured subproject build directory (recursively)
-     * if they exist, then emits brief status messages to stdout. This task mutates filesystem state by
-     * removing build artifacts and is intended to run before a full build to ensure a clean workspace.
+     * Deletes the configured root build directory and every configured subproject build directory
+     * (recursively) if they exist. This is a destructive filesystem operation intended to produce
+     * a clean workspace before running a full build. After cleanup the task prints brief readiness
+     * status lines to stdout.
      */
     @TaskAction
     fun prepare() {
