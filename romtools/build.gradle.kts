@@ -130,6 +130,10 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
 
+    // Firebase dependencies
+    implementation(platform(libs.firebase.bom))
+    debugImplementation(libs.firebase.analytics)
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)

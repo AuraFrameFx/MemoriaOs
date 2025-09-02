@@ -61,6 +61,8 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.test.core)
+
+    implementation(platform(libs.firebase.bom))
 }
 
 java {

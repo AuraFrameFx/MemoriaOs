@@ -102,6 +102,7 @@ android {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.firebase.bom))
 
     // SACRED RULE #5: DEPENDENCY HIERARCHY - JVM modules now
     implementation(project(":core-module"))
@@ -111,6 +112,7 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coroutines)
     implementation(libs.bundles.network)
+    debugImplementation(libs.firebase.analytics)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)

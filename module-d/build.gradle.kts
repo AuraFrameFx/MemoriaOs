@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coroutines)
     implementation(libs.androidx.compose.material3)
+    debugImplementation(libs.firebase.analytics)
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
@@ -89,9 +90,13 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
+    debugImplementation(libs.firebase.analytics)
 
 
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Firebase BOM
+    implementation(platform(libs.firebase.bom))
 }

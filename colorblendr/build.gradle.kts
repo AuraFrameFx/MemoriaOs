@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coroutines)
-
+    debugImplementation(libs.firebase.analytics)
     // Navigation
     implementation(libs.androidx.navigation.compose)
 
@@ -99,6 +99,8 @@ dependencies {
     kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(libs.androidx.test.core)
 
+    // Firebase BOM
+    implementation(platform(libs.firebase.bom))
 
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)

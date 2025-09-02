@@ -97,6 +97,7 @@ dependencies {
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.firebase.analytics)
 
     // System interaction and root access
     implementation(files("${project.rootDir}/Libs/api-82.jar"))

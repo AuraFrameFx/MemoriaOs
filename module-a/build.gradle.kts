@@ -69,10 +69,12 @@ android {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.firebase.bom))
 
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
+    debugImplementation(libs.firebase.analytics)
 
     // Core Android bundles
     implementation(libs.bundles.androidx.core)

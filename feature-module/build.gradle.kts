@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    debugImplementation(libs.firebase.analytics)
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
@@ -118,6 +119,12 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Firebase BoM
+    implementation(platform(libs.firebase.bom))
+    testImplementation(platform(libs.firebase.bom))
+    androidTestImplementation(platform(libs.firebase.bom))
+    debugImplementation(libs.firebase.analytics)
 
     // System interaction and documentation (using local JAR files)
     implementation(files("${project.rootDir}/Libs/api-82.jar"))

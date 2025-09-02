@@ -223,13 +223,13 @@ dependencies {
     implementation(project(":romtools"))
     implementation(project(":secure-comm"))
     implementation(project(":collab-canvas"))
+    debugImplementation(libs.firebase.analytics)
 
     // Core Android
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.firebase.analytics)
 
     // Compose UI
     implementation(libs.bundles.compose)

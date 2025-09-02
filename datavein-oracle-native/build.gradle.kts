@@ -97,8 +97,10 @@ kotlin {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.firebase.bom))
     // Project modules
     implementation(project(":core-module"))
+    debugImplementation(libs.firebase.analytics)
 
     // Core AndroidX
     implementation(libs.bundles.androidx.core)
