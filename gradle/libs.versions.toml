@@ -40,7 +40,7 @@ composeCompiler = "1.9.4"  # Should be same as runtime version
 androidxComposeCompiler = "1.9.4"
 
 # ===== GOOGLE SERVICES =====
-firebaseBom = "34.1.0"
+firebaseBom = "34.2.0"
 firebaseCrashlytics = "3.0.6"
 firebasePerf = "2.0.1"  # DISABLED: Not compatible with AGP 9.0.0-alpha02
 firebaseAnalyticsKtx = "22.5.0"
