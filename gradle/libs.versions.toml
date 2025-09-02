@@ -166,7 +166,7 @@ androidx-lifecycle-viewmodel-savedstate = { group = "androidx.lifecycle", name =
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version = "1.2.0" }
-androidx-activity = { module = "androidx.activity:activity", version = "1.5.1" }
+androidx-activity = { module = "androidx.activity:activity", version = "1.10.1" }
 androidx-annotation-experimental = { module = "androidx.annotation:annotation-experimental", version = "1.5.1" }
 androidx-fragment = { module = "androidx.fragment:fragment", version = "1.8.9" }
 androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version = "2.9.3" }
