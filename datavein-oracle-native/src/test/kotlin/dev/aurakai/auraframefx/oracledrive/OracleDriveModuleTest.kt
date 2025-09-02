@@ -601,7 +601,7 @@ class OracleDriveModuleEdgeCaseTest {
         // Verify constructor has @Inject annotation
         assertTrue(
             "Service constructor should be annotated with @Inject",
-            constructor!!.isAnnotationPresent(javax.inject.Inject::class.java)
+            constructor!!.isAnnotationPresent(Inject::class.java)
         )
 
         // Verify constructor parameters match expected dependencies

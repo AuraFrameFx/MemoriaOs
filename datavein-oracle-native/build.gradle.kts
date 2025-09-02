@@ -87,6 +87,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
+    
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+            it.testLogging {
+                events("passed", "skipped", "failed")
+                showStandardStreams = true
+            }
+            it.systemProperty("robolectric.enabled", "true")
+        }
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 // Consistent JVM target for Java and Kotlin
@@ -98,6 +110,15 @@ dependencies {
 
     // Core AndroidX
     implementation(libs.bundles.androidx.core)
+    
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.jetbrains.kotlin.test.junit5)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
 

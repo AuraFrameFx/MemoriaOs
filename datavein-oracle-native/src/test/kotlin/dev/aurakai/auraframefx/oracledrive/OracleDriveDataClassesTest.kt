@@ -265,8 +265,7 @@ class OracleDriveDataClassesTest {
         // Given
         val basicPermissions =
             listOf(OraclePermission.READ, OraclePermission.WRITE, OraclePermission.EXECUTE)
-        val advancedPermissions =
-            listOf(OraclePermission.SYSTEM_ACCESS, OraclePermission.BOOTLOADER_ACCESS)
+        listOf(OraclePermission.SYSTEM_ACCESS, OraclePermission.BOOTLOADER_ACCESS)
 
         // When & Then
         basicPermissions.forEach { permission ->
