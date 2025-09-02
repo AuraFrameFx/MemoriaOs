@@ -51,7 +51,7 @@ roomVersion = "2.7.2"
 datastore = "1.1.7"
 
 # ===== ANDROID ARCHITECTURE COMPONENTS =====
-lifecycle = "2.9.2"
+lifecycle = "2.9.3"
 workManager = "2.10.3"
 paging = "3.3.6"
 biometric = "1.4.0-alpha04"
