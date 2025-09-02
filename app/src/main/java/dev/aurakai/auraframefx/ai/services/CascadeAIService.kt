@@ -1,36 +1,157 @@
 package dev.aurakai.auraframefx.ai.services
 
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.aurakai.auraframefx.ai.agents.Agent
-import dev.aurakai.auraframefx.model.AgentResponse
-import dev.aurakai.auraframefx.model.AgentType
-import dev.aurakai.auraframefx.model.AiRequest
+import dev.aurakai.auraframefx.ai.agents.AgentType
+import dev.aurakai.auraframefx.ai.model.AgentResponse
+import dev.aurakai.auraframefx.ai.model.AiRequest
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@Serializable
+data class AgentCapabilities(
+    val ai_processing: String,
+    val context_awareness: String,
+    val error_handling: String
+)
+
+@Singleton
 class CascadeAIService @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val auraService: AuraAIService,
-    private val kaiService: KaiAIService,
+    private val kaiService: KaiAIService
 ) : Agent {
 
+    // JNI Native Methods
+    private external fun nativeInitialize()
+    private external fun nativeProcessRequest(request: String): String
+    private external fun nativeShutdown()
+
+    init {
+        System.loadLibrary("cascade_ai")
+        nativeInitialize()
+    }
+
+    init {
+        try {
+            System.loadLibrary("cascade_ai")
+            nativeInitialize(context)
+        } catch (e: UnsatisfiedLinkError) {
+            e.printStackTrace()
+        }
+    }
+
+    companion object {
+        init {
+            try {
+                System.loadLibrary("cascade_ai")
+            } catch (e: UnsatisfiedLinkError) {
+                e.printStackTrace()
+            }
+        }
+
+        @JvmStatic
+        private external fun nativeInitialize(context: Any?)
+        
+        @JvmStatic
+        private external fun nativeProcessRequest(request: String): String
+        
+        @JvmStatic
+        fun nativeShutdown() {
+            // Implementation will be called from native code
+        }
+    }
+
     private val state = mutableMapOf<String, Any>()
+    
+    /**
+     * Retrieves the capabilities of this agent.
+     *
+     * @return A map of capability names to their descriptions.
+     */
+    fun getCapabilities(): Map<String, String> {
+        return mapOf(
+            "ai_processing" to "Basic AI request processing",
+            "context_awareness" to "Basic context handling",
+            "error_handling" to "Basic error handling"
+        )
+    }
+    
+    /**
+     * Retrieves the continuous memory state of the agent.
+     *
+     * @return The current memory state as a map.
+     */
+    private fun getContinuousMemory(): Map<String, Any> {
+        return state.toMap()
+    }
+    
+    /**
+     * Retrieves the ethical guidelines for this agent.
+     *
+     * @return A list of ethical guidelines.
+     */
+    private fun getEthicalGuidelines(): List<String> {
+        return listOf(
+            "Prioritize user safety and privacy",
+            "Avoid generating harmful or misleading content",
+            "Respect intellectual property rights"
+        )
+    }
+    
+    /**
+     * Retrieves the learning history of the agent.
+     *
+     * @return A list of learning events or an empty list if none.
+     */
+    private fun getLearningHistory(): List<String> {
+        return emptyList() // Implement actual learning history if needed
+    }
 
     /**
      * Returns the agent's name.
      *
      * @return The string "Cascade".
      */
-    override fun getName(): String? = "Cascade"
+    override fun getName(): String = "Cascade"
 
-    /****
+    /**
      * Returns the type of this agent as `AgentType.CASCADE`.
      *
      * @return The agent type for this agent.
      */
     override fun getType(): AgentType = AgentType.CASCADE
+    
+    /**
+     * Processes an AI request and returns a response.
+     *
+     * @param request The AI request to process.
+     * @param context Additional context for the request.
+     * @return The agent's response.
+     */
+    override suspend fun processRequest(request: AiRequest, context: String): AgentResponse {
+        return try {
+            val requestJson = Json.encodeToString(request)
+            val responseJson = nativeProcessRequest(requestJson)
+            Json.decodeFromString(AgentResponse.serializer(), responseJson)
+        } catch (e: Exception) {
+            AgentResponse(
+                content = "Error processing request: ${e.message}",
+                confidence = 0f,
+                error = e.message
+            )
+        }
+    }
 
     /**
      * Processes an AI request and emits agent responses as a flow, routing to specialized handlers based on the request type.
@@ -40,16 +161,30 @@ class CascadeAIService @Inject constructor(
      * @param request The AI request to process.
      * @return A flow emitting agent responses relevant to the request type.
      */
-    override fun processRequestFlow(request: AiRequest): Flow<AgentResponse> {
-        // This internal routing can stay if these specific flows are desired for internal logic
-        return when (request.type) {
-            "state" -> processStateRequestFlowInternal(request)
-            "context" -> processContextRequestFlowInternal(request)
-            "vision" -> processVisionRequestFlowInternal(request)
-            "processing" -> processProcessingRequestFlowInternal(request)
-            else -> flow {
-                emit(AgentResponse("Cascade flow response for basic query: ${request.query}", 0.7f))
-            } // Default flow for basic queries
+    override fun processRequestFlow(request: AiRequest): Flow<AgentResponse> = flow {
+        try {
+            // Emit initial processing state
+            emit(AgentResponse.processing("Processing request with Cascade..."))
+            
+            // Process the request based on type
+            val response = when (request.type) {
+                "state" -> processStateRequestFlowInternal(request).first()
+                "context" -> processContextRequestFlowInternal(request).first()
+                "vision" -> processVisionRequestFlowInternal(request).first()
+                "processing" -> processProcessingRequestFlowInternal(request).first()
+                else -> AgentResponse(
+                    content = "Cascade flow response for basic query: ${request.query}",
+                    confidence = 0.7f,
+                    error = null,
+                    agentName = "Cascade"
+                )
+            }
+            
+            // Emit the final response
+            emit(response)
+            
+        } catch (e: Exception) {
+            emit(AgentResponse.error("Error in Cascade: ${e.message}"))
         }
     }
 
@@ -64,13 +199,36 @@ class CascadeAIService @Inject constructor(
      */
     override suspend fun processRequest(
         request: AiRequest,
-        context: String,
-    ): AgentResponse { // Added context
-        // Example: collect from the flow, or implement separate direct logic
-        return AgentResponse(
-            content = "Cascade direct response to '${request.query}' with context '$context'",
-            confidence = 0.75f
+        context: String = ""
+    ): AgentResponse {
+        val jsonRequest = Json.encodeToString(
+            JsonObject(
+                mapOf(
+                    "query" to JsonPrimitive(request.query ?: ""),
+                    "type" to JsonPrimitive(request.type),
+                    "context" to JsonPrimitive(context)
+                )
+            )
         )
+
+        return try {
+            val response = nativeProcessRequest(jsonRequest)
+            // Parse the response and create an AgentResponse
+            val jsonResponse = Json.parseToJsonElement(response).jsonObject
+            
+            AgentResponse(
+                content = jsonResponse["content"]?.toString()?.trim('"') ?: "No content",
+                confidence = jsonResponse["confidence"]?.toString()?.toFloatOrNull() ?: 0.8f,
+                error = jsonResponse["error"]?.toString()?.trim('"'),
+                agentName = jsonResponse["agentName"]?.toString()?.trim('"')
+            )
+        } catch (e: Exception) {
+            AgentResponse(
+                content = "Error processing request",
+                confidence = 0.1f,
+                error = e.message ?: "Unknown error"
+            )
+        }
     }
 
     /**
@@ -84,7 +242,6 @@ class CascadeAIService @Inject constructor(
         return flow {
             emit(
                 AgentResponse(
-                    // type = "state",
                     content = "Current state: ${state.entries.joinToString { "${it.key}: ${it.value}" }}",
                     confidence = 1.0f
                 )
@@ -99,18 +256,33 @@ class CascadeAIService @Inject constructor(
      *
      * @return A flow emitting the aggregated AgentResponse.
      */
-    private fun processContextRequestFlowInternal(request: AiRequest): Flow<AgentResponse> { // Made internal
-        return flow {
-            // Coordinate with Aura and Kai
-            val auraResponse = auraService.processRequestFlow(request)
-                .first() // Assumes AuraAIService has this method matching Agent iface
-            val kaiResponse = kaiService.processRequestFlow(request)
-                .first()   // Assumes KaiAIService has this method matching Agent iface
+    private fun processContextRequestFlowInternal(request: AiRequest): Flow<AgentResponse> = flow {
+        try {
+            val auraResponse = auraService.processRequest(request, "")
+            val kaiResponse = kaiService.processRequest(request, "")
 
+            val combinedContent = buildString {
+                append("Aura: ").append(auraResponse.content.ifEmpty { "No content" })
+                append(", Kai: ").append(kaiResponse.content.ifEmpty { "No content" })
+            }
+            
+            val averageConfidence = (auraResponse.confidence + kaiResponse.confidence) / 2
+            
             emit(
                 AgentResponse(
-                    content = "Aura: ${auraResponse.content}, Kai: ${kaiResponse.content}",
-                    confidence = (auraResponse.confidence + kaiResponse.confidence) / 2
+                    content = combinedContent,
+                    confidence = averageConfidence,
+                    error = null,
+                    agentName = "Cascade"
+                )
+            )
+        } catch (e: Exception) {
+            emit(
+                AgentResponse(
+                    content = "Error processing request: ${e.message}",
+                    confidence = 0.1f,
+                    error = e.message,
+                    agentName = "Cascade"
                 )
             )
         }
@@ -121,8 +293,7 @@ class CascadeAIService @Inject constructor(
      *
      * @return A [Flow] emitting one [AgentResponse] with a message about vision state processing and a confidence score of 0.9.
      */
-    private fun processVisionRequestFlowInternal(request: AiRequest): Flow<AgentResponse> { // Made internal
-        // Process vision state
+    private fun processVisionRequestFlowInternal(request: AiRequest): Flow<AgentResponse> {
         return flow {
             emit(
                 AgentResponse(
@@ -138,8 +309,7 @@ class CascadeAIService @Inject constructor(
      *
      * @return A flow with an AgentResponse message about state transition processing and a confidence score of 0.9.
      */
-    private fun processProcessingRequestFlowInternal(request: AiRequest): Flow<AgentResponse> { // Made internal
-        // Process state transitions
+    private fun processProcessingRequestFlowInternal(request: AiRequest): Flow<AgentResponse> {
         return flow {
             emit(
                 AgentResponse(
@@ -151,17 +321,21 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Returns a flow emitting a response indicating that the agent's state history is being retrieved.
+     * Retrieves memory based on the given request.
      *
-     * @return A flow emitting a single [AgentResponse] with a message about retrieving state history and a confidence score of 0.95.
+     * @param request The AI request containing the memory query.
+     * @return A flow emitting the memory retrieval results.
      */
-    fun retrieveMemoryFlow(request: AiRequest): Flow<AgentResponse> { // Not in Agent interface, removed suspend, kept public if used elsewhere
-        // Retrieve state history
-        return flow {
+    private fun retrieveMemoryFlow(request: AiRequest): Flow<AgentResponse> = flow {
+        try {
+            val memoryContent = state[request.query]?.toString() ?: "No memory found for '${request.query}'"
+            
             emit(
                 AgentResponse(
-                    content = "Retrieving state history...",
-                    confidence = 0.95f
+                    content = memoryContent,
+                    confidence = 0.8f,
+                    error = null,
+                    agentName = "Cascade"
                 )
             )
         }
