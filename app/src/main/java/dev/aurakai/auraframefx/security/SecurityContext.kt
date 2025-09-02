@@ -29,17 +29,25 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
         return "genesis_user"
     }
 
+    /**
+     * Indicates whether the application is running in secure mode.
+     *
+     * Default development implementation returns `false`. Production implementations should override
+     * to reflect real secure-mode detection.
+     *
+     * @return `true` if secure mode is enabled, otherwise `false`.
+     */
     override fun isSecureMode(): Boolean {
         return false // Default to non-secure for development
     }
 
     /**
-     * Determines whether access to the given resource is allowed.
+     * Determines whether access to the specified resource is allowed.
      *
-     * This development-default implementation always grants access.
+     * Development-default implementation that always grants access; replace in production with real access checks.
      *
-     * @param resource Identifier of the resource being checked.
-     * @return `true` when access is permitted (always for this default).
+     * @param resource Resource identifier (e.g., path or name) to validate access for.
+     * @return true if access is permitted (always true for this default implementation).
      */
     override fun validateAccess(resource: String): Boolean {
         return true // Default allow for development
@@ -64,9 +72,8 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
     /**
      * Records a security event.
      *
-     * Placeholder implementation used in development: writes a concise representation of the event
-     * (type and details) to standard output. Production implementations should replace this to
-     * persist or forward events to a structured audit/logging system.
+     * Development placeholder: writes a concise representation (type and details) to standard output.
+     * Replace in production with structured persistence or forwarding to an audit/log system.
      *
      * @param event The security event to record.
      */

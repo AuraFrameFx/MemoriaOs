@@ -81,6 +81,14 @@ import dev.aurakai.auraframefx.datavein.model.NodeType
  * @param node The DataVeinNode to render.
  * @param modifier Optional Compose [Modifier] applied to the outer card.
  */
+/**
+ * Renders a stylized info card for a DataVeinNode showing type, status, identity, progression and a short description.
+ *
+ * The card displays the node type (with glow color) and a colored status dot (green = activated, yellow = unlocked, red = locked),
+ * identification rows (Tag, ID, Ring, Level), and the node description. If the node is unlocked it also shows XP as "xp/1000"
+ * with a horizontal progress bar. If the node has non-empty data, a Data row is shown. A one-line status message is rendered
+ * at the bottom and varies by node state: locked, dormant (unlocked but not activated), or active.
+ */
 @Composable
 fun NodeInfoPanel(
     node: DataVeinNode,
@@ -276,12 +284,16 @@ fun NodeTypeLegend(modifier: Modifier = Modifier) {
 /**
  * Renders a compact status card summarizing real-time DataVein metrics.
  *
- * Shows a pulsing header, three status rows (Active Flows, Active Nodes, Unlocked)
+ * The card shows a pulsing header, three status rows (Active Flows, Active Nodes, Unlocked),
  * and two horizontal progress indicators (Activation, Progression).
- * Activation and Progression percentages are computed as a ratio over `totalNodes`; when
- * `totalNodes` is zero the percentages are treated as 0 to avoid division by zero.
+ * Activation = activeNodes / totalNodes and Progression = unlockedNodes / totalNodes.
+ * When `totalNodes` is zero, both percentages are treated as 0 to avoid division by zero.
  *
+ * @param activeFlows Number of currently active flows.
+ * @param activeNodes Number of currently active nodes.
  * @param totalNodes Total number of nodes used as the denominator for percentage calculations.
+ * @param unlockedNodes Number of nodes that are unlocked.
+ * @param modifier Modifier for styling and layout; defaults to Modifier.
  */
 @Composable
 fun StatusPanel(

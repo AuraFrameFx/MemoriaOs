@@ -17,10 +17,7 @@ object InstantSerializer : KSerializer<Instant> {
         PrimitiveSerialDescriptor("Instant", PrimitiveKind.STRING)
 
     /**
-     * Encodes the given Instant as an ISO-8601 string.
-     *
-     * @param encoder The encoder to write the string value to.
-     * @param value The Instant to encode; converted using `Instant.toString()`.
+     * Encodes the Instant as an ISO-8601 string using `Instant.toString()`.
      */
     override fun serialize(encoder: Encoder, value: Instant) {
         encoder.encodeString(value.toString())
@@ -39,11 +36,9 @@ object AnySerializer : KSerializer<Any> {
         PrimitiveSerialDescriptor("Any", PrimitiveKind.STRING)
 
     /**
-     * Serializes the given value by encoding its string representation.
+     * Encodes the given value as a string by calling `toString()` and writing it to the encoder.
      *
-     * This writes value.toString() to the provided encoder as a JSON/string primitive.
-     * Note: type information is not preserved — deserialization will yield the original
-     * string form, not the original object type.
+     * The original runtime type is not preserved; deserializing this value yields the string produced by `toString()`.
      *
      * @param value The value to serialize; its `toString()` result is encoded.
      */
