@@ -53,7 +53,7 @@ dependencyResolutionManagement {
     // ✅ NO VERSION CATALOG CONFIG - Auto-discovered from gradle/libs.versions.toml
 }
 
-rootProject.name = "Genesis-Os"
+rootProject.name = "MemoriaOs"
 
 // Genesis Protocol - Auto-discovered modules
 include(":app")

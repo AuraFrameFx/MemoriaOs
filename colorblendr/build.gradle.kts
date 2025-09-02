@@ -1,9 +1,7 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
@@ -61,16 +59,12 @@ android {
 }
 
 // Consistent JVM target for Java and Kotlin
-kotlin {
-    jvmToolchain(24)
-}
 
 dependencies {
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
-    implementation(libs.androidx.compose.material3)
-    // Core Android bundles
+    implementation(libs.androidx.material3)    // Core Android bundles
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coroutines)
@@ -79,7 +73,7 @@ dependencies {
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.compiler)
 
     // Utilities
     implementation(libs.bundles.utilities)
@@ -94,7 +88,6 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
     androidTestImplementation(libs.androidx.test.core)
 
     // Firebase BOM

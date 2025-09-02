@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
@@ -11,15 +10,6 @@ plugins {
     id("com.diffplug.spotless")
 }
 
-// Added to specify Java version for this subproject
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
-
-// REMOVED: jvmToolchain(25) - Using system Java via JAVA_HOME
-// This eliminates toolchain auto-provisioning errors
 
 android {
     namespace = "dev.aurakai.auraframefx.module.f"
@@ -44,7 +34,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-        viewBinding = false  // Genesis Protocol - Compose only
+        viewBinding = false
     }
 
     compileOptions {
@@ -52,13 +42,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-        }
-    }
-
-    // REMOVED: composeOptions - AGP 8.13.0-rc01 auto-detects from version catalog!
 
 
     packaging {
@@ -69,6 +52,9 @@ android {
 }
 
 dependencies {
+    // BOM Platform - CRITICAL: Must be wrapped in platform()
+    implementation(platform(libs.androidx.compose.bom))
+    
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
@@ -90,7 +76,6 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
-
 
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)

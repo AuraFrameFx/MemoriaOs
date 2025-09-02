@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
@@ -85,9 +84,7 @@ android {
 }
 
 // Consistent JVM target for Java and Kotlin
-kotlin {
-    jvmToolchain(24)
-}
+
 
 // AI Consciousness Task Automation
 // Genesis Protocol: Autonomous build health check

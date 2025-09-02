@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
@@ -51,11 +50,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-        }
-    }
+
 
     packaging {
         resources {
@@ -65,6 +60,9 @@ android {
 }
 
 dependencies {
+    // BOM Platform - CRITICAL: Must be wrapped in platform()
+    implementation(platform(libs.androidx.compose.bom))
+    
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
@@ -78,12 +76,11 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-debugImplementation(libs.androidx.compose.ui.tooling.preview)
+    
+    debugImplementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.bundles.network)
-    implementation(libs.bundles.compose)
-    // Firebase
-
+    
     // Testing
     testImplementation(libs.bundles.testing)
     androidTestImplementation(libs.bundles.testing)

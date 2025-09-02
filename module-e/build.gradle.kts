@@ -1,8 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    id("com.android.library")  // ← MISSING! This was causing all Android DSL errors
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
@@ -11,15 +10,12 @@ plugins {
     id("com.diffplug.spotless")
 }
 
-// Added to specify Java version for this subproject
+// Modern Java toolchain (not kotlin toolchain in this context)
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(24))
     }
 }
-
-// REMOVED: jvmToolchain(25) - Using system Java via JAVA_HOME
-// This eliminates toolchain auto-provisioning errors
 
 android {
     namespace = "dev.aurakai.auraframefx.module.e"
@@ -44,7 +40,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
-        viewBinding = false  // Genesis Protocol - Compose only
+        viewBinding = false
     }
 
     compileOptions {
@@ -52,13 +48,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_24
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-        }
-    }
 
-    // REMOVED: composeOptions - AGP 8.13.0-rc01 auto-detects from version catalog!
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -67,6 +58,9 @@ android {
 }
 
 dependencies {
+    // BOM Platform - CRITICAL: Must be wrapped in platform()
+    implementation(platform(libs.androidx.compose.bom))
+    
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
@@ -81,15 +75,12 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Firebase BoM
-
     // Testing
     testImplementation(libs.bundles.testing)
     androidTestImplementation(libs.bundles.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
-
 
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
