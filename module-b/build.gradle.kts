@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
+    alias(libs.plugins.kotlin.android)
 }
 
 // Added to specify Java version for this subproject
@@ -66,7 +67,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     // BOM Platform - CRITICAL: Must be wrapped in platform()
     implementation(platform(libs.androidx.compose.bom))
-    
+
     // Core Android bundles
     implementation(libs.bundles.androidx.core)
     implementation(libs.bundles.compose)

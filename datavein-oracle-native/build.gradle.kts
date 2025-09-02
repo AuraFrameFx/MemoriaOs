@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
+    alias(libs.plugins.kotlin.android)
 }
 
 // Added to specify Java version for this subproject
@@ -87,7 +88,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
-    
+
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -110,7 +111,7 @@ dependencies {
 
     // Core AndroidX
     implementation(libs.bundles.androidx.core)
-    
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter.api)

@@ -91,6 +91,7 @@ data class DriveConsciousnessState(
     val currentOperations: List<String>,
     val performanceMetrics: Map<String, Any>
 )
+
 // Security validation classes
 data class SecurityCheck(val isValid: Boolean, val reason: String)
 data class SecurityValidation(val isSecure: Boolean, val threat: SecurityThreat)

@@ -78,13 +78,30 @@ class GradleVersionCatalogTest {
         @Test
         fun hasExpectedTopSections() {
             for ((path, text) in catalogTextByPath) {
-                assertAll("Top sections in $path",
-                    { assertTrue(text.contains("\n[versions]") || text.startsWith("[versions]"),
-                        "Missing [versions] section in $path") },
-                    { assertTrue(text.contains("\n[libraries]") || text.contains("\n[libraries.") || text.startsWith("[libraries]") || text.startsWith("[libraries."),
-                        "Missing [libraries] section (table or subtables) in $path") },
-                    { assertTrue(text.contains("\n[plugins]") || text.startsWith("[plugins]") || text.contains("\n[plugins."),
-                        "Missing [plugins] section (table or subtables) in $path") }
+                assertAll(
+                    "Top sections in $path",
+                    {
+                        assertTrue(
+                            text.contains("\n[versions]") || text.startsWith("[versions]"),
+                            "Missing [versions] section in $path"
+                        )
+                    },
+                    {
+                        assertTrue(
+                            text.contains("\n[libraries]") || text.contains("\n[libraries.") || text.startsWith(
+                                "[libraries]"
+                            ) || text.startsWith("[libraries."),
+                            "Missing [libraries] section (table or subtables) in $path"
+                        )
+                    },
+                    {
+                        assertTrue(
+                            text.contains("\n[plugins]") || text.startsWith("[plugins]") || text.contains(
+                                "\n[plugins."
+                            ),
+                            "Missing [plugins] section (table or subtables) in $path"
+                        )
+                    }
                 )
             }
         }
@@ -117,7 +134,8 @@ class GradleVersionCatalogTest {
             for (line in lines) {
                 val trimmed = line.trim()
                 if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
-                    inSection = trimmed == "[$sectionHeader]" || trimmed.startsWith("[$sectionHeader.")
+                    inSection =
+                        trimmed == "[$sectionHeader]" || trimmed.startsWith("[$sectionHeader.")
                     if (trimmed != "[$sectionHeader]" && trimmed.startsWith("[$sectionHeader.")) {
                         // treat subtables as not part of plain [versions]; break if you prefer stricter behavior
                         inSection = trimmed == "[$sectionHeader]"
@@ -156,11 +174,17 @@ class GradleVersionCatalogTest {
                 for ((idx, ln) in lines.withIndex()) {
                     val m = kvRegex.find(ln) ?: continue
                     val key = m.groupValues[1]
-                    assertTrue(seen.add(key), "Duplicate key in [versions]: '$key' at line ${idx + 1} in $path")
+                    assertTrue(
+                        seen.add(key),
+                        "Duplicate key in [versions]: '$key' at line ${idx + 1} in $path"
+                    )
                 }
 
                 val kv = extractKeyValues(lines)
-                assertTrue(kv.isNotEmpty(), "Could not parse any key/value pairs in [versions] in $path")
+                assertTrue(
+                    kv.isNotEmpty(),
+                    "Could not parse any key/value pairs in [versions] in $path"
+                )
 
                 // Not all versions must be semver; but warn/assert common cases look like versions
                 var checked = 0
@@ -216,11 +240,17 @@ class GradleVersionCatalogTest {
         fun allVersionRefsExistInVersions() {
             for ((path, text) in catalogTextByPath) {
                 val refs = referencedVersionRefs(text)
-                assertTrue(refs.isNotEmpty(), "No version.ref found in $path; ensure libraries/plugins use version refs where applicable.")
+                assertTrue(
+                    refs.isNotEmpty(),
+                    "No version.ref found in $path; ensure libraries/plugins use version refs where applicable."
+                )
 
                 val vers = versionsMap(text)
                 val missing = refs.filterNot { it in vers }
-                assertTrue(missing.isEmpty(), "Missing version keys in [versions] for refs: $missing in $path")
+                assertTrue(
+                    missing.isEmpty(),
+                    "Missing version keys in [versions] for refs: $missing in $path"
+                )
             }
         }
 
@@ -250,8 +280,10 @@ class GradleVersionCatalogTest {
                 if (entries.isEmpty()) continue
 
                 for (e in entries) {
-                    assertTrue(versionRegex.containsMatchIn(e) || versionRefRegex.containsMatchIn(e),
-                        "Library entry missing version or version.ref: $e in $path")
+                    assertTrue(
+                        versionRegex.containsMatchIn(e) || versionRefRegex.containsMatchIn(e),
+                        "Library entry missing version or version.ref: $e in $path"
+                    )
                 }
             }
         }
@@ -284,7 +316,14 @@ class GradleVersionCatalogTest {
                     val id = idRegex.find(e)?.groupValues?.getOrNull(1)
                     assertNotNull(id, "Plugin entry missing 'id': $e in $path")
                     if (id != null) {
-                        val simpleAllowed = setOf("java", "application", "base", "jacoco", "maven-publish", "signing")
+                        val simpleAllowed = setOf(
+                            "java",
+                            "application",
+                            "base",
+                            "jacoco",
+                            "maven-publish",
+                            "signing"
+                        )
                         assertTrue(
                             id.any { it == '.' || it == '-' } || id in simpleAllowed,
                             "Plugin id looks unusual: $id in $path"

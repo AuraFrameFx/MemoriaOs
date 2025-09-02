@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -8,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
+    alias(libs.plugins.kotlin.android)
 }
 
 
@@ -54,7 +53,7 @@ android {
 dependencies {
     // BOM Platform - CRITICAL: Must be wrapped in platform()
     implementation(platform(libs.androidx.compose.bom))
-    
+
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))

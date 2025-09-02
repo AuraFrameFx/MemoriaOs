@@ -17,22 +17,22 @@ find_library(android-lib android)
 
 # Native library
 add_library(oracle_drive_integration SHARED
-    oracle_integration_jni.cpp
+        oracle_integration_jni.cpp
 )
 
 # Include directories
 target_include_directories(oracle_drive_integration PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Link libraries
 target_link_libraries(oracle_drive_integration
-    ${log-lib}
-    ${android-lib}
+        ${log-lib}
+        ${android-lib}
 )
 
 # Genesis Protocol - Multi-architecture support
 set_target_properties(oracle_drive_integration PROPERTIES
-    ANDROID_ARM_MODE arm
-    ANDROID_STL c++_shared
+        ANDROID_ARM_MODE arm
+        ANDROID_STL c++_shared
 )

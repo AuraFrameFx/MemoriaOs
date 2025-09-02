@@ -28,14 +28,16 @@ class SplitUtilsAdditionalTest {
         }
 
         // Try: toArray()
-        val toArrayMethod = clazz.methods.firstOrNull { it.name == "toArray" && it.parameterCount == 0 }
+        val toArrayMethod =
+            clazz.methods.firstOrNull { it.name == "toArray" && it.parameterCount == 0 }
         if (toArrayMethod != null) {
             val arr = toArrayMethod.invoke(this) as Array<*>
             return arr.filterIsInstance<String>()
         }
 
         // Try: iterator()
-        val iteratorMethod = clazz.methods.firstOrNull { it.name == "iterator" && it.parameterCount == 0 }
+        val iteratorMethod =
+            clazz.methods.firstOrNull { it.name == "iterator" && it.parameterCount == 0 }
         if (iteratorMethod != null) {
             @Suppress("UNCHECKED_CAST")
             val it = iteratorMethod.invoke(this) as Iterator<Any?>

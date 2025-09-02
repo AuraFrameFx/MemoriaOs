@@ -6,12 +6,12 @@ import org.gradle.api.Project
  * Satisfies the plugin registration requirement with basic functionality
  */
 class BuildLogicMemoriaConventionPlugin : Plugin<Project> {
-    
+
     override fun apply(project: Project) {
         // Set basic project properties directly
         project.group = "dev.aurakai.memoria"
         project.version = "1.0.0"
-        
+
         // Log successful application
         project.logger.info("MemoriaOs base conventions applied to project: ${project.name}")
         println("✅ MemoriaOs Plugin Applied: ${project.name}")

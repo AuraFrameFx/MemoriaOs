@@ -16,14 +16,17 @@ class SplitUtilsTest {
         // 3) toString() fallback split (less preferred, only if necessary)
         return try {
             // Attempt size() + get(index)
-            val sizeMethod = ll::class.java.methods.firstOrNull { it.name == "size" && it.parameterCount == 0 }
-            val getMethod = ll::class.java.methods.firstOrNull { it.name == "get" && it.parameterCount == 1 }
+            val sizeMethod =
+                ll::class.java.methods.firstOrNull { it.name == "size" && it.parameterCount == 0 }
+            val getMethod =
+                ll::class.java.methods.firstOrNull { it.name == "get" && it.parameterCount == 1 }
             if (sizeMethod != null && getMethod != null) {
                 val size = (sizeMethod.invoke(ll) as? Int) ?: 0
                 (0 until size).map { idx -> getMethod.invoke(ll, idx) as String }
             } else {
                 // Attempt iterator()
-                val iteratorMethod = ll::class.java.methods.firstOrNull { it.name == "iterator" && it.parameterCount == 0 }
+                val iteratorMethod =
+                    ll::class.java.methods.firstOrNull { it.name == "iterator" && it.parameterCount == 0 }
                 if (iteratorMethod != null) {
                     val it = iteratorMethod.invoke(ll) as java.util.Iterator<*>
                     val out = mutableListOf<String>()
@@ -33,7 +36,8 @@ class SplitUtilsTest {
                     out
                 } else {
                     // Last resort: toArray or values() pattern
-                    val toArrayMethod = ll::class.java.methods.firstOrNull { it.name == "toArray" && it.parameterCount == 0 }
+                    val toArrayMethod =
+                        ll::class.java.methods.firstOrNull { it.name == "toArray" && it.parameterCount == 0 }
                     if (toArrayMethod != null) {
                         (toArrayMethod.invoke(ll) as Array<*>).map { it as String }
                     } else {

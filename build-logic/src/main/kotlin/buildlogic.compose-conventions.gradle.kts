@@ -10,8 +10,8 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 class BuildLogicComposeConventionPlugin : Plugin<Project> {
@@ -46,17 +46,17 @@ class BuildLogicComposeConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 // Set the namespace
                 namespace = "com.aura.genesis.compose"
-                
+
                 // Enable Compose
                 buildFeatures {
                     compose = true
                 }
-                
+
                 // Configure Compose options
                 composeOptions {
                     kotlinCompilerExtensionVersion = libs.findVersion("composeBom").get().toString()
                 }
-                
+
                 // Configure packaging options
                 packaging {
                     resources.excludes.addAll(
@@ -90,32 +90,43 @@ class BuildLogicComposeConventionPlugin : Plugin<Project> {
 
             // Add dependencies
             val composeBom = libs.findLibrary("androidx-compose-bom").get()
-            
+
             dependencies {
                 // Compose BOM
                 add("implementation", platform(composeBom))
-                
+
                 // Compose dependencies
                 add("implementation", libs.findLibrary("androidx-compose-ui").get())
                 add("implementation", libs.findLibrary("androidx-compose-ui-graphics").get())
                 add("implementation", libs.findLibrary("androidx-compose-ui-tooling-preview").get())
                 add("implementation", libs.findLibrary("androidx-compose-material3").get())
-                
+
                 // Activity Compose
                 add("implementation", libs.findLibrary("androidx-activity-compose").get())
-                
+
                 // Debug dependencies
                 add("debugImplementation", libs.findLibrary("androidx-compose-ui-tooling").get())
-                add("debugImplementation", libs.findLibrary("androidx-compose-ui-test-manifest").get())
-                
+                add(
+                    "debugImplementation",
+                    libs.findLibrary("androidx-compose-ui-test-manifest").get()
+                )
+
                 // Test dependencies
                 add("androidTestImplementation", platform(composeBom))
-                add("androidTestImplementation", libs.findLibrary("androidx-compose-ui-test-junit4").get())
-                
+                add(
+                    "androidTestImplementation",
+                    libs.findLibrary("androidx-compose-ui-test-junit4").get()
+                )
+
                 // Lifecycle
                 add("implementation", libs.findLibrary("androidx-lifecycle-runtime-ktx").get())
-                add("implementation", "androidx.lifecycle:lifecycle-viewmodel-compose:${libs.findVersion("androidxLifecycle").get()}")
-                
+                add(
+                    "implementation",
+                    "androidx.lifecycle:lifecycle-viewmodel-compose:${
+                        libs.findVersion("androidxLifecycle").get()
+                    }"
+                )
+
                 // Navigation
                 add("implementation", libs.findLibrary("androidx-navigation-compose").get())
                 add("implementation", libs.findLibrary("hilt-navigation-compose").get())

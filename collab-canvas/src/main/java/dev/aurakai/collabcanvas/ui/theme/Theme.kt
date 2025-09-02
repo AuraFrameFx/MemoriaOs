@@ -35,6 +35,7 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color.Black,
     error = Color(0xFFB00020)
 )
+
 @Composable
 fun AuraFrameFXTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

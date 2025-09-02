@@ -36,14 +36,14 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
     override fun validateAccess(resource: String): Boolean {
         return true // Default allow for development
     }
-    
+
     override fun verifyApplicationIntegrity(): ApplicationIntegrity {
         return ApplicationIntegrity(
             signatureHash = "default_signature_hash",
             isValid = true
         )
     }
-    
+
     override fun logSecurityEvent(event: SecurityEvent) {
         // Log security events (placeholder implementation)
         println("Security Event: ${event.type} - ${event.details}")

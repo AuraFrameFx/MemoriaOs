@@ -28,7 +28,13 @@ class BuildScriptsFunctionalTest {
             if (File(dir, "settings.gradle.kts").exists()) return dir
             dir = dir.parentFile ?: return@repeat
         }
-        fail("Could not locate repository root containing settings.gradle.kts from: ${System.getProperty("user.dir")}")
+        fail(
+            "Could not locate repository root containing settings.gradle.kts from: ${
+                System.getProperty(
+                    "user.dir"
+                )
+            }"
+        )
         throw IllegalStateException()
     }
 
@@ -41,7 +47,8 @@ class BuildScriptsFunctionalTest {
         val candidate = root.toFile().walkTopDown()
             .filter { it.isFile && it.name == "build.gradle.kts" }
             .firstOrNull { it.readText().contains("namespace = \"dev.aurakai.auraframefx\"") }
-        return candidate ?: fail("Could not find app/build.gradle.kts with expected namespace in repository.")
+        return candidate
+            ?: fail("Could not find app/build.gradle.kts with expected namespace in repository.")
     }
 
     private fun script(): String = appBuildFile().readText()
@@ -113,7 +120,11 @@ class BuildScriptsFunctionalTest {
         fun `release and debug build types configured with proguard`() {
             val s = script()
             assertTrue(s.contains("buildTypes"))
-            assertTrue(s.contains("release {") && s.contains("isMinifyEnabled = true") && s.contains("isShrinkResources = true"))
+            assertTrue(
+                s.contains("release {") && s.contains("isMinifyEnabled = true") && s.contains(
+                    "isShrinkResources = true"
+                )
+            )
             assertTrue(s.contains("getDefaultProguardFile(\"proguard-android-optimize.txt\")"))
             assertTrue(s.contains("\"proguard-rules.pro\""))
             assertTrue(s.contains("debug {") && s.contains("proguardFiles("))
@@ -236,7 +247,10 @@ class BuildScriptsFunctionalTest {
                 ":secure-comm",
                 ":collab-canvas"
             ).forEach { path ->
-                assertTrue(s.contains("implementation(project(\"$path\"))"), "Missing project dependency: $path")
+                assertTrue(
+                    s.contains("implementation(project(\"$path\"))"),
+                    "Missing project dependency: $path"
+                )
             }
         }
 

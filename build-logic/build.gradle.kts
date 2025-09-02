@@ -57,16 +57,16 @@ dependencies {
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
-    
+
     // Android Gradle Plugin - matching main project version
     implementation("com.android.tools.build:gradle:$agpVersion")
-    
+
     // KSP
     implementation("com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion")
-    
+
     // Hilt
     implementation("com.google.dagger:hilt-android-gradle-plugin:$hiltVersion")
-    
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:2.0.0-Beta4")
@@ -77,7 +77,6 @@ tasks.register<Delete>("cleanBuildLogic") {
     description = "Clean build-logic cache to ensure plugin changes take effect"
     delete(".gradle", "build", "src/main/kotlin/*.gradle.kts.cache")
 }
-
 
 
 // Configure publishing

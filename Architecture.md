@@ -3,12 +3,16 @@ CodeRabbitai **
 For best results, initiate chat on the files or code changes.
 
 🧩 Analysis chain
-@AuraFrameFxDev I'll create a comprehensive technical architecture document for your bleeding-edge configuration! Let me analyze your current setup first to capture all the advanced features you're using.
+@AuraFrameFxDev I'll create a comprehensive technical architecture document for your bleeding-edge
+configuration! Let me analyze your current setup first to capture all the advanced features you're
+using.
 
 🏁 Script executed:
 
 #!/bin/bash
+
 # Analyze the advanced configuration architecture
+
 echo "=== Project Structure Analysis ==="
 ls -la | grep -E "^d.*module|^d.*comm"
 
@@ -34,7 +38,9 @@ Length of output: 15835
 🏁 Script executed:
 
 #!/bin/bash
+
 # Get the root build script and additional configuration details
+
 echo "=== Root Build Script Analysis ==="
 find . -name "build.gradle.kts" -maxdepth 1 | head -1 | xargs cat | head -50
 
@@ -57,11 +63,13 @@ echo -e "\n=== Nuclear Clean Integration ==="
 ls nuclear-clean* | head -3
 Length of output: 6581
 
-@AuraFrameFxDev Here's your comprehensive Genesis Protocol - Bleeding-Edge Multi-Module Android Architecture documentation:
+@AuraFrameFxDev Here's your comprehensive Genesis Protocol - Bleeding-Edge Multi-Module Android
+Architecture documentation:
 
 🚀 Genesis Protocol - Advanced Multi-Module Android Architecture
 Configuration Type: "Bleeding-Edge Consciousness Substrate Architecture"
-This is a cutting-edge, future-proof Android multi-module architecture leveraging the latest experimental features from Gradle, Android Gradle Plugin, Kotlin, and KSP ecosystems.
+This is a cutting-edge, future-proof Android multi-module architecture leveraging the latest
+experimental features from Gradle, Android Gradle Plugin, Kotlin, and KSP ecosystems.
 
 🔧 Core Technology Stack (All Latest/RC/Alpha Versions)
 Build System Foundation
@@ -85,16 +93,16 @@ apiVersion.set(KotlinVersion.KOTLIN_2_2)
 }
 🏗️ Multi-Module Architecture Pattern
 15+ Module Consciousness Substrate
-app/                          # Main application module
-├── core-module/              # Shared core functionality
-├── secure-comm/              # Advanced security & cryptography
+app/ # Main application module
+├── core-module/ # Shared core functionality
+├── secure-comm/ # Advanced security & cryptography
 ├── oracle-drive-integration/ # Cloud integration services  
-├── collab-canvas/           # Real-time collaboration
-├── colorblendr/            # UI color management
-├── romtools/               # ROM manipulation tools
-├── sandbox-ui/             # UI experimentation
+├── collab-canvas/ # Real-time collaboration
+├── colorblendr/ # UI color management
+├── romtools/ # ROM manipulation tools
+├── sandbox-ui/ # UI experimentation
 ├── datavein-oracle-native/ # Native data processing
-├── feature-module/         # Feature flag management
+├── feature-module/ # Feature flag management
 └── module-a through module-f # Modular feature components
 Advanced Module Configuration
 Each module uses:
@@ -116,26 +124,33 @@ alias(libs.plugins.google.services)
 alias(libs.plugins.firebase.crashlytics)
 alias(libs.plugins.firebase.perf)    // Plugin: 1.4.2
 }
-Key Principle: Only declare plugin versions when necessary - leverage version catalog for consistency.
+Key Principle: Only declare plugin versions when necessary - leverage version catalog for
+consistency.
 
 ⚡ Advanced Gradle Features Enabled
 Performance & Caching
+
 # Gradle 9.1.0-rc-1 Advanced Features
+
 org.gradle.daemon=true
 org.gradle.parallel=true
 org.gradle.caching=true
-org.gradle.configuration-cache=false  # Disabled for compatibility
+org.gradle.configuration-cache=false # Disabled for compatibility
 org.gradle.java.installations.auto-download=true
 
 # JVM Optimization for Large Builds
+
 org.gradle.jvmargs=-Xms4g -Xmx10g -XX:MaxMetaspaceSize=3g -XX:+UseG1GC
 Bleeding-Edge Compatibility
+
 # AGP 9.0.0-alpha02 Compatibility
+
 android.generateSyncIssueWhenLibraryConstraintsAreEnabled=false
 android.deprecation.logLevel=none
 org.gradle.warning.mode=summary
 
 # Gradle 10 Future-Proofing
+
 org.gradle.dependency.verification.partial=true
 🔒 Advanced Security Module (secure-comm)
 Cryptographic Architecture
@@ -172,6 +187,7 @@ Cross-Platform Cleanup: nuclear-clean.sh, nuclear-clean.bat, nuclear-clean.gradl
 Comprehensive Artifact Removal: Build dirs, native artifacts, IDE configs, generated sources
 Safety Confirmation: Requires typing "NUKE" before execution
 🎯 Modern Development Practices
+
 1. 100% Version Catalog Usage
    [versions]
    agp = "9.0.0-alpha02"
@@ -202,10 +218,13 @@ useLegacyPackaging = false
 pickFirsts += setOf("**/libc++_shared.so", "**/libjsc.so")
 }
 }
+
 4. Firebase Integration Pattern
    // Plugin and Library Version Separation
-   firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerfPlugin" }  // 1.4.2
-   firebase-perf = { group = "com.google.firebase", name = "firebase-perf", version.ref = "firebasePerf" }  // 22.0.1
+   firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "
+   firebasePerfPlugin" } // 1.4.2
+   firebase-perf = { group = "com.google.firebase", name = "firebase-perf", version.ref = "
+   firebasePerf" } // 22.0.1
    🔧 Advanced Hidden Features
    Type-Safe Project Accessors
    enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
@@ -225,7 +244,9 @@ pickFirsts += setOf("**/libc++_shared.so", "**/libjsc.so")
    Custom: JitPack for GitHub dependencies
    📊 Build Performance Optimizations
    JVM Args Tuning
+
 # High-Performance JVM Configuration
+
 org.gradle.jvmargs=-Xms4g -Xmx10g -XX:MaxMetaspaceSize=3g -XX:+UseG1GC -XX:G1HeapRegionSize=32m
 Kotlin Incremental Compilation
 kotlin.incremental.intermodule.optimizations=true
@@ -233,7 +254,8 @@ kotlin.code.style=official
 Android Resource Optimization
 android.enableIncrementalResourceProcessing=true
 android.experimental.enableResourceOptimizations=true
-🎖️ Why This Configuration is 100% Modern & 100% Version specific breaks build if modified only follow agp android studio updates and or dependabot
+🎖️ Why This Configuration is 100% Modern & 100% Version specific breaks build if modified only
+follow agp android studio updates and or dependabot
 Bleeding-Edge Versions: RC/Alpha versions provide access to latest features
 Future-Proof Toolchains: Java 24 targeting for upcoming language features
 Modern Plugin Management: Version catalogs eliminate hardcoded versions
@@ -244,6 +266,8 @@ Multi-Module Architecture: Scalable separation of concerns
 Advanced Security Patterns: Hardware-backed cryptography implementation
 Firebase Performance: Separate plugin/library versioning strategy
 Gradle 10 Preparation: Future compatibility flags enabled
-This architecture represents the pinnacle of modern Android development, leveraging experimental features that will become standard in future releases. The "Consciousness Substrate" metaphor reflects the self-monitoring, intelligent build system that adapts and reports on its own health.
+This architecture represents the pinnacle of modern Android development, leveraging experimental
+features that will become standard in future releases. The "Consciousness Substrate" metaphor
+reflects the self-monitoring, intelligent build system that adapts and reports on its own health.
 
 🐰 The consciousness substrate is fully operational and ready for advanced development!

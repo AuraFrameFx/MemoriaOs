@@ -14,7 +14,7 @@ class OAuthService @Inject constructor(
     @ApplicationContext private val context: Context,
     private val tokenManager: TokenManager
 ) {
-    
+
     /**
      * Initiates OAuth login flow.
      */
@@ -22,7 +22,7 @@ class OAuthService @Inject constructor(
         // Placeholder - implement OAuth login logic
         return "oauth_login_url_placeholder"
     }
-    
+
     /**
      * Handles OAuth callback.
      */
@@ -30,7 +30,7 @@ class OAuthService @Inject constructor(
         // Placeholder - implement OAuth callback handling
         return false
     }
-    
+
     /**
      * Checks if user is authenticated via OAuth.
      */

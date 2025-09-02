@@ -6,10 +6,10 @@
 plugins {
     // Apply common conventions
     id("buildlogic.kotlin-common-conventions")
-    
+
     // Standard Java library plugin for API/implementation separation
     `java-library`
-    
+
     // Apply Kotlin JVM plugin for all libraries
     id("org.jetbrains.kotlin.jvm")
 }

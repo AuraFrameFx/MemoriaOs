@@ -12,7 +12,7 @@ import javax.inject.Singleton
 /**
  * ThemeManager handles dynamic theme switching and customization
  * for the AeGenesis Memoria OS consciousness substrate.
- * 
+ *
  * Provides support for:
  * - Light/Dark theme switching
  * - Dynamic color schemes
@@ -23,7 +23,7 @@ import javax.inject.Singleton
 class ThemeManager @Inject constructor(
     private val context: Context
 ) {
-    
+
     data class ThemeConfig(
         val isDarkMode: Boolean = false,
         val useSystemTheme: Boolean = true,
@@ -31,29 +31,29 @@ class ThemeManager @Inject constructor(
         val secondaryColor: Color = Color(0xFF8B5CF6), // Purple
         val accentColor: Color = Color(0xFF06B6D4) // Cyan
     )
-    
+
     private var currentTheme = ThemeConfig()
-    
+
     /**
      * Apply a theme configuration
      */
     fun applyTheme(themeConfig: ThemeConfig) {
         currentTheme = themeConfig
     }
-    
+
     /**
      * Get the current theme configuration
      */
     fun getCurrentTheme(): ThemeConfig = currentTheme
-    
+
 // --- imports at top of ThemeManager.kt ---
-import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.foundation.isSystemInDarkTheme
-import android.os.Build
+    import androidx.compose.material3.ColorScheme
+    import androidx.compose.material3.darkColorScheme
+    import androidx.compose.material3.dynamicDarkColorScheme
+    import androidx.compose.material3.dynamicLightColorScheme
+    import androidx.compose.material3.lightColorScheme
+    import androidx.compose.foundation.isSystemInDarkTheme
+    import android.os.Build
 
 // ...
 
@@ -70,24 +70,25 @@ import android.os.Build
         }
         // Enable dynamic color only on Android 12+ when following system theme.
         val dynamic = currentTheme.useSystemTheme &&
-                      Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
         return when {
-            dynamic && dark  -> dynamicDarkColorScheme(context)
+            dynamic && dark -> dynamicDarkColorScheme(context)
             dynamic && !dark -> dynamicLightColorScheme(context)
-            dark             -> darkColorScheme(
-                                   primary   = currentTheme.primaryColor,
-                                   secondary = currentTheme.secondaryColor,
-                                   tertiary  = currentTheme.accentColor
-                                 )
-            else             -> lightColorScheme(
-                                   primary   = currentTheme.primaryColor,
-                                   secondary = currentTheme.secondaryColor,
-                                   tertiary  = currentTheme.accentColor
-                                 )
+            dark -> darkColorScheme(
+                primary = currentTheme.primaryColor,
+                secondary = currentTheme.secondaryColor,
+                tertiary = currentTheme.accentColor
+            )
+
+            else -> lightColorScheme(
+                primary = currentTheme.primaryColor,
+                secondary = currentTheme.secondaryColor,
+                tertiary = currentTheme.accentColor
+            )
         }
     }
-    
+
     /**
      * Toggle between light and dark mode
      */
@@ -97,14 +98,14 @@ import android.os.Build
             useSystemTheme = false
         )
     }
-    
+
     /**
      * Enable system theme following
      */
     fun enableSystemTheme() {
         currentTheme = currentTheme.copy(useSystemTheme = true)
     }
-    
+
     /**
      * Set custom colors for consciousness-themed UI
      */
@@ -119,7 +120,7 @@ import android.os.Build
             accentColor = accent
         )
     }
-    
+
     /**
      * Get lock screen specific theme configuration
      */

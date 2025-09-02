@@ -17,23 +17,23 @@ find_library(android-lib android)
 
 # Native library
 add_library(secure_comm_native SHARED
-    secure_comm_jni.cpp
-    crypto_engine.cpp
+        secure_comm_jni.cpp
+        crypto_engine.cpp
 )
 
 # Include directories
 target_include_directories(secure_comm_native PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Link libraries
 target_link_libraries(secure_comm_native
-    ${log-lib}
-    ${android-lib}
+        ${log-lib}
+        ${android-lib}
 )
 
 # Genesis Protocol - Multi-architecture support
 set_target_properties(secure_comm_native PROPERTIES
-    ANDROID_ARM_MODE arm
-    ANDROID_STL c++_shared
+        ANDROID_ARM_MODE arm
+        ANDROID_STL c++_shared
 )

@@ -6,10 +6,10 @@
 plugins {
     // Apply common conventions
     id("buildlogic.kotlin-common-conventions")
-    
+
     // Standard application plugin for executable JVM applications
     application
-    
+
     // Apply Kotlin JVM plugin for all applications
     id("org.jetbrains.kotlin.jvm")
 }

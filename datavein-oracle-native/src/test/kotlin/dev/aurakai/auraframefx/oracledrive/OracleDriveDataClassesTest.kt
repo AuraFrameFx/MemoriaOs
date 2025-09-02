@@ -3,8 +3,8 @@ package dev.aurakai.auraframefx.oracledrive
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 /**
  * Unit tests for OracleDrive data classes and enums

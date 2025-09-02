@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.android)
 }
 
 java {
@@ -140,7 +141,8 @@ dependencies {
 }
 
 // Define a shared directory property for ROM tools output
-val romToolsOutputDirectory: DirectoryProperty = project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
+val romToolsOutputDirectory: DirectoryProperty =
+    project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
 
 // ROM Tools specific tasks
 tasks.register<Copy>("copyRomTools") {
@@ -148,13 +150,13 @@ tasks.register<Copy>("copyRomTools") {
     into(romToolsOutputDirectory) // Use the shared property with into()
     include("**/*.so", "**/*.bin", "**/*.img", "**/*.jar")
     includeEmptyDirs = false
-    
+
     doFirst {
         val outputDir = romToolsOutputDirectory.get().asFile
         outputDir.mkdirs()
         logger.lifecycle("📁 ROM tools directory: ${outputDir.absolutePath}")
     }
-    
+
     doLast {
         logger.lifecycle("✅ ROM tools copied to: ${romToolsOutputDirectory.get().asFile.absolutePath}")
     }

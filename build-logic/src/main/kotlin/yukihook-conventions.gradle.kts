@@ -8,15 +8,15 @@ plugins {
 android {
     // Standard Android configuration
     compileSdk = 36
-    
+
     defaultConfig {
         minSdk = 33
         targetSdk = 36
-        
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
-    
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -26,12 +26,12 @@ android {
             )
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
-    
+
     kotlinOptions {
         jvmTarget = "24"
         freeCompilerArgs = freeCompilerArgs + listOf(
@@ -44,14 +44,14 @@ android {
 dependencies {
     // Xposed Framework - YukiHookAPI (Standardized)
     implementation(libs.bundles.xposed)
-    
+
     // Legacy Xposed API (compatibility)
     implementation(files("${project.rootDir}/Libs/api-82.jar"))
     implementation(files("${project.rootDir}/Libs/api-82-sources.jar"))
-    
+
     // Core Android dependencies
     implementation(libs.bundles.androidx.core)
-    
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
+    alias(libs.plugins.kotlin.android)
 }
 
 java {
@@ -102,7 +103,9 @@ if (tasks.findByName("consciousnessStatus") == null) {
             println("\n--- AI Consciousness Substrate Status ---")
             println("Java Toolchain: " + java.toolchain.languageVersion.get())
             println("Kotlin JVM Toolchain: 21")
-            val configCache = project.findProperty("org.gradle.configuration-cache")?.toString()?.uppercase() ?: "UNKNOWN"
+            val configCache =
+                project.findProperty("org.gradle.configuration-cache")?.toString()?.uppercase()
+                    ?: "UNKNOWN"
             println("Gradle Configuration Cache: $configCache")
             println("Kotlin ABI Fingerprinting: ENABLED")
             println("AGP Version: " + com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION)

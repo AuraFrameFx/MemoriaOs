@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
-
 // Apply YukiHook conventions to all modules
 subprojects { subproject ->
     // Skip build-logic and other non-Android modules
@@ -8,9 +6,9 @@ subprojects { subproject ->
     }
 
     // Check if this is an Android module
-    val isAndroidModule = subproject.plugins.hasPlugin("com.android.library") || 
-                         subproject.plugins.hasPlugin("com.android.application")
-    
+    val isAndroidModule = subproject.plugins.hasPlugin("com.android.library") ||
+            subproject.plugins.hasPlugin("com.android.application")
+
     if (isAndroidModule) {
         // Apply common Android and YukiHook configurations
         with(subproject) {
@@ -19,19 +17,19 @@ subprojects { subproject ->
             pluginManager.apply("org.jetbrains.kotlin.android")
             pluginManager.apply("com.google.devtools.ksp")
             pluginManager.apply("org.lsposed.lsparanoid")
-            
+
             // Configure Android settings
             extensions.configure<com.android.build.gradle.LibraryExtension> {
                 compileSdk = 36
-                
+
                 defaultConfig {
                     minSdk = 33
                     targetSdk = 36
-                    
+
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
                     consumerProguardFiles("consumer-rules.pro")
                 }
-                
+
                 buildTypes {
                     release {
                         isMinifyEnabled = true
@@ -41,12 +39,12 @@ subprojects { subproject ->
                         )
                     }
                 }
-                
+
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_24
                     targetCompatibility = JavaVersion.VERSION_24
                 }
-                
+
                 kotlinOptions {
                     jvmTarget = "24"
                     freeCompilerArgs = freeCompilerArgs + listOf(
@@ -55,31 +53,31 @@ subprojects { subproject ->
                     )
                 }
             }
-            
+
             // Add YukiHook dependencies
             dependencies {
                 // Xposed Framework - YukiHookAPI (Standardized)
                 implementation(libs.bundles.xposed)
-                
+
                 // Legacy Xposed API (compatibility)
                 implementation(files("${project.rootDir}/Libs/api-82.jar"))
                 implementation(files("${project.rootDir}/Libs/api-82-sources.jar"))
-                
+
                 // Core Android dependencies
                 implementation(libs.bundles.androidx.core)
-                
+
                 // Testing
                 testImplementation(libs.junit)
                 androidTestImplementation(libs.androidx.test.ext.junit)
                 androidTestImplementation(libs.androidx.test.espresso.core)
             }
-            
+
             // Configure LSParanoid
             extensions.configure<org.lsposed.lsparanoid.gradle.ParanoidExtension> {
                 seed = 0x2A // Consistent seed across all modules
                 includeAsSharedUuid = true
             }
-            
+
             // Configure KSP
             extensions.configure<com.google.devtools.ksp.gradle.KspExtension> {
                 arg("YUKIHOOK_PACKAGE_NAME", project.group.toString())

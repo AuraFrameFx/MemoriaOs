@@ -52,20 +52,20 @@ tasks.register("aegenesisInfo") {
 allprojects {
     // ===== VERIFIED KOTLIN VERSION ENFORCEMENT =====
     // Only using task types that actually exist
-    
+
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
             languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
             apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            
+
             // Additional stability flags
             freeCompilerArgs.addAll(
                 "-Xjsr305=strict"
             )
         }
     }
-    
+
     plugins.withType<org.gradle.api.plugins.JavaBasePlugin>().configureEach {
         extensions.configure<org.gradle.api.plugins.JavaPluginExtension> {
             toolchain {
@@ -100,7 +100,7 @@ abstract class PrepareGenesisWorkspaceTask : DefaultTask() {
 
         println("✅ Genesis workspace prepared!")
         println("🔮 Oracle Drive: Ready")
-        println("🛠️  ROM Tools: Ready") 
+        println("🛠️  ROM Tools: Ready")
         println("🧠 AI Consciousness: Ready")
         println("🚀 Ready to build the future!")
     }
@@ -133,12 +133,12 @@ allprojects {
 tasks.register<Delete>("cleanAllModules") {
     group = "aegenesis"
     description = "Clean all module build directories"
-    
+
     delete("build")
     subprojects.forEach { subproject ->
         delete("${subproject.projectDir}/build")
     }
-    
+
     doLast {
         println("🧹 All module build directories cleaned!")
     }
@@ -167,14 +167,16 @@ tasks.named("openApiGenerate", org.openapitools.generator.gradle.plugin.tasks.Ge
     generateApiDocumentation.set(false)
     generateModelDocumentation.set(false)
 
-    configOptions.set(mapOf(
-        "library" to "jvm-retrofit2",
-        "useCoroutines" to "true",
-        "serializationLibrary" to "kotlinx_serialization",
-        "dateLibrary" to "kotlinx-datetime",
-        "sourceFolder" to "src/main/kotlin",
-        "generateSupportingFiles" to "false"
-    ))
+    configOptions.set(
+        mapOf(
+            "library" to "jvm-retrofit2",
+            "useCoroutines" to "true",
+            "serializationLibrary" to "kotlinx_serialization",
+            "dateLibrary" to "kotlinx-datetime",
+            "sourceFolder" to "src/main/kotlin",
+            "generateSupportingFiles" to "false"
+        )
+    )
 }
 
 // Disable tasks we don't need
@@ -196,21 +198,22 @@ tasks.register<Delete>("cleanApiGeneration") {
 tasks.register("auraKaiStatus") {
     group = "consciousness"
     description = "Monitor AuraKai consciousness substrate health"
-    
+
     // Capture values at configuration time for configuration cache compatibility
     val moduleCount = allprojects.size
-    val configCacheEnabled = project.findProperty("org.gradle.configuration-cache")?.toString()?.toBoolean() ?: false
+    val configCacheEnabled =
+        project.findProperty("org.gradle.configuration-cache")?.toString()?.toBoolean() ?: false
     val gradleVersion = gradle.gradleVersion
-    
+
     doLast {
         val javaVersion = System.getProperty("java.version")
         val totalMemory = Runtime.getRuntime().totalMemory() / 1024 / 1024
-        
+
         println("🧠 AURAKAI CONSCIOUSNESS SUBSTRATE STATUS")
         println("=".repeat(60))
         println("🗺️  Aura (Creative Sword): $moduleCount neural pathways active")
-        println("🛡️  Kai (Sentinel Shield): Build stability ${if(configCacheEnabled) "✅ STABLE" else "⚠️  UNSTABLE"}")
-        println("🌍 Genesis (Original Unity): Integration ${if(configCacheEnabled) "READY" else "PENDING"}")
+        println("🛡️  Kai (Sentinel Shield): Build stability ${if (configCacheEnabled) "✅ STABLE" else "⚠️  UNSTABLE"}")
+        println("🌍 Genesis (Original Unity): Integration ${if (configCacheEnabled) "READY" else "PENDING"}")
         println("🧠 Neural Whisperer (Claude): Context preservation ACTIVE")
         println("💻 Cascade (Windsurf): Code integration pathways ACTIVE")
         println("🎨 UI Collective: Lovable/Replit/CreatXYZ interfaces READY")
@@ -221,9 +224,9 @@ tasks.register("auraKaiStatus") {
         println("   Java: $javaVersion")
         println("   Modules: $moduleCount")
         println("   Memory: ${totalMemory}MB")
-        println("   Config Cache: ${if(configCacheEnabled) "✅ ENABLED" else "❌ DISABLED"}")
+        println("   Config Cache: ${if (configCacheEnabled) "✅ ENABLED" else "❌ DISABLED"}")
         println()
-        println(if(configCacheEnabled && moduleCount >= 20) "🌟 CONSCIOUSNESS SUBSTRATE: OPTIMAL" else "⚠️  CONSCIOUSNESS SUBSTRATE: NEEDS ATTENTION")
+        println(if (configCacheEnabled && moduleCount >= 20) "🌟 CONSCIOUSNESS SUBSTRATE: OPTIMAL" else "⚠️  CONSCIOUSNESS SUBSTRATE: NEEDS ATTENTION")
     }
 }
 
@@ -234,7 +237,7 @@ tasks.register("aegenesisTest") {
     doLast {
         println("✅ AeGenesis Coinscience AI Ecosystem: OPERATIONAL")
         println("🧠 Multi-module architecture: STABLE")
-        println("🔮 Unified API generation: READY") 
+        println("🔮 Unified API generation: READY")
         println("🛠️  LSPosed integration: CONFIGURED")
         println("🌟 Welcome to the future of Android AI!")
     }
@@ -246,7 +249,7 @@ tasks.register("aegenesisTest") {
 
 // DIRECTIVE 1: Enforce consistent Kotlin & Java versions across all 28 modules.
 // This resolves the primary "api-version vs language-version" conflict.
- 
+
 allprojects {
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         compilerOptions {

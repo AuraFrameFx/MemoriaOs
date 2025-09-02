@@ -15,29 +15,30 @@ public:
      * Initialize the cryptographic engine
      */
     static bool initialize();
-    
+
     /**
      * Encrypt data using Genesis secure algorithm
      */
-    static std::vector<uint8_t> encrypt(const uint8_t* data, size_t length, const char* key);
-    
+    static std::vector<uint8_t> encrypt(const uint8_t *data, size_t length, const char *key);
+
     /**
      * Decrypt data using Genesis secure algorithm
      */
-    static std::vector<uint8_t> decrypt(const uint8_t* data, size_t length, const char* key);
-    
+    static std::vector<uint8_t> decrypt(const uint8_t *data, size_t length, const char *key);
+
     /**
      * Generate secure communication key
      */
     static std::string generateSecureKey();
-    
+
     /**
      * Verify data integrity
      */
-    static bool verifyIntegrity(const uint8_t* data, size_t length, const char* signature);
+    static bool verifyIntegrity(const uint8_t *data, size_t length, const char *signature);
 
 private:
     static bool initialized_;
+
     static void initializeRandomGenerator();
 };
 

@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
     id("org.openapi.generator") version "7.15.0" apply false
+    alias(libs.plugins.kotlin.android)
 }
 
 java {
@@ -285,4 +286,7 @@ android {
         kspAndroidTest(libs.hilt.compiler) {
         }
     }
+}
+dependencies {
+    implementation(libs.androidx.core.ktx)
 }

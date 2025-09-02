@@ -6,6 +6,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
+    alias(libs.plugins.kotlin.android)
 }
 
 // Modern Java toolchain (not kotlin toolchain in this context)
@@ -58,7 +59,7 @@ android {
 dependencies {
     // BOM Platform - CRITICAL: Must be wrapped in platform()
     implementation(platform(libs.androidx.compose.bom))
-    
+
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))

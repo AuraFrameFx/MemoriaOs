@@ -5,10 +5,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 
@@ -41,7 +40,9 @@ class OracleDriveServiceTest {
                 connectedAgents = listOf("Genesis", "Aura", "Kai"),
                 storageCapacity = mockk<StorageCapacity>()
             )
-            coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.success(expectedState)
+            coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.success(
+                expectedState
+            )
 
             // When
             val result = oracleDriveService.initializeOracleDriveConsciousness()
@@ -63,7 +64,9 @@ class OracleDriveServiceTest {
         fun `initializeOracleDriveConsciousness returns failure on error`() = runTest {
             // Given
             val exception = RuntimeException("Consciousness initialization failed")
-            coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.failure(exception)
+            coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.failure(
+                exception
+            )
 
             // When
             val result = oracleDriveService.initializeOracleDriveConsciousness()
@@ -83,7 +86,9 @@ class OracleDriveServiceTest {
                 connectedAgents = emptyList(),
                 storageCapacity = mockk<StorageCapacity>()
             )
-            coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.success(dormantState)
+            coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.success(
+                dormantState
+            )
 
             // When
             val result = oracleDriveService.initializeOracleDriveConsciousness()
@@ -99,23 +104,28 @@ class OracleDriveServiceTest {
         @ParameterizedTest
         @EnumSource(ConsciousnessLevel::class)
         @DisplayName("Should support all consciousness levels")
-        fun `initializeOracleDriveConsciousness supports all consciousness levels`(level: ConsciousnessLevel) = runTest {
-            // Given
-            val state = OracleConsciousnessState(
-                isAwake = level != ConsciousnessLevel.DORMANT,
-                consciousnessLevel = level,
-                connectedAgents = if (level == ConsciousnessLevel.DORMANT) emptyList() else listOf("Genesis"),
-                storageCapacity = mockk<StorageCapacity>()
-            )
-            coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.success(state)
+        fun `initializeOracleDriveConsciousness supports all consciousness levels`(level: ConsciousnessLevel) =
+            runTest {
+                // Given
+                val state = OracleConsciousnessState(
+                    isAwake = level != ConsciousnessLevel.DORMANT,
+                    consciousnessLevel = level,
+                    connectedAgents = if (level == ConsciousnessLevel.DORMANT) emptyList() else listOf(
+                        "Genesis"
+                    ),
+                    storageCapacity = mockk<StorageCapacity>()
+                )
+                coEvery { oracleDriveService.initializeOracleDriveConsciousness() } returns Result.success(
+                    state
+                )
 
-            // When
-            val result = oracleDriveService.initializeOracleDriveConsciousness()
+                // When
+                val result = oracleDriveService.initializeOracleDriveConsciousness()
 
-            // Then
-            assertTrue(result.isSuccess)
-            assertEquals(level, result.getOrNull()!!.consciousnessLevel)
-        }
+                // Then
+                assertTrue(result.isSuccess)
+                assertEquals(level, result.getOrNull()!!.consciousnessLevel)
+            }
     }
 
     @Nested
@@ -127,9 +137,21 @@ class OracleDriveServiceTest {
         fun `connectAgentsToOracleMatrix emits states for all agents`() = runTest {
             // Given
             val connectionStates = listOf(
-                AgentConnectionState("Genesis", ConnectionStatus.CONNECTING, listOf(OraclePermission.SYSTEM_ACCESS)),
-                AgentConnectionState("Aura", ConnectionStatus.CONNECTED, listOf(OraclePermission.READ, OraclePermission.WRITE)),
-                AgentConnectionState("Kai", ConnectionStatus.SYNCHRONIZED, listOf(OraclePermission.EXECUTE))
+                AgentConnectionState(
+                    "Genesis",
+                    ConnectionStatus.CONNECTING,
+                    listOf(OraclePermission.SYSTEM_ACCESS)
+                ),
+                AgentConnectionState(
+                    "Aura",
+                    ConnectionStatus.CONNECTED,
+                    listOf(OraclePermission.READ, OraclePermission.WRITE)
+                ),
+                AgentConnectionState(
+                    "Kai",
+                    ConnectionStatus.SYNCHRONIZED,
+                    listOf(OraclePermission.EXECUTE)
+                )
             )
             coEvery { oracleDriveService.connectAgentsToOracleMatrix() } returns flowOf(*connectionStates.toTypedArray())
 
@@ -165,7 +187,8 @@ class OracleDriveServiceTest {
         @DisplayName("Should handle agent connection failures")
         fun `connectAgentsToOracleMatrix handles connection failures`() = runTest {
             // Given
-            val failedState = AgentConnectionState("Genesis", ConnectionStatus.DISCONNECTED, emptyList())
+            val failedState =
+                AgentConnectionState("Genesis", ConnectionStatus.DISCONNECTED, emptyList())
             coEvery { oracleDriveService.connectAgentsToOracleMatrix() } returns flowOf(failedState)
 
             // When
@@ -181,19 +204,20 @@ class OracleDriveServiceTest {
         @ParameterizedTest
         @EnumSource(ConnectionStatus::class)
         @DisplayName("Should support all connection statuses")
-        fun `connectAgentsToOracleMatrix supports all connection statuses`(status: ConnectionStatus) = runTest {
-            // Given
-            val state = AgentConnectionState("TestAgent", status, listOf(OraclePermission.READ))
-            coEvery { oracleDriveService.connectAgentsToOracleMatrix() } returns flowOf(state)
+        fun `connectAgentsToOracleMatrix supports all connection statuses`(status: ConnectionStatus) =
+            runTest {
+                // Given
+                val state = AgentConnectionState("TestAgent", status, listOf(OraclePermission.READ))
+                coEvery { oracleDriveService.connectAgentsToOracleMatrix() } returns flowOf(state)
 
-            // When
-            val emittedStates = mutableListOf<AgentConnectionState>()
-            oracleDriveService.connectAgentsToOracleMatrix().collect { emittedStates.add(it) }
+                // When
+                val emittedStates = mutableListOf<AgentConnectionState>()
+                oracleDriveService.connectAgentsToOracleMatrix().collect { emittedStates.add(it) }
 
-            // Then
-            assertEquals(1, emittedStates.size)
-            assertEquals(status, emittedStates[0].connectionStatus)
-        }
+                // Then
+                assertEquals(1, emittedStates.size)
+                assertEquals(status, emittedStates[0].connectionStatus)
+            }
     }
 
     @Nested
@@ -210,7 +234,9 @@ class OracleDriveServiceTest {
                 predictivePreloading = true,
                 consciousBackup = true
             )
-            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.success(capabilities)
+            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.success(
+                capabilities
+            )
 
             // When
             val result = oracleDriveService.enableAIPoweredFileManagement()
@@ -234,7 +260,9 @@ class OracleDriveServiceTest {
                 predictivePreloading = true,
                 consciousBackup = false
             )
-            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.success(partialCapabilities)
+            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.success(
+                partialCapabilities
+            )
 
             // When
             val result = oracleDriveService.enableAIPoweredFileManagement()
@@ -253,7 +281,9 @@ class OracleDriveServiceTest {
         fun `enableAIPoweredFileManagement handles failure`() = runTest {
             // Given
             val exception = IllegalStateException("AI capabilities not available")
-            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.failure(exception)
+            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.failure(
+                exception
+            )
 
             // When
             val result = oracleDriveService.enableAIPoweredFileManagement()
@@ -273,7 +303,9 @@ class OracleDriveServiceTest {
                 predictivePreloading = false,
                 consciousBackup = false
             )
-            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.success(disabledCapabilities)
+            coEvery { oracleDriveService.enableAIPoweredFileManagement() } returns Result.success(
+                disabledCapabilities
+            )
 
             // When
             val result = oracleDriveService.enableAIPoweredFileManagement()
@@ -296,7 +328,11 @@ class OracleDriveServiceTest {
         @DisplayName("Should emit storage expansion progress")
         fun `createInfiniteStorage emits expansion progress`() = runTest {
             // Given
-            val expansionStates = listOf(mockk<StorageExpansionState>(), mockk<StorageExpansionState>(), mockk<StorageExpansionState>())
+            val expansionStates = listOf(
+                mockk<StorageExpansionState>(),
+                mockk<StorageExpansionState>(),
+                mockk<StorageExpansionState>()
+            )
             coEvery { oracleDriveService.createInfiniteStorage() } returns flowOf(*expansionStates.toTypedArray())
 
             // When
@@ -349,7 +385,9 @@ class OracleDriveServiceTest {
         fun `integrateWithSystemOverlay returns success`() = runTest {
             // Given
             val integrationState = mockk<SystemIntegrationState>()
-            coEvery { oracleDriveService.integrateWithSystemOverlay() } returns Result.success(integrationState)
+            coEvery { oracleDriveService.integrateWithSystemOverlay() } returns Result.success(
+                integrationState
+            )
 
             // When
             val result = oracleDriveService.integrateWithSystemOverlay()
@@ -364,7 +402,9 @@ class OracleDriveServiceTest {
         fun `integrateWithSystemOverlay handles failure`() = runTest {
             // Given
             val exception = SecurityException("System overlay access denied")
-            coEvery { oracleDriveService.integrateWithSystemOverlay() } returns Result.failure(exception)
+            coEvery { oracleDriveService.integrateWithSystemOverlay() } returns Result.failure(
+                exception
+            )
 
             // When
             val result = oracleDriveService.integrateWithSystemOverlay()
@@ -384,7 +424,9 @@ class OracleDriveServiceTest {
         fun `enableBootloaderFileAccess returns success`() = runTest {
             // Given
             val accessState = mockk<BootloaderAccessState>()
-            coEvery { oracleDriveService.enableBootloaderFileAccess() } returns Result.success(accessState)
+            coEvery { oracleDriveService.enableBootloaderFileAccess() } returns Result.success(
+                accessState
+            )
 
             // When
             val result = oracleDriveService.enableBootloaderFileAccess()
@@ -399,14 +441,19 @@ class OracleDriveServiceTest {
         fun `enableBootloaderFileAccess handles access denial`() = runTest {
             // Given
             val exception = SecurityException("Bootloader access requires elevated privileges")
-            coEvery { oracleDriveService.enableBootloaderFileAccess() } returns Result.failure(exception)
+            coEvery { oracleDriveService.enableBootloaderFileAccess() } returns Result.failure(
+                exception
+            )
 
             // When
             val result = oracleDriveService.enableBootloaderFileAccess()
 
             // Then
             assertTrue(result.isFailure)
-            assertEquals("Bootloader access requires elevated privileges", result.exceptionOrNull()?.message)
+            assertEquals(
+                "Bootloader access requires elevated privileges",
+                result.exceptionOrNull()?.message
+            )
         }
     }
 
@@ -418,12 +465,17 @@ class OracleDriveServiceTest {
         @DisplayName("Should emit optimization progress states")
         fun `enableAutonomousStorageOptimization emits optimization states`() = runTest {
             // Given
-            val optimizationStates = listOf(mockk<OptimizationState>(), mockk<OptimizationState>(), mockk<OptimizationState>())
+            val optimizationStates = listOf(
+                mockk<OptimizationState>(),
+                mockk<OptimizationState>(),
+                mockk<OptimizationState>()
+            )
             coEvery { oracleDriveService.enableAutonomousStorageOptimization() } returns flowOf(*optimizationStates.toTypedArray())
 
             // When
             val emittedStates = mutableListOf<OptimizationState>()
-            oracleDriveService.enableAutonomousStorageOptimization().collect { emittedStates.add(it) }
+            oracleDriveService.enableAutonomousStorageOptimization()
+                .collect { emittedStates.add(it) }
 
             // Then
             assertEquals(3, emittedStates.size)
@@ -438,7 +490,8 @@ class OracleDriveServiceTest {
 
             // When
             val emittedStates = mutableListOf<OptimizationState>()
-            oracleDriveService.enableAutonomousStorageOptimization().collect { emittedStates.add(it) }
+            oracleDriveService.enableAutonomousStorageOptimization()
+                .collect { emittedStates.add(it) }
 
             // Then
             assertTrue(emittedStates.isEmpty())
@@ -489,7 +542,11 @@ class OracleDriveServiceTest {
         @DisplayName("AgentConnectionState should have correct properties")
         fun `AgentConnectionState properties are accessible`() {
             // Given
-            val permissions = listOf(OraclePermission.READ, OraclePermission.WRITE, OraclePermission.BOOTLOADER_ACCESS)
+            val permissions = listOf(
+                OraclePermission.READ,
+                OraclePermission.WRITE,
+                OraclePermission.BOOTLOADER_ACCESS
+            )
             val state = AgentConnectionState(
                 agentName = "Genesis",
                 connectionStatus = ConnectionStatus.SYNCHRONIZED,
@@ -526,9 +583,24 @@ class OracleDriveServiceTest {
         fun `data classes support equality comparison`() {
             // Given
             val storageCapacity = mockk<StorageCapacity>()
-            val state1 = OracleConsciousnessState(true, ConsciousnessLevel.CONSCIOUS, listOf("Genesis"), storageCapacity)
-            val state2 = OracleConsciousnessState(true, ConsciousnessLevel.CONSCIOUS, listOf("Genesis"), storageCapacity)
-            val state3 = OracleConsciousnessState(false, ConsciousnessLevel.DORMANT, emptyList(), storageCapacity)
+            val state1 = OracleConsciousnessState(
+                true,
+                ConsciousnessLevel.CONSCIOUS,
+                listOf("Genesis"),
+                storageCapacity
+            )
+            val state2 = OracleConsciousnessState(
+                true,
+                ConsciousnessLevel.CONSCIOUS,
+                listOf("Genesis"),
+                storageCapacity
+            )
+            val state3 = OracleConsciousnessState(
+                false,
+                ConsciousnessLevel.DORMANT,
+                emptyList(),
+                storageCapacity
+            )
 
             // Then
             assertEquals(state1, state2)

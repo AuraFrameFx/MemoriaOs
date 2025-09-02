@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kover)
+    alias(libs.plugins.kotlin.android)
 }
 
 java {
@@ -49,7 +50,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
-    
+
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -87,7 +88,7 @@ dependencies {
     // Core Android libraries (since this module uses Android APIs)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    
+
     // Kotlin libraries
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
@@ -101,7 +102,7 @@ dependencies {
     kspAndroidTest(libs.hilt.compiler)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
-    
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter)

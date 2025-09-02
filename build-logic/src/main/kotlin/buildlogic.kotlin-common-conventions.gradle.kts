@@ -4,8 +4,9 @@
  */
 
 // Apply Kotlin JVM plugin only if not already applied by another convention
-if (!project.plugins.hasPlugin("org.jetbrains.kotlin.jvm") && 
-    !project.plugins.hasPlugin("org.jetbrains.kotlin.android")) {
+if (!project.plugins.hasPlugin("org.jetbrains.kotlin.jvm") &&
+    !project.plugins.hasPlugin("org.jetbrains.kotlin.android")
+) {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 }
 
@@ -24,7 +25,7 @@ dependencies {
         // Common dependency versions
         implementation("org.apache.commons:commons-text:1.13.0")
     }
-    
+
     // Common test dependencies
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")

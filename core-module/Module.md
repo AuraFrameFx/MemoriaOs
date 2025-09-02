@@ -1,10 +1,12 @@
 # Genesis Core Module
 
-The core module of the Genesis Protocol, providing foundational functionality for the AuraOS ecosystem.
+The core module of the Genesis Protocol, providing foundational functionality for the AuraOS
+ecosystem.
 
 ## Overview
 
 This module contains:
+
 - Core architecture components
 - Base classes and interfaces
 - Common utilities and extensions
@@ -21,4 +23,5 @@ This module contains:
 
 ## Usage
 
-This module is automatically included in all other Genesis modules and provides the foundation for the entire AuraOS experience.
+This module is automatically included in all other Genesis modules and provides the foundation for
+the entire AuraOS experience.

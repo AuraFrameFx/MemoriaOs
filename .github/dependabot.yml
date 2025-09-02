@@ -23,7 +23,7 @@ updates:
     commit-message:
       prefix: "[dependabot][gradle]"
     labels:
-      - "dependencies" 
+      - "dependencies"
       - "auto"
     reviewers:
       - "AuraFrameFxDev"

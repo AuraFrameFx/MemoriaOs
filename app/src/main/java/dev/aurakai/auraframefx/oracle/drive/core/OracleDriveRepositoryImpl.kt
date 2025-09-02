@@ -1,8 +1,7 @@
 package dev.aurakai.auraframefx.oracle.drive.core
 
 import android.content.Context
-import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext // Added import
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.aurakai.auraframefx.oracle.drive.api.OracleCloudApi
 import dev.aurakai.auraframefx.oracle.drive.model.OracleDriveFile
 import kotlinx.coroutines.Dispatchers
@@ -24,24 +23,35 @@ import javax.inject.Inject
 class OracleDriveRepositoryImpl @Inject constructor(
     private val oracleCloudApi: OracleCloudApi,
     @ApplicationContext private val context: Context // Added @ApplicationContext
-): OracleDriveRepository {
+) : OracleDriveRepository {
 
-    override suspend fun listFiles(bucketName: String, prefix: String?): List<OracleDriveFile> = withContext(Dispatchers.IO) {
-        try {
-            val response = oracleCloudApi.listFiles(bucketName = bucketName, prefix = prefix)
-            if (response.isSuccessful) {
-                response.body()?.objects?.map { OracleDriveFile(it.name, it.size, it.timeCreated) } ?: emptyList()
-            } else {
-                // Handle error, log, throw custom exception etc.
+    override suspend fun listFiles(bucketName: String, prefix: String?): List<OracleDriveFile> =
+        withContext(Dispatchers.IO) {
+            try {
+                val response = oracleCloudApi.listFiles(bucketName = bucketName, prefix = prefix)
+                if (response.isSuccessful) {
+                    response.body()?.objects?.map {
+                        OracleDriveFile(
+                            it.name,
+                            it.size,
+                            it.timeCreated
+                        )
+                    } ?: emptyList()
+                } else {
+                    // Handle error, log, throw custom exception etc.
+                    emptyList()
+                }
+            } catch (e: Exception) {
+                // Handle error
                 emptyList()
             }
-        } catch (e: Exception) {
-            // Handle error
-            emptyList()
         }
-    }
 
-    override suspend fun uploadFile(bucketName: String, objectName: String, filePath: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun uploadFile(
+        bucketName: String,
+        objectName: String,
+        filePath: String
+    ): Boolean = withContext(Dispatchers.IO) {
         try {
             val file = File(filePath)
             if (!file.exists()) return@withContext false
@@ -59,9 +69,14 @@ class OracleDriveRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun downloadFile(bucketName: String, objectName: String, destinationPath: String): File? = withContext(Dispatchers.IO) {
+    override suspend fun downloadFile(
+        bucketName: String,
+        objectName: String,
+        destinationPath: String
+    ): File? = withContext(Dispatchers.IO) {
         try {
-            val response = oracleCloudApi.downloadFile(bucketName = bucketName, objectName = objectName)
+            val response =
+                oracleCloudApi.downloadFile(bucketName = bucketName, objectName = objectName)
             if (response.isSuccessful && response.body() != null) {
                 // Normalize objectName to its basename to prevent path traversal
                 val safeName = File(objectName).name // strips any path components
@@ -82,13 +97,15 @@ class OracleDriveRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteFile(bucketName: String, objectName: String): Boolean = withContext(Dispatchers.IO) {
-        try {
-            val response = oracleCloudApi.deleteFile(bucketName = bucketName, objectName = objectName)
-            response.isSuccessful
-        } catch (e: Exception) {
-            // Handle error
-            false
+    override suspend fun deleteFile(bucketName: String, objectName: String): Boolean =
+        withContext(Dispatchers.IO) {
+            try {
+                val response =
+                    oracleCloudApi.deleteFile(bucketName = bucketName, objectName = objectName)
+                response.isSuccessful
+            } catch (e: Exception) {
+                // Handle error
+                false
+            }
         }
-    }
 }

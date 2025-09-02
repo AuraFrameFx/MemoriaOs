@@ -15,10 +15,10 @@ import javax.inject.Singleton
 class TokenManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    
+
     private val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
     private val mainKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
-    
+
     private val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
         "aura_secure_prefs",
         mainKeyAlias,
@@ -63,7 +63,7 @@ class TokenManager @Inject constructor(
         expiresInSeconds: Long
     ) {
         val expiryTime = System.currentTimeMillis() + (expiresInSeconds * 1000)
-        
+
         sharedPreferences.edit()
             .putString(KEY_ACCESS_TOKEN, accessToken)
             .putString(KEY_REFRESH_TOKEN, refreshToken)

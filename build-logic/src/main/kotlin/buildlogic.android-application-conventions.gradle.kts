@@ -11,22 +11,22 @@ plugins {
 
 android {
     namespace = "com.aegenesis.${project.name.replace("-", "")}"
-    
+
     compileSdk = 35
-    
+
     defaultConfig {
         applicationId = "com.aegenesis.${project.name.replace("-", "").toLowerCase()}"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-        
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
     }
-    
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -42,12 +42,12 @@ android {
             versionNameSuffix = "-DEBUG"
         }
     }
-    
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
-    
+
     kotlin {
         compilerOptions {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
@@ -60,16 +60,16 @@ android {
             )
         }
     }
-    
+
     buildFeatures {
         compose = true
         buildConfig = true
     }
-    
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
     }
-    
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -96,21 +96,21 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-            
+
             // Enable debugging for dev builds
             isDebuggable = true
             isDefault = true
         }
-        
+
         create("staging") {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
-            
+
             // Enable debugging for staging builds
             isDebuggable = true
         }
-        
+
         create("production") {
             dimension = "environment"
             // No suffix for production
@@ -124,7 +124,13 @@ android.applicationVariants.all {
     variant.outputs
         .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
         .forEach { output ->
-            val outputFileName = "${project.name}-${variant.baseName}-${variant.versionName}.${variant.versionCode}.${if (variant.buildType.isMinifyEnabled) "release" else "debug"}${output.outputFile.extension.replace(".", "")}"
+            val outputFileName =
+                "${project.name}-${variant.baseName}-${variant.versionName}.${variant.versionCode}.${if (variant.buildType.isMinifyEnabled) "release" else "debug"}${
+                    output.outputFile.extension.replace(
+                        ".",
+                        ""
+                    )
+                }"
             output.outputFileName = outputFileName
         }
 }

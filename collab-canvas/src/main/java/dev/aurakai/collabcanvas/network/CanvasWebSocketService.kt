@@ -2,11 +2,16 @@ package dev.aurakai.collabcanvas.network
 
 import com.google.gson.Gson
 import dev.aurakai.collabcanvas.model.CanvasElement
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import okhttp3.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import okio.ByteString
-import timber.log.Timber // Added Timber import
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,7 +37,10 @@ class CanvasWebSocketService @Inject constructor(
                 val message = gson.fromJson(text, CanvasWebSocketMessage::class.java)
                 _events.tryEmit(CanvasWebSocketEvent.MessageReceived(message))
             } catch (e: Exception) {
-                Timber.e(e, "Error parsing WebSocket message") // Changed to Timber, added exception first for stack trace
+                Timber.e(
+                    e,
+                    "Error parsing WebSocket message"
+                ) // Changed to Timber, added exception first for stack trace
                 _events.tryEmit(CanvasWebSocketEvent.Error("Error parsing message: ${e.message}"))
             }
         }
@@ -84,7 +92,10 @@ class CanvasWebSocketService @Inject constructor(
                 false
             }
         } catch (e: Exception) {
-            Timber.e(e, "Error sending WebSocket message") // Changed to Timber, added exception first for stack trace
+            Timber.e(
+                e,
+                "Error sending WebSocket message"
+            ) // Changed to Timber, added exception first for stack trace
             false
         }
     }

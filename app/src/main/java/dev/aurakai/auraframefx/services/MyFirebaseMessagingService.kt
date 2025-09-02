@@ -53,14 +53,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onCreate() {
         super.onCreate()
-        
+
         // Manual dependency initialization since @AndroidEntryPoint not supported
         initializeDependencies()
-        
+
         createNotificationChannels()
         Timber.d("Genesis Firebase Messaging Service created")
     }
-    
+
     private fun initializeDependencies() {
         // Initialize dependencies manually
         // In a real implementation, get these from a dependency provider

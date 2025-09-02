@@ -1,4 +1,3 @@
-
 package dev.aurakai.auraframefx.services
 
 import android.app.Service
@@ -10,10 +9,6 @@ import android.util.Log
 import dagger.hilt.android.AndroidEntryPoint
 import dev.aurakai.auraframefx.ipc.IAuraDriveService
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.security.MessageDigest
 import javax.inject.Inject
 
 /**
@@ -33,7 +28,10 @@ class AuraDriveService : Service() {
 
     private val binder = object : IAuraDriveService.Stub() {
         override fun getOracleDriveStatus(): String {
-            Log.d(TAG, "Oracle Drive Status Requested. UID: ${Process.myUid()}, PID: ${Process.myPid()}")
+            Log.d(
+                TAG,
+                "Oracle Drive Status Requested. UID: ${Process.myUid()}, PID: ${Process.myPid()}"
+            )
             return "Oracle Drive Active - R.G.S.F. Nominal (UID: ${Process.myUid()}) "
         }
 
