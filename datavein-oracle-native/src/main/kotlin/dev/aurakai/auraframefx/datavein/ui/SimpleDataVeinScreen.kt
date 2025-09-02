@@ -63,6 +63,16 @@ import androidx.compose.ui.unit.sp
  *
  * @param modifier Optional [Modifier] to be applied to the root Box container.
  */
+/**
+ * A static preview/composable screen that displays a stylized "DataVein Sphere Grid" status card.
+ *
+ * The layout is centered and shows a title, subtitle, a system status line, three status chips
+ * (Core Nodes, Active Flows, Data Streams), a multiline status overview, a launch action button
+ * (placeholder onClick), and an informational note. Intended for preview/testing—no dynamic state
+ * or navigation is implemented.
+ *
+ * @param modifier Optional Modifier to adjust the composable's outer layout.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleDataVeinScreen(

@@ -16,16 +16,18 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 class BuildLogicComposeConventionPlugin : Plugin<Project> {
     /**
-     * Applies Compose-focused conventions to the given Gradle project.
+     * Applies Compose-focused Gradle conventions to an Android library Project.
      *
-     * Configures the project as an Android library with Jetpack Compose enabled and sets up
-     * Compose compiler extension version, packaging exclusions, Java toolchain and source/target
-     * compatibility (Java 24), Kotlin source-set opt-ins for experimental Compose APIs, a standard
-     * set of Compose/lifecycle/navigation/hilt dependencies resolved from the `libs` version catalog,
-     * and Kotlin compiler options (Kotlin 2.2, JVM target 24, and Compose compiler/plugin flags).
+     * Configures the target Project to:
+     * - enable Jetpack Compose and set the Compose Kotlin compiler extension version from the `libs` version catalog (key: `composeBom`);
+     * - apply Android library, Kotlin Android and Kotlin serialization plugins;
+     * - set packaging exclusions for common META-INF/MD/CHANGES files;
+     * - configure Java toolchain and source/target compatibility to Java 24;
+     * - opt-in Kotlin source sets to common experimental Compose APIs (Material3, Foundation, Animation, Compose UI);
+     * - add a standard set of Compose, lifecycle, navigation, and Hilt dependencies using the `libs` catalog (including a Compose BOM);
+     * - set Kotlin compiler options for all KotlinCompile tasks (Kotlin 2.2 language/api versions, JVM target 24, and Compose compiler/plugin flags).
      *
-     * Note: this function reads entries from the version catalog named `libs` using `.get()` on lookups;
-     * missing catalog entries will throw an exception at project configuration time.
+     * Note: this function resolves entries from the version catalog named `libs` using `.get()`; missing catalog entries will throw at project configuration time.
      */
     override fun apply(target: Project) {
         with(target) {

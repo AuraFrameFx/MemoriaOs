@@ -81,6 +81,17 @@ import dev.aurakai.auraframefx.datavein.model.NodeType
  * @param node The DataVeinNode to render.
  * @param modifier Optional Compose [Modifier] applied to the outer card.
  */
+/**
+ * Renders a compact information card for a DataVeinNode.
+ *
+ * Shows the node's type, a small status indicator (green = activated, yellow = unlocked, red = locked),
+ * identification rows (tag, id, ring, level), description, optional data, and a one-line status message.
+ * When the node is unlocked the panel also displays XP ("XP: {xp}/1000") and an XP progress bar.
+ *
+ * The card has a fixed width and a 2.dp border tinted by the node type's glow color.
+ *
+ * @param node The DataVeinNode to display.
+ */
 @Composable
 fun NodeInfoPanel(
     node: DataVeinNode,

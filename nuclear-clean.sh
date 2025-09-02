@@ -26,7 +26,7 @@ safe_remove() {
     fi
 }
 
-# safe_remove_file removes the specified file if it exists and echoes a removal message. It performs a no-op when the path is absent and uses `rm -f` to delete the file.
+# safe_remove_file removes the specified file if it exists; it echoes a removal message and runs `rm -f`. If the file is absent, it does nothing.
 safe_remove_file() {
     if [ -f "$1" ]; then
         echo "🗑️  Removing file: $1"

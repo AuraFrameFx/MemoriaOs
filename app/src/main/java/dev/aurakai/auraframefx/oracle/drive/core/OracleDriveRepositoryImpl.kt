@@ -132,14 +132,14 @@ class OracleDriveRepositoryImpl @Inject constructor(
     }
 
     /**
-         * Deletes an object from the specified bucket in Oracle Cloud Storage.
+         * Delete the specified object from a bucket in Oracle Cloud Storage.
          *
-         * Performs the network call on the IO dispatcher. Returns true if the remote delete
-         * request completed successfully; returns false if the request failed or an error occurred.
+         * Executes the remote delete on the IO dispatcher and returns true only if the HTTP
+         * response indicates success; returns false on failure or exception.
          *
-         * @param bucketName The name of the storage bucket containing the object.
-         * @param objectName The object key/name (path) to delete within the bucket.
-         * @return true if the object was deleted successfully; false otherwise.
+         * @param bucketName Name of the storage bucket containing the object.
+         * @param objectName The object's key/path within the bucket to delete.
+         * @return true if the remote delete completed successfully; false otherwise.
          */
         override suspend fun deleteFile(bucketName: String, objectName: String): Boolean =
         withContext(Dispatchers.IO) {

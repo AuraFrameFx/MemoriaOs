@@ -32,16 +32,15 @@ Impl() = default;
 ~Impl() = default;
 
         /**
-         * @brief Initialize the native Cascade AI service with the Java VM and Android context.
+         * @brief Initialize native JNI state for the Cascade AI service.
          *
-         * Initializes internal JNI state by storing the provided JavaVM pointer and obtaining a valid
-         * JNIEnv for the current thread. If a non-null Android context is provided, a global reference
-         * to that context is created and stored for the service lifetime.
+         * Stores the provided JavaVM, obtains a JNIEnv for the current thread, and — if a non-null
+         * Android Context is supplied — creates and retains a global reference to that context for the
+         * service lifetime.
          *
-         * The function returns false if the JNI environment cannot be acquired or if the provided
-         * context's class cannot be retrieved; on success it returns true.
+         * Returns false if the JNI environment cannot be acquired (vm->GetEnv fails) or if the provided
+         * context's class cannot be retrieved; returns true on successful initialization.
          *
-         * @param context Android Context object to retain as a global reference (may be nullptr).
          * @return true if initialization succeeded and JNI state was set up; false on failure.
          */
         bool initialize(JavaVM *vm, jobject context) {
@@ -100,14 +99,15 @@ Impl() = default;
     };
 
     /**
-     * @brief Processes a textual request and returns a JSON-formatted response.
+     * @brief Process a textual request and produce a JSON-formatted response as a Java string.
      *
-     * Builds a fixed JSON response indicating success, agent name, version, and a short
-     * message, then returns it as a Java string.
+     * Builds and returns a fixed JSON payload indicating success, agent name, version, and
+     * a short response message. The incoming `request` is not used to alter the payload and
+     * is retained only for logging/context.
      *
-     * @param request The incoming request payload as a UTF-8 std::string; used only to
-     *                include logging context.
-     * @return jstring A new Java string containing the JSON response (e.g. `{"status":"success", "agent":"Cascade", "version":"1.0.0", "response":"Request processed by Cascade AI agent"}`).
+     * @param env JNI environment used to allocate the returned Java string.
+     * @param request The incoming UTF-8 request string (used only for logging/context).
+     * @return jstring A newly created local Java string containing the JSON response (allocated via NewStringUTF).
      */
     jstring CascadeAIService::Impl::processRequest(JNIEnv *env, const std::string &request) {
         LOGI("Processing request: %s", request.c_str());
@@ -141,12 +141,11 @@ CascadeAIService::~CascadeAIService() = default;
     /**
      * @brief Initialize the Cascade AI service.
      *
-     * Delegates initialization to the internal implementation. Stores the provided
-     * JavaVM and Android context for JNI operations via the implementation.
+     * Delegates to the internal implementation to register the JavaVM and store an Android
+     * Context for JNI operations. Returns false if the internal implementation is absent
+     * or if initialization fails.
      *
-     * @param vm Pointer to the JavaVM to use for JNI calls; must not be null for successful initialization.
-     * @param context Android Context object (local or global reference). The implementation will create and manage a global reference if needed.
-     * @return true if initialization succeeded; false if the service implementation is absent or initialization failed.
+     * @return true on successful initialization; false otherwise.
      */
     bool CascadeAIService::initialize(JavaVM *vm, jobject context) {
         if (pImpl_) {

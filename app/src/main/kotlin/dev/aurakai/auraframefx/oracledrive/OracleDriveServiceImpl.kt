@@ -35,6 +35,20 @@ class OracleDriveServiceImpl @Inject constructor(
         )
     )
 
+    /**
+     * Initializes an in-memory drive "consciousness" and storage optimization, updates the service state,
+     * and returns the initialization result.
+     *
+     * Creates a DriveConsciousness instance (agents: Genesis, Aura, Kai; intelligenceLevel 95) and a
+     * StorageOptimization instance (compressionRatio 0.75, deduplicationSavings 100MB, intelligentTiering true),
+     * writes an "Initialization" entry into the internal DriveConsciousnessState (sets isActive = true and
+     * records basic performance metrics), and returns DriveInitResult.Success(consciousness, optimization).
+     *
+     * If any exception occurs during initialization, returns DriveInitResult.Error with the caught exception.
+     *
+     * @return DriveInitResult.Success containing the created DriveConsciousness and StorageOptimization on success,
+     * or DriveInitResult.Error containing the thrown exception on failure.
+     */
     override suspend fun initializeDrive(): DriveInitResult {
         return try {
             // Initialize consciousness with AI agents
@@ -68,12 +82,12 @@ class OracleDriveServiceImpl @Inject constructor(
     }
 
     /**
-     * Performs a file operation (upload, download, delete, or sync), updates the service's drive consciousness state to record the operation, and returns the operation result.
+     * Perform a file operation, record it in the drive consciousness state, and return the result.
      *
-     * The function appends a human-readable entry to the internal `DriveConsciousnessState.currentOperations` for tracking, then returns a `FileResult.Success` with an operation-specific message. If an unexpected error occurs, it returns `FileResult.Error`.
+     * Appends a human-readable entry to DriveConsciousnessState.currentOperations to reflect the performed action, updates the state, and returns a FileResult.Success containing an operation-specific message. On unexpected errors returns FileResult.Error with the caught exception.
      *
-     * @param operation The file operation to perform; one of `FileOperation.Upload`, `FileOperation.Download`, `FileOperation.Delete`, or `FileOperation.Sync`.
-     * @return A `FileResult` representing success with a descriptive message for the performed operation, or `FileResult.Error` containing the caught exception on failure.
+     * @param operation The file operation to perform (Upload, Download, Delete, or Sync); used to determine the recorded entry and success message.
+     * @return FileResult.Success with a descriptive message on success, or FileResult.Error on failure.
      */
     override suspend fun manageFiles(operation: FileOperation): FileResult {
         return try {

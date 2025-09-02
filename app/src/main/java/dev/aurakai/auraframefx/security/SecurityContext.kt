@@ -29,6 +29,13 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
         return "genesis_user"
     }
 
+    /**
+     * Indicates whether the application is running in secure mode.
+     *
+     * Returns a development-time default (non-secure) value.
+     *
+     * @return `true` if secure mode is active; otherwise `false` (development default).
+     */
     override fun isSecureMode(): Boolean {
         return false // Default to non-secure for development
     }
@@ -46,11 +53,10 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
     }
 
     /**
-     * Returns a development-default integrity result for the application.
+     * Return a development-default application integrity result.
      *
-     * This implementation always reports a valid application integrity with a fixed
-     * signature hash (`"default_signature_hash"`). Intended as a non-production
-     * stub used during development.
+     * Always reports a valid integrity with signatureHash `"default_signature_hash"`.
+     * Intended as a non-production stub used during development.
      *
      * @return An [ApplicationIntegrity] with `signatureHash = "default_signature_hash"` and `isValid = true`.
      */
@@ -64,9 +70,9 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
     /**
      * Records a security event.
      *
-     * Placeholder implementation used in development: writes a concise representation of the event
-     * (type and details) to standard output. Production implementations should replace this to
-     * persist or forward events to a structured audit/logging system.
+     * Placeholder development implementation: writes a concise representation of the event
+     * (type and details) to standard output. Production implementations should persist or
+     * forward events to a structured audit or logging system.
      *
      * @param event The security event to record.
      */

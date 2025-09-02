@@ -31,17 +31,17 @@ class OAuthService @Inject constructor(
     }
 
     /**
-     * Process an OAuth authorization callback using the provided authorization code.
+     * Handle an OAuth authorization callback by exchanging the authorization code for tokens.
      *
-     * Exchanges the authorization `code` for tokens and updates authentication state (via the
-     * injected TokenManager). Returns true when the callback is successfully handled and
-     * authentication state is updated, or false on failure.
+     * Exchanges the provided authorization `code` for access/refresh tokens and updates the
+     * injected TokenManager to reflect the authenticated state. Returns `true` when the exchange
+     * succeeds and authentication state is updated, or `false` on failure.
      *
-     * Note: this function is currently a placeholder and always returns false until a real
-     * OAuth exchange is implemented.
+     * This is a placeholder implementation and currently always returns `false` until the
+     * actual OAuth exchange is implemented.
      *
      * @param code The authorization code received from the OAuth provider callback.
-     * @return true if the callback was handled and authentication succeeded; false otherwise.
+     * @return `true` if the callback was handled and authentication succeeded; `false` otherwise.
      */
     suspend fun handleOAuthCallback(code: String): Boolean {
         // Placeholder - implement OAuth callback handling

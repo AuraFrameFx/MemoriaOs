@@ -26,6 +26,12 @@ class CanvasWebSocketService @Inject constructor(
     val events: SharedFlow<CanvasWebSocketEvent> = _events.asSharedFlow()
 
     private val webSocketListener = object : WebSocketListener() {
+        /**
+         * Called when the WebSocket connection is established.
+         *
+         * Emits a CanvasWebSocketEvent.Connected to the internal events flow so observers are notified
+         * that the socket is open.
+         */
         override fun onOpen(webSocket: WebSocket, response: Response) {
             Timber.d("WebSocket connection opened")
             _events.tryEmit(CanvasWebSocketEvent.Connected)
@@ -88,6 +94,11 @@ class CanvasWebSocketService @Inject constructor(
         webSocket = okHttpClient.newWebSocket(request, webSocketListener)
     }
 
+    /**
+     * Closes the active WebSocket (if any) with code 1000 and reason "User initiated disconnect" and clears the stored reference.
+     *
+     * If there is no active connection, this is a no-op.
+     */
     fun disconnect() {
         webSocket?.close(1000, "User initiated disconnect")
         webSocket = null

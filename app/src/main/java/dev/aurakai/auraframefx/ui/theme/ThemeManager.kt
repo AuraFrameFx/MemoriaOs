@@ -47,8 +47,12 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Get the current theme configuration
-     */
+ * Returns the currently active ThemeConfig used by ThemeManager.
+ *
+ * The returned object represents the manager's current theme state including dark/system flags and configured colors.
+ *
+ * @return the active ThemeConfig
+ */
     fun getCurrentTheme(): ThemeConfig = currentTheme
 
 // --- imports at top of ThemeManager.kt ---
@@ -130,14 +134,14 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Update the manager's active theme colors to a consciousness-themed palette.
+     * Replace the current theme's primary, secondary, and accent colors with a "consciousness" palette.
      *
-     * Replaces the current theme's primary, secondary, and accent colors while leaving other
-     * theme settings unchanged.
+     * Only the three color properties of the active ThemeConfig are updated; other settings (isDarkMode, useSystemTheme, etc.)
+     * are preserved.
      *
-     * @param primary Primary brand color (default: #9333EA) — used for prominent UI elements; purple conveys consciousness.
-     * @param secondary Secondary/supporting color (default: #0EA5E9) — used for accents and surfaces; sky blue conveys clarity.
-     * @param accent Accent/highlight color (default: #10B981) — used for highlights and interactive affordances; emerald conveys growth.
+     * @param primary Primary color for prominent UI elements (default #9333EA).
+     * @param secondary Secondary/supporting color for accents and surfaces (default #0EA5E9).
+     * @param accent Accent/highlight color for interactive elements (default #10B981).
      */
     fun setConsciousnessColors(
         primary: Color = Color(0xFF9333EA), // Purple for consciousness
