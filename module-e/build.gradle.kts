@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id("com.android.library")  // ← MISSING! This was causing all Android DSL errors
     id("org.jetbrains.kotlin.plugin.compose")
