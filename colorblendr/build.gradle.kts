@@ -1,13 +1,23 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+    id("org.jetbrains.dokka")
+    id("com.diffplug.spotless")
 }
+
+// Added to specify Java version for this subproject
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
+}
+
+// REMOVED: jvmToolchain(24) - Using local JDK via JAVA_HOME instead
+// This prevents auto-provisioning and uses local installation
 
 android {
     namespace = "dev.aurakai.auraframefx.colorblendr"
@@ -17,11 +27,14 @@ android {
         minSdk = 33
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-    }
 
+        vectorDrawables {
+            useSupportLibrary = true
+        }
+    }
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -29,81 +42,65 @@ android {
         }
     }
 
+    buildFeatures {
+        compose = true
+        buildConfig = true  // ✅ FIXED: Enable BuildConfig for Genesis Protocol
+        viewBinding = false  // Genesis Protocol - Compose only
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
-
-ksp {
-    arg("kotlin.languageVersion", "2.2")
-    arg("kotlin.apiVersion", "2.2")
-    arg("kotlin.jvmTarget", "24")
+// Consistent JVM target for Java and Kotlin
+kotlin {
+    jvmToolchain(24)
 }
 
 dependencies {
-    // Module dependencies
+    // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
-
-    // Compose BOM
-    implementation(platform(libs.androidx.compose.bom))
-
-    // Core Android
-    implementation(libs.bundles.androidx.core)
-    implementation(libs.google.material)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-
-    // Compose UI for color manipulation
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(project(":app"))
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.core)
-    implementation(libs.androidx.compose.material.icons.extended)
+    // Core Android bundles
+    implementation(libs.bundles.androidx.core)
+    implementation(libs.bundles.compose)
+    implementation(libs.bundles.coroutines)
 
-    // Data storage for color preferences
-    implementation(libs.androidx.datastore.preferences)
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
 
-    // Hilt
+    // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    // Coroutines & Serialization
-    implementation(libs.bundles.coroutines)
-    implementation(libs.kotlinx.serialization.json)
-
     // Utilities
-    implementation(libs.timber)
+    implementation(libs.bundles.utilities)
+
+    // Core library desugaring
+    coreLibraryDesugaring(libs.coreLibraryDesugaring)
 
     // Testing
     testImplementation(libs.bundles.testing)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    testImplementation(libs.junit.engine)
+    androidTestImplementation(libs.bundles.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    
-    // Debug
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.core)
+
+
+    // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }

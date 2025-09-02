@@ -1,11 +1,17 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kover)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
 }
 
 android {
@@ -14,18 +20,6 @@ android {
 
     defaultConfig {
         minSdk = 33
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
     }
 
     compileOptions {
@@ -35,48 +29,47 @@ android {
 
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_24)
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
         }
     }
 
-    buildFeatures {
-        buildConfig = true
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("build/generated/source/openapi/src/main/kotlin")
+        }
     }
+}
+
+dependencies {
+    // Core Kotlin libraries
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
+    implementation(libs.bundles.coroutines)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Networking (for the generated Retrofit client)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.okhttp3.logging.interceptor)
+
+    // Utilities
+    implementation(libs.gson)
+
+    // Security
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.androidx.test.core)
 }
 
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(24))
     }
+
 }
 
-ksp {
-    arg("kotlin.languageVersion", "2.2")
-    arg("kotlin.apiVersion", "2.2")
-    arg("kotlin.jvmTarget", "24")
-}
-
-dependencies {
-    // Core Android
-    implementation(libs.bundles.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // Coroutines & Serialization
-    implementation(libs.bundles.coroutines)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.datetime)
-
-    // Utilities
-    implementation(libs.timber)
-
-    // Testing
-    testImplementation(libs.bundles.testing)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    dependsOn(":openApiGenerate")
 }

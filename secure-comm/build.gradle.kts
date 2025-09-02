@@ -6,6 +6,20 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kover)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
+}
+
+ksp {
+    arg("kotlin.languageVersion", "2.2") // Match main Kotlin compiler
+    arg("kotlin.apiVersion", "2.2")    // Match main Kotlin compiler
 }
 
 android {
@@ -20,12 +34,18 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+    }
+
+    buildFeatures {
+        compose = false
+        buildConfig = true
+        viewBinding = false
     }
 
     compileOptions {
@@ -36,55 +56,73 @@ android {
     kotlin {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_24)
-            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
         }
     }
 
-    buildFeatures {
-        buildConfig = true
+    packaging {
+        resources {
+            excludes += listOf(
+                "/META-INF/{AL2.0,LGPL2.1}",
+                "/META-INF/DEPENDENCIES",
+                "/META-INF/LICENSE",
+                "/META-INF/LICENSE.txt",
+                "/META-INF/NOTICE",
+                "/META-INF/NOTICE.txt",
+                "META-INF/*.kotlin_module"
+            )
+        }
     }
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
 
-ksp {
-    arg("kotlin.languageVersion", "2.2")
-    arg("kotlin.apiVersion", "2.2")
-    arg("kotlin.jvmTarget", "24")
-}
 
 dependencies {
-    // Module dependencies
+    // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
 
-    // Core Android
-    implementation(libs.bundles.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-
-    // Security & Cryptography
-    implementation(libs.androidxSecurity)
-    implementation(libs.tink)
-    implementation(libs.bouncycastle)
-    implementation(libs.conscrypt.android)
-
-    // Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // Coroutines & Serialization
+    // Core Android libraries (since this module uses Android APIs)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    
+    // Kotlin libraries
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
     implementation(libs.bundles.coroutines)
     implementation(libs.kotlinx.serialization.json)
 
+    // Hilt Dependency Injection (Android version)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
+
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.okhttp3.logging.interceptor)
+
+    // Enhanced Security Stack (Android compatible)
+    implementation(libs.androidxSecurity)
+    implementation(libs.bouncycastle)
+
     // Utilities
-    implementation(libs.timber)
+    implementation(libs.gson)
+    implementation(libs.commons.io)
+    implementation(libs.commons.compress)
+    implementation(libs.xz)
 
     // Testing
-    testImplementation(libs.bundles.testing)
+    testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testRuntimeOnly(libs.junit.engine)
+    testImplementation(libs.androidx.test.ext.junit)
+
     androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.core)
+
 }
