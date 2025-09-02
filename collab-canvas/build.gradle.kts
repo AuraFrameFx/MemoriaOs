@@ -126,7 +126,6 @@ ksp {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
-    implementation(platform(libs.firebase.bom))
 
     // SACRED RULE #5: DEPENDENCY HIERARCHY - Mixed JVM and Android modules
     implementation(project(":core-module"))
@@ -137,7 +136,6 @@ dependencies {
     implementation(libs.androidx.compose.material3) // Genesis Protocol: Added missing Material 3 dependency
     implementation(libs.bundles.coroutines)
     implementation(libs.bundles.network)
-    debugImplementation(libs.firebase.analytics)
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
@@ -145,7 +143,6 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
 
     // Core library desugaring
     coreLibraryDesugaring(libs.coreLibraryDesugaring)

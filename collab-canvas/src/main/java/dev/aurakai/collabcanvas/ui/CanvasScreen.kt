@@ -1,30 +1,5 @@
 package dev.aurakai.collabcanvas.ui
 
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.*
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.dp
-import dev.aurakai.collabcanvas.model.CanvasElement
-import dev.aurakai.collabcanvas.model.ElementType
-import dev.aurakai.collabcanvas.ui.animation.*
-import kotlinx.coroutines.launch
-
 /**
  * Displays a collaborative drawing canvas with multi-tool support, gesture handling, and animated path rendering.
  */
@@ -92,6 +67,7 @@ import kotlinx.coroutines.launch
  * Visual content (grid, elements, current in-progress path, and animated paths) is drawn under the current scale and offset transforms so zoom and pan affect all canvas content consistently.
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+
 /**
  * Full-screen composable providing an interactive collaborative drawing canvas.
  *
@@ -131,11 +107,10 @@ fun CanvasScreen() {
     val offset = remember { Animatable(Offset.Zero, Offset.VectorConverter) }
 
     // Update animated paths when paths change
-    LaunchedEffect(paths) {
-        paths.forEachIndexed { index, path ->
-            if (!animatedPaths.containsKey(index)) {
-                animatedPaths[index] = path.copy()
-            }
+    for (i in paths.indices) {
+        val path = path.copy()
+        if (!animatedPaths.containsKey(i)) {
+            animatedPaths = path.copy()
         }
     }
 
@@ -317,9 +292,9 @@ fun CanvasScreen() {
                 }
 
                 // Draw all animated paths
-                paths.forEachIndexed { index, path ->
-                    val animatedPath = animatedPaths[index] ?: return@forEachIndexed
-                    
+                for (i in paths.indices) {
+                    val path = paths[i]
+                    val animatedPath = animatedPaths[i] ?: continue
                     scale(animatedPath.scale, animatedPath.scale) {
                         translate(animatedPath.offset.x, animatedPath.offset.y) {
                             drawPath(
