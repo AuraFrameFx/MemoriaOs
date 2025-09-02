@@ -115,7 +115,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.engine)
-    testImplementation(libs.jetbrains.kotlin.test.junit5)
+    testDebugImplementation(libs.jetbrains.kotlin.test.junit5)
     testImplementation(libs.robolectric)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)

@@ -40,13 +40,6 @@ repositories {
     google()
     mavenCentral()
 }
-
-// NO version declarations here - they cause conflicts with main build
-dependencies {
-    // Keep minimal dependencies for convention plugins only
-    testImplementation("junit:junit:4.13.2")
-}
-
 gradlePlugin {
     plugins {
         create("memoria-conventions") {

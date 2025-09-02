@@ -1,5 +1,4 @@
 // ===== GENESIS-OS SACRED RULES: ZERO MANUAL COMPILER CONFIG =====
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
@@ -78,43 +77,68 @@ android {
 
 dependencies {
     // SACRED RULE #5: DEPENDENCY HIERARCHY - All modules depend on :core-module and :app
-    implementation(project(":core-module"))
     implementation(project(":app"))
+    implementation(platform(libs.androidx.compose.bom))
+    // Project modules
+    implementation(project(":core-module"))
 
     // Core AndroidX
-    implementation(libs.androidx.core.ktx)
+    implementation(libs.bundles.androidx.core)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.engine)
+    testDebugImplementation(libs.jetbrains.kotlin.test.junit5)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    // Compose - Genesis UI System
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.bundles.compose)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.navigation.compose)
+
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    // Firebase
-    // implementation(platform(libs.firebase.bom)) // Only keep if you use other Firebase libraries
+
+    // Coroutines - Genesis Async Processing
+    implementation(libs.bundles.coroutines)
+
+    // Kotlin reflection for KSP
+    implementation(libs.kotlin.reflect)
 
     // OpenAPI Generated Code Dependencies
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.kotlinx.serialization)
-    implementation(libs.okhttp3.logging.interceptor)
+    implementation(libs.bundles.network)
     implementation(libs.kotlinx.serialization.json)
-
-    // Compose
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.navigation.compose)
 
     // Core library desugaring
     coreLibraryDesugaring(libs.coreLibraryDesugaring)
 
+    // Xposed Framework - LSPosed Integration
+    implementation(libs.bundles.xposed)
+    ksp(libs.yuki.ksp.xposed)
+    implementation(files("${project.rootDir}/Libs/api-82.jar"))
+    implementation(files("${project.rootDir}/Libs/api-82-sources.jar"))
+
+    // Utilities
+    implementation(libs.bundles.utilities)
+
     // Testing
     testImplementation(libs.bundles.testing)
+    testRuntimeOnly(libs.junit.engine)
+
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 
-
-
-    // System interaction and documentation (using local JAR files)
-    implementation(files("${project.rootDir}/Libs/api-82.jar"))
-    implementation(files("${project.rootDir}/Libs/api-82-sources.jar"))
+    // Debug implementations
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
