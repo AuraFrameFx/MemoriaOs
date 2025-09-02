@@ -51,6 +51,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         COLLABORATION_REQUEST
     }
 
+    /**
+     * Initializes the service on creation.
+     *
+     * Performs manual dependency initialization (used instead of Hilt injection), creates required
+     * notification channels for the app, and records a creation log entry. Called by the Android
+     * framework when the service is created.
+     */
     override fun onCreate() {
         super.onCreate()
 
@@ -61,6 +68,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Timber.d("Genesis Firebase Messaging Service created")
     }
 
+    /**
+     * Manually initializes the service's dependencies with local placeholder implementations.
+     *
+     * This method sets up the late-initialized fields used by the service (e.g. DataStoreManager,
+     * MemoryManager, SecurityContext, AuraFxLogger) with simple/default implementations so the
+     * service can operate without a DI framework. Intended as a temporary stand-in — replace with
+     * real dependency provision (or a DI provider) in production.
+     */
     private fun initializeDependencies() {
         // Initialize dependencies manually
         // In a real implementation, get these from a dependency provider

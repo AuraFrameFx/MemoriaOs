@@ -17,7 +17,15 @@ static JavaVM *g_vm = nullptr;
 // Global reference to the context
 static jobject g_context = nullptr;
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" /**
+ * @brief Initialize native state and cache global references required by the native service.
+ *
+ * Stores the JavaVM in the global g_vm for later use and, if a non-null Android Context
+ * is provided, creates a global reference to it and stores it in g_context so the native
+ * code can access the Context across JNI calls. If obtaining the JavaVM or creating the
+ * global reference fails, the function logs an error and returns early.
+ */
+JNIEXPORT void JNICALL
 Java_dev_aurakai_auraframefx_ai_services_CascadeAIService_nativeInitialize(
         JNIEnv *env,
         jclass clazz,
@@ -40,7 +48,21 @@ Java_dev_aurakai_auraframefx_ai_services_CascadeAIService_nativeInitialize(
     LOGI("Native initialization complete");
 }
 
-extern "C" JNIEXPORT jstring JNICALL
+extern "C" /**
+ * @brief Process a request string from Java and return a JSON-like response.
+ *
+ * Converts the provided Java UTF-8 string into a native C string, performs
+ * processing (placeholder implementation), and returns a new Java string with
+ * the response.
+ *
+ * If `request` is null or cannot be converted, the function returns a JSON-like
+ * error string (e.g. "{'error':'Invalid request'}" or
+ * "{'error':'Failed to process request'}").
+ *
+ * @param request UTF-8 encoded request payload from Java (expected to be a JSON-like string).
+ * @return jstring A newly created Java string containing the response or an error object.
+ */
+JNIEXPORT jstring JNICALL
 Java_dev_aurakai_auraframefx_ai_services_CascadeAIService_nativeProcessRequest(
         JNIEnv *env,
         jclass clazz,
@@ -68,7 +90,13 @@ Java_dev_aurakai_auraframefx_ai_services_CascadeAIService_nativeProcessRequest(
     return env->NewStringUTF(response);
 }
 
-extern "C" JNIEXPORT void JNICALL
+extern "C" /**
+ * @brief Shut down the native CascadeAIService and release retained JNI resources.
+ *
+ * Deletes the stored global Android Context reference (if any) and clears the global
+ * g_context pointer. Intended to be called from Java when the native service is no longer needed.
+ */
+JNIEXPORT void JNICALL
 Java_dev_aurakai_auraframefx_ai_services_CascadeAIService_nativeShutdown(
         JNIEnv *env,
         jclass clazz) {
@@ -81,7 +109,18 @@ Java_dev_aurakai_auraframefx_ai_services_CascadeAIService_nativeShutdown(
     }
 }
 
-// JNI_OnLoad implementation
+/**
+ * @brief JNI library load handler.
+ *
+ * Called when the native library is loaded by the JVM. Attempts to obtain a
+ * JNIEnv for JNI version 1.6 and stores the provided JavaVM in the global
+ * g_vm for later use by native code.
+ *
+ * @param vm Pointer to the JavaVM provided by the JVM.
+ * @param reserved Reserved for future use (ignored).
+ * @return JNI_VERSION_1_6 on success; JNI_ERR if a JNIEnv for the requested
+ * JNI version could not be obtained.
+ */
 JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env;
     if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
@@ -94,7 +133,13 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     return JNI_VERSION_1_6;
 }
 
-// JNI_OnUnload implementation
+/**
+ * @brief Called by the JVM when the native library is unloaded; cleans up JNI global state.
+ *
+ * Retrieves a JNIEnv for JNI version 1.6 and, if available, releases and clears the global
+ * reference to the Android Context (g_context) to avoid leaks. If the environment cannot be
+ * acquired, the function returns without making changes.
+ */
 JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
     JNIEnv *env;
     if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {

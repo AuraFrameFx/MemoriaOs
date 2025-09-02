@@ -95,6 +95,17 @@ import androidx.compose.ui.unit.dp
  * @param onClear Called when the Clear button is pressed.
  * @param modifier Optional [Modifier] for styling and layout.
  */
+/**
+ * A toolbar for a drawing canvas that provides color selection, stroke-width selection, and a clear action.
+ *
+ * Renders a row with buttons to toggle an inline color picker and an inline stroke-width selector, and a Clear button.
+ * When a picker is visible, selecting an item invokes the corresponding callback and hides the picker.
+ *
+ * @param onColorSelected Called with the chosen Color when the user selects a color from the inline picker.
+ * @param onStrokeWidthSelected Called with the chosen stroke width (in pixels) when the user selects a width from the inline selector.
+ * @param onClear Called when the Clear button is pressed.
+ * @param modifier Modifier to be applied to the root container.
+ */
 @Composable
 fun CanvasToolbar(
     onColorSelected: (Color) -> Unit,
@@ -160,6 +171,14 @@ fun CanvasToolbar(
     }
 }
 
+/**
+ * Inline color picker that displays a horizontal list of selectable color swatches.
+ *
+ * Renders a horizontally scrolling row of eight circular swatches (Black, Red, Green, Blue,
+ * Yellow, Magenta, Cyan, Gray). Tapping a swatch invokes [onColorSelected] with the chosen color.
+ *
+ * @param onColorSelected Callback invoked when the user selects a color.
+ */
 @Composable
 private fun ColorPicker(
     onColorSelected: (Color) -> Unit
@@ -185,6 +204,14 @@ private fun ColorPicker(
     }
 }
 
+/**
+ * Renders a horizontal selector of preset stroke widths.
+ *
+ * Displays buttons for the widths 2, 5, 10, 15, and 20 (pixels). Tapping a button invokes
+ * [onStrokeWidthSelected] with the chosen width as a Float (value is in pixels).
+ *
+ * @param onStrokeWidthSelected Callback invoked with the selected stroke width (pixels).
+ */
 @Composable
 private fun StrokeWidthSelector(
     onStrokeWidthSelected: (Float) -> Unit
