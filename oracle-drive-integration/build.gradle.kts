@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+   // id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
@@ -19,6 +20,7 @@ ksp {
     arg("kotlin.languageVersion", "2.2")
     arg("kotlin.apiVersion", "2.2")
     arg("kotlin.jvmTarget", "24")
+
     arg("compile:kotlin.languageVersion", "2.2")
     arg("compile:kotlin.apiVersion", "2.2")
 }
@@ -96,7 +98,6 @@ android {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
-    // implementation(platform(libs.firebase.bom)) // Only keep if you use other Firebase libraries
 
     // SACRED RULE #5: DEPENDENCY HIERARCHY - JVM modules now
     implementation(project(":core-module"))
@@ -141,6 +142,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.core)
 
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

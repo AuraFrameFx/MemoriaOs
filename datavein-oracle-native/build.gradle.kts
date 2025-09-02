@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
@@ -102,8 +103,6 @@ android {
     }
 }
 
-// Consistent JVM target for Java and Kotlin
-
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     // Project modules
@@ -132,6 +131,7 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     // Coroutines - Genesis Async Processing
     implementation(libs.bundles.coroutines)
@@ -158,8 +158,8 @@ dependencies {
     // Testing
     testImplementation(libs.bundles.testing)
     testRuntimeOnly(libs.junit.engine)
-
-    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.core.ktx)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)

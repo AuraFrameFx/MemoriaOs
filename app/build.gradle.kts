@@ -1,4 +1,12 @@
 plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)      // Now active and aliased
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization")
@@ -60,14 +68,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "RELEASE_SAMPLE", "\"releaseValue\"")
         }
         debug {
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "DEBUG_SAMPLE", "\"debugValue\"")
         }
     }
 
@@ -104,6 +110,19 @@ android {
         ndkVersion = "28.2.13676358"
         buildToolsVersion = "36.1.0 rc1"
     }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_24)
+            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+            apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain(24)
+}
 
 
 // ===== SIMPLIFIED CLEAN TASKS =====
@@ -278,6 +297,12 @@ android {
         testImplementation(libs.bundles.testing)
         testRuntimeOnly(libs.junit.engine)
 
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.core.ktx)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
         androidTestImplementation(libs.androidx.test.core)
 
         androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -287,6 +312,7 @@ android {
         }
     }
 }
+
 dependencies {
     implementation(libs.androidx.core.ktx)
 }

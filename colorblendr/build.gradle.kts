@@ -6,6 +6,14 @@ plugins {
     id("org.jetbrains.dokka")
     id("com.diffplug.spotless")
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.android.library) version "9.0.0-alpha02"
+    alias(libs.plugins.kotlin.android)      // Activated and aliased
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)                // Use alias
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
 }
 
 // Added to specify Java version for this subproject
@@ -47,6 +55,8 @@ android {
         viewBinding = false  // Genesis Protocol - Compose only
     }
 
+    // Removed android { kotlin { ... } } block as compilerOptions are handled by root build.gradle.kts
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
@@ -59,9 +69,13 @@ android {
     }
 }
 
+
 // Consistent JVM target for Java and Kotlin
 
 dependencies {
+    // ✅ CRITICAL FIX: Add Compose BOM platform first!
+    implementation(platform(libs.androidx.compose.bom))
+
     // SACRED RULE #5: DEPENDENCY HIERARCHY
     implementation(project(":core-module"))
     implementation(project(":app"))
@@ -84,7 +98,7 @@ dependencies {
 
     // Testing
     testImplementation(libs.bundles.testing)
-    testImplementation(libs.junit.engine)
+    testImplementation(libs.junit.engine) // Changed from testRuntimeOnly for consistency
     androidTestImplementation(libs.bundles.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
@@ -93,6 +107,7 @@ dependencies {
 
     // Firebase BOM
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

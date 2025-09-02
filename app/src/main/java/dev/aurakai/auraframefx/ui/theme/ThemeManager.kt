@@ -36,6 +36,11 @@ class ThemeManager @Inject constructor(
 
     /**
      * Apply a theme configuration
+     * Sets the active theme configuration for the manager.
+     *
+     * The provided ThemeConfig becomes the manager's current theme and will be used by composable consumers (for example, getColorScheme()) and lock-screen theming.
+     *
+     * @param themeConfig ThemeConfig to apply as the active theme.
      */
     fun applyTheme(themeConfig: ThemeConfig) {
         currentTheme = themeConfig
@@ -47,21 +52,25 @@ class ThemeManager @Inject constructor(
     fun getCurrentTheme(): ThemeConfig = currentTheme
 
 // --- imports at top of ThemeManager.kt ---
-    import androidx.compose.material3.ColorScheme
-    import androidx.compose.material3.darkColorScheme
-    import androidx.compose.material3.dynamicDarkColorScheme
-    import androidx.compose.material3.dynamicLightColorScheme
-    import androidx.compose.material3.lightColorScheme
-    import androidx.compose.foundation.isSystemInDarkTheme
-    import android.os.Build
+
 
 // ...
 
+
     /**
+     * Returns a Compose ColorScheme constructed from the manager's current ThemeConfig.
+     *
+     * Produces a darkColorScheme when currentTheme.isDarkMode is true, otherwise a lightColorScheme.
+     * The scheme's primary, secondary, and tertiary colors are taken from currentTheme.primaryColor,
+     * currentTheme.secondaryColor, and currentTheme.accentColor.
+     *
+     * @return A ColorScheme appropriate for the active theme (dark or light).
      * Generate a ColorScheme based on current theme, respecting system settings and Android 12+ dynamic color.
      */
     @Composable
     fun getColorScheme(): ColorScheme {
+        return if (currentTheme.isDarkMode) {
+            darkColorScheme(
         // Determine dark mode based on system setting if requested, otherwise use the chosen theme.
         val dark = if (currentTheme.useSystemTheme) {
             isSystemInDarkTheme()

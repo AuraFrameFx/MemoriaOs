@@ -72,6 +72,8 @@ dependencies {
     implementation(libs.bundles.coroutines)
     implementation(libs.androidx.compose.material3)
 
+    implementation(libs.androidx.compose.material3)
+
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
@@ -85,8 +87,10 @@ dependencies {
     androidTestImplementation(libs.bundles.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.core)
 
+
+    androidTestImplementation(libs.androidx.core.ktx)
 
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)

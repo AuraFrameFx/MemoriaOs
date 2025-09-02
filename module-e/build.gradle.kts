@@ -46,9 +46,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
-
-
-
+    // REMOVED: composeOptions - AGP 8.13.0-rc01 auto-detects from version catalog!
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -57,7 +55,7 @@ android {
 }
 
 dependencies {
-    // BOM Platform - CRITICAL: Must be wrapped in platform()
+    // ✅ CRITICAL: Add Compose BOM platform first!
     implementation(platform(libs.androidx.compose.bom))
 
     // SACRED RULE #5: DEPENDENCY HIERARCHY
@@ -81,6 +79,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

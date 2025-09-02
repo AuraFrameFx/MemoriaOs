@@ -1,13 +1,13 @@
 package buildsrc
 
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.io.TempDir
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import java.io.File
-import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Files
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
@@ -63,80 +63,36 @@ class AppBuildScriptIntegrationTest {
         assertTrue(Regex("""compileSdk\s*=\s*36""").containsMatchIn(t), "compileSdk should be 36")
         assertTrue(Regex("""minSdk\s*=\s*33""").containsMatchIn(t), "minSdk should be 33")
         assertTrue(Regex("""targetSdk\s*=\s*36""").containsMatchIn(t), "targetSdk should be 36")
-        assertTrue(
-            t.contains("applicationId = \"dev.aurakai.auraframefx\""),
-            "applicationId mismatch"
-        )
+        assertTrue(t.contains("applicationId = \"dev.aurakai.auraframefx\""), "applicationId mismatch")
         assertTrue(t.contains("versionCode = 1"), "versionCode should be 1")
         assertTrue(t.contains("versionName = \"1.0.0-genesis-alpha\""), "versionName mismatch")
-        assertTrue(
-            t.contains("testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\""),
-            "Missing testInstrumentationRunner"
-        )
-        assertTrue(
-            Regex(
-                """vectorDrawables\s*\{[^}]*useSupportLibrary\s*=\s*true""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "vectorDrawables.useSupportLibrary should be true"
-        )
+        assertTrue(t.contains("testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\""), "Missing testInstrumentationRunner")
+        assertTrue(Regex("""vectorDrawables\s*\{[^}]*useSupportLibrary\s*=\s*true""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "vectorDrawables.useSupportLibrary should be true")
     }
 
     @Test
     @DisplayName("Conditional native config guarded by CMakeLists existence; externalNativeBuild uses CMake 3.22.1")
     fun native_config_conditional() {
         val t = text()
-        assertTrue(
-            t.contains("if (project.file(\"src/main/cpp/CMakeLists.txt\").exists())"),
-            "Missing native existence guard"
-        )
-        assertTrue(
-            Regex(
-                """ndk\s*\{[^}]*abiFilters\.addAll""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t), "Missing ndk.abiFilters.addAll"
-        )
-        assertTrue(
-            Regex(
-                """externalNativeBuild\s*\{[^}]*cmake\s*\{[^}]*version\s*=\s*\"3\.22\.1\"""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "CMake version should be 3.22.1"
-        )
+        assertTrue(t.contains("if (project.file(\"src/main/cpp/CMakeLists.txt\").exists())"), "Missing native existence guard")
+        assertTrue(Regex("""ndk\s*\{[^}]*abiFilters\.addAll""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t), "Missing ndk.abiFilters.addAll")
+        assertTrue(Regex("""externalNativeBuild\s*\{[^}]*cmake\s*\{[^}]*version\s*=\s*\"3\.22\.1\"""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "CMake version should be 3.22.1")
     }
 
     @Test
     @DisplayName("buildTypes configured: release minify+shrink; debug has proguardFiles")
     fun build_types() {
         val t = text()
-        assertTrue(
-            Regex(
-                """buildTypes\s*\{[^}]*release\s*\{[^}]*isMinifyEnabled\s*=\s*true""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "release.isMinifyEnabled should be true"
-        )
-        assertTrue(
-            Regex(
-                """release\s*\{[^}]*isShrinkResources\s*=\s*true""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "release.isShrinkResources should be true"
-        )
-        assertTrue(
-            Regex(
-                """release\s*\{[^}]*proguardFiles\(""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "release should declare proguardFiles"
-        )
-        assertTrue(
-            Regex(
-                """debug\s*\{[^}]*proguardFiles\(""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "debug should declare proguardFiles"
-        )
+        assertTrue(Regex("""buildTypes\s*\{[^}]*release\s*\{[^}]*isMinifyEnabled\s*=\s*true""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "release.isMinifyEnabled should be true")
+        assertTrue(Regex("""release\s*\{[^}]*isShrinkResources\s*=\s*true""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "release.isShrinkResources should be true")
+        assertTrue(Regex("""release\s*\{[^}]*proguardFiles\(""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "release should declare proguardFiles")
+        assertTrue(Regex("""debug\s*\{[^}]*proguardFiles\(""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "debug should declare proguardFiles")
     }
 
     @Test
@@ -156,75 +112,38 @@ class AppBuildScriptIntegrationTest {
         ).forEach { ex ->
             assertTrue(t.contains(ex), "Missing resource exclude: $ex")
         }
-        assertTrue(
-            Regex(
-                """jniLibs\s*\{[^}]*useLegacyPackaging\s*=\s*false""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "jniLibs.useLegacyPackaging should be false"
-        )
-        assertTrue(
-            t.contains("pickFirsts += listOf(\"**/libc++_shared.so\", \"**/libjsc.so\")"),
-            "jniLibs.pickFirsts should include libc++_shared.so and libjsc.so"
-        )
+        assertTrue(Regex("""jniLibs\s*\{[^}]*useLegacyPackaging\s*=\s*false""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "jniLibs.useLegacyPackaging should be false")
+        assertTrue(t.contains("pickFirsts += listOf(\"**/libc++_shared.so\", \"**/libjsc.so\")"),
+            "jniLibs.pickFirsts should include libc++_shared.so and libjsc.so")
     }
 
     @Test
     @DisplayName("buildFeatures: compose true, buildConfig true, viewBinding false")
     fun build_features() {
         val t = text()
-        assertTrue(
-            Regex(
-                """buildFeatures\s*\{[^}]*compose\s*=\s*true""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "compose should be enabled"
-        )
-        assertTrue(
-            Regex(
-                """buildFeatures\s*\{[^}]*buildConfig\s*=\s*true""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "buildConfig should be enabled"
-        )
-        assertTrue(
-            Regex(
-                """buildFeatures\s*\{[^}]*viewBinding\s*=\s*false""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "viewBinding should be disabled"
-        )
+        assertTrue(Regex("""buildFeatures\s*\{[^}]*compose\s*=\s*true""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "compose should be enabled")
+        assertTrue(Regex("""buildFeatures\s*\{[^}]*buildConfig\s*=\s*true""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "buildConfig should be enabled")
+        assertTrue(Regex("""buildFeatures\s*\{[^}]*viewBinding\s*=\s*false""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "viewBinding should be disabled")
     }
 
     @Test
     @DisplayName("compileOptions: JavaVersion.VERSION_24 for source and target")
     fun compile_options_java24() {
         val t = text()
-        assertTrue(
-            t.contains("sourceCompatibility = JavaVersion.VERSION_24"),
-            "sourceCompatibility should be JavaVersion.VERSION_24"
-        )
-        assertTrue(
-            t.contains("targetCompatibility = JavaVersion.VERSION_24"),
-            "targetCompatibility should be JavaVersion.VERSION_24"
-        )
+        assertTrue(t.contains("sourceCompatibility = JavaVersion.VERSION_24"), "sourceCompatibility should be JavaVersion.VERSION_24")
+        assertTrue(t.contains("targetCompatibility = JavaVersion.VERSION_24"), "targetCompatibility should be JavaVersion.VERSION_24")
     }
 
     @Test
     @DisplayName("Task: cleanKspCache registered and deletes expected build directories")
     fun clean_ksp_cache_task() {
         val t = text()
-        assertTrue(
-            t.contains("tasks.register<Delete>(\"cleanKspCache\")"),
-            "cleanKspCache task not registered as Delete"
-        )
-        listOf(
-            "generated/ksp",
-            "tmp/kapt3",
-            "tmp/kotlin-classes",
-            "kotlin",
-            "generated/source/ksp"
-        ).forEach { path ->
+        assertTrue(t.contains("tasks.register<Delete>(\"cleanKspCache\")"), "cleanKspCache task not registered as Delete")
+        listOf("generated/ksp","tmp/kapt3","tmp/kotlin-classes","kotlin","generated/source/ksp").forEach { path ->
             assertTrue(t.contains(path), "cleanKspCache should delete: $path")
         }
     }
@@ -233,31 +152,17 @@ class AppBuildScriptIntegrationTest {
     @DisplayName("preBuild dependsOn cleanKspCache, :cleanApiGeneration, :openApiGenerate")
     fun prebuild_dependencies() {
         val t = text()
-        assertTrue(
-            Regex(
-                """tasks\.named\("preBuild"\)\s*\{[^}]*dependsOn\("cleanKspCache"\)""",
-                RegexOption.DOT_MATCHES_ALL
-            ).containsMatchIn(t),
-            "preBuild should depend on cleanKspCache"
-        )
-        assertTrue(
-            t.contains("dependsOn(\":cleanApiGeneration\")"),
-            "preBuild should depend on :cleanApiGeneration"
-        )
-        assertTrue(
-            t.contains("dependsOn(\":openApiGenerate\")"),
-            "preBuild should depend on :openApiGenerate"
-        )
+        assertTrue(Regex("""tasks\.named\("preBuild"\)\s*\{[^}]*dependsOn\("cleanKspCache"\)""", RegexOption.DOT_MATCHES_ALL).containsMatchIn(t),
+            "preBuild should depend on cleanKspCache")
+        assertTrue(t.contains("dependsOn(\":cleanApiGeneration\")"), "preBuild should depend on :cleanApiGeneration")
+        assertTrue(t.contains("dependsOn(\":openApiGenerate\")"), "preBuild should depend on :openApiGenerate")
     }
 
     @Test
     @DisplayName("AeGenesis status task exists and includes expected prints")
     fun aegenesis_status_task() {
         val t = text()
-        assertTrue(
-            t.contains("tasks.register(\"aegenesisAppStatus\")"),
-            "aegenesisAppStatus task not registered"
-        )
+        assertTrue(t.contains("tasks.register(\"aegenesisAppStatus\")"), "aegenesisAppStatus task not registered")
         listOf(
             "AEGENESIS APP MODULE STATUS",
             "Unified API Spec",
@@ -275,10 +180,8 @@ class AppBuildScriptIntegrationTest {
     @Test
     @DisplayName("Cleanup tasks script is applied")
     fun cleanup_tasks_applied() {
-        assertTrue(
-            text().contains("apply(from = \"cleanup-tasks.gradle.kts\")"),
-            "cleanup-tasks.gradle.kts should be applied"
-        )
+        assertTrue(text().contains("apply(from = \"cleanup-tasks.gradle.kts\")"),
+            "cleanup-tasks.gradle.kts should be applied")
     }
 
     @Test
@@ -286,21 +189,9 @@ class AppBuildScriptIntegrationTest {
     fun dependencies_declared() {
         val t = text()
         // BOMs and modules
-        assertTrue(
-            t.contains("implementation(platform(libs.androidx.compose.bom))"),
-            "Missing Compose BOM platform"
-        )
-        listOf(
-            ":core-module",
-            ":oracle-drive-integration",
-            ":romtools",
-            ":secure-comm",
-            ":collab-canvas"
-        ).forEach { m ->
-            assertTrue(
-                t.contains("implementation(project(\"$m\"))"),
-                "Missing module dependency: $m"
-            )
+        assertTrue(t.contains("implementation(platform(libs.androidx.compose.bom))"), "Missing Compose BOM platform")
+        listOf(":core-module", ":oracle-drive-integration", ":romtools", ":secure-comm", ":collab-canvas").forEach { m ->
+            assertTrue(t.contains("implementation(project(\"$m\"))"), "Missing module dependency: $m")
         }
         // Hilt + Room with KSP
         assertTrue(t.contains("implementation(libs.hilt.android)"), "Missing Hilt runtime")
@@ -308,71 +199,29 @@ class AppBuildScriptIntegrationTest {
         assertTrue(t.contains("implementation(libs.room.runtime)"), "Missing Room runtime")
         assertTrue(t.contains("ksp(libs.room.compiler)"), "Missing Room KSP compiler")
         // Core library desugaring
-        assertTrue(
-            t.contains("coreLibraryDesugaring(libs.coreLibraryDesugaring)"),
-            "Missing coreLibraryDesugaring"
-        )
+        assertTrue(t.contains("coreLibraryDesugaring(libs.coreLibraryDesugaring)"), "Missing coreLibraryDesugaring")
         // Firebase BOM and bundle
-        assertTrue(
-            t.contains("implementation(platform(libs.firebase.bom))"),
-            "Missing Firebase BOM platform"
-        )
+        assertTrue(t.contains("implementation(platform(libs.firebase.bom))"), "Missing Firebase BOM platform")
         assertTrue(t.contains("implementation(libs.bundles.firebase)"), "Missing Firebase bundle")
         // Xposed + Yuki KSP
         assertTrue(t.contains("implementation(libs.bundles.xposed)"), "Missing Xposed bundle")
         assertTrue(t.contains("ksp(libs.yuki.ksp.xposed)"), "Missing Yuki Xposed KSP")
         // Local JARs
-        assertTrue(
-            t.contains("implementation(fileTree(\"../Libs\") { include(\"*.jar\") })"),
-            "Missing local JARs fileTree include"
-        )
+        assertTrue(t.contains("implementation(fileTree(\"../Libs\") { include(\"*.jar\") })"), "Missing local JARs fileTree include")
         // Debug tools
-        assertTrue(
-            t.contains("debugImplementation(libs.leakcanary.android)"),
-            "Missing LeakCanary debugImplementation"
-        )
-        assertTrue(
-            t.contains("debugImplementation(libs.androidx.compose.ui.tooling)"),
-            "Missing compose tooling debugImplementation"
-        )
-        assertTrue(
-            t.contains("debugImplementation(libs.androidx.compose.ui.test.manifest)"),
-            "Missing compose test manifest debugImplementation"
-        )
+        assertTrue(t.contains("debugImplementation(libs.leakcanary.android)"), "Missing LeakCanary debugImplementation")
+        assertTrue(t.contains("debugImplementation(libs.androidx.compose.ui.tooling)"), "Missing compose tooling debugImplementation")
+        assertTrue(t.contains("debugImplementation(libs.androidx.compose.ui.test.manifest)"), "Missing compose test manifest debugImplementation")
         // Unit test stack
-        assertTrue(
-            t.contains("testImplementation(libs.bundles.testing)"),
-            "Missing testImplementation testing bundle"
-        )
-        assertTrue(
-            t.contains("testRuntimeOnly(libs.junit.engine)"),
-            "Missing testRuntimeOnly junit engine"
-        )
+        assertTrue(t.contains("testImplementation(libs.bundles.testing)"), "Missing testImplementation testing bundle")
+        assertTrue(t.contains("testRuntimeOnly(libs.junit.engine)"), "Missing testRuntimeOnly junit engine")
         // Android test stack
-        assertTrue(
-            t.contains("androidTestImplementation(libs.androidx.test.ext.junit)"),
-            "Missing androidTest ext junit"
-        )
-        assertTrue(
-            t.contains("androidTestImplementation(libs.androidx.test.core)"),
-            "Missing androidTest core"
-        )
-        assertTrue(
-            t.contains("androidTestImplementation(platform(libs.androidx.compose.bom))"),
-            "Missing androidTest compose BOM platform"
-        )
-        assertTrue(
-            t.contains("androidTestImplementation(libs.androidx.compose.ui.test.junit4)"),
-            "Missing androidTest compose ui test"
-        )
-        assertTrue(
-            t.contains("androidTestImplementation(libs.hilt.android.testing)"),
-            "Missing androidTest Hilt testing"
-        )
-        assertTrue(
-            t.contains("kspAndroidTest(libs.hilt.compiler)"),
-            "Missing kspAndroidTest hilt compiler"
-        )
+        assertTrue(t.contains("androidTestImplementation(libs.androidx.test.ext.junit)"), "Missing androidTest ext junit")
+        assertTrue(t.contains("androidTestImplementation(libs.androidx.test.core)"), "Missing androidTest core")
+        assertTrue(t.contains("androidTestImplementation(platform(libs.androidx.compose.bom))"), "Missing androidTest compose BOM platform")
+        assertTrue(t.contains("androidTestImplementation(libs.androidx.compose.ui.test.junit4)"), "Missing androidTest compose ui test")
+        assertTrue(t.contains("androidTestImplementation(libs.hilt.android.testing)"), "Missing androidTest Hilt testing")
+        assertTrue(t.contains("kspAndroidTest(libs.hilt.compiler)"), "Missing kspAndroidTest hilt compiler")
     }
 
     // Optional dynamic checks that execute Gradle. Guarded by -DenableTestKit=true to avoid CI issues.
@@ -438,13 +287,7 @@ class AppBuildScriptIntegrationTest {
 
         // Pre-create directories
         val buildDir = projectDir.resolve("build").createDirectories()
-        listOf(
-            "generated/ksp",
-            "tmp/kapt3",
-            "tmp/kotlin-classes",
-            "kotlin",
-            "generated/source/ksp"
-        ).forEach { rel ->
+        listOf("generated/ksp","tmp/kapt3","tmp/kotlin-classes","kotlin","generated/source/ksp").forEach { rel ->
             val p = projectDir.resolve("build").resolve(rel)
             p.parent?.createDirectories()
             p.createDirectories()
@@ -459,13 +302,7 @@ class AppBuildScriptIntegrationTest {
         val code = proc.waitFor()
         assertTrue(code == 0, "Gradle exited with $code\n$out")
 
-        listOf(
-            "generated/ksp",
-            "tmp/kapt3",
-            "tmp/kotlin-classes",
-            "kotlin",
-            "generated/source/ksp"
-        ).forEach { rel ->
+        listOf("generated/ksp","tmp/kapt3","tmp/kotlin-classes","kotlin","generated/source/ksp").forEach { rel ->
             val p = projectDir.resolve("build").resolve(rel)
             assertTrue(!p.exists(), "Directory not deleted by cleanKspCache: $rel")
         }

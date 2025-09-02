@@ -2,10 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.spotless)
-    alias(libs.plugins.kover)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 java {
@@ -21,7 +18,20 @@ android {
     defaultConfig {
         minSdk = 33
     }
-
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+        viewBinding = false
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
@@ -30,7 +40,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            java.srcDirs("build/generated/source/openapi/src/main/kotlin")
+            kotlin.srcDirs(file("build/generated/source/openapi/src/main/kotlin")) // Corrected to function call
         }
     }
 }
@@ -49,24 +59,16 @@ dependencies {
 
     // Utilities
     implementation(libs.gson)
-    implementation(libs.androidx.core.ktx)
 
     // Security
 
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
-    androidTestImplementation(libs.androidx.test.core)
-
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-
-}
-
+// This ensures that Kotlin compilation tasks run after the openApiGenerate task.
+// It's good practice, although registering the source set might already establish this dependency.
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     dependsOn(":openApiGenerate")
 }

@@ -1,4 +1,6 @@
 plugins {
+    alias(libs.plugins.android.library) version "9.0.0-alpha02"
+  //  alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
@@ -6,6 +8,8 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.android)
 }
 
@@ -21,8 +25,8 @@ android {
     compileSdk = 36
     defaultConfig {
         minSdk = 33
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
+
+          consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -54,7 +58,7 @@ android {
 }
 
 dependencies {
-    // BOM Platform - CRITICAL: Must be wrapped in platform()
+    // ✅ CRITICAL: Add Compose BOM platform first!
     implementation(platform(libs.androidx.compose.bom))
 
     // SACRED RULE #5: DEPENDENCY HIERARCHY
@@ -84,11 +88,9 @@ dependencies {
     androidTestImplementation(libs.bundles.testing)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
-    androidTestImplementation(libs.androidx.test.core)
 
 
+    androidTestImplementation(libs.androidx.core.ktx)
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

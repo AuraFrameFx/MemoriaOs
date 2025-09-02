@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -52,6 +53,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_24
         targetCompatibility = JavaVersion.VERSION_24
     }
+
 
 
     packaging {
@@ -132,6 +134,10 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(libs.androidx.test.core)
+    testRuntimeOnly(libs.junit.engine)
+
+    androidTestImplementation(libs.androidx.core.ktx) // MOVED AND CONFIRMED
+    androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
@@ -144,6 +150,9 @@ dependencies {
 val romToolsOutputDirectory: DirectoryProperty =
     project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
 
+// Define a shared directory property for ROM tools output
+val romToolsOutputDirectory: DirectoryProperty = project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
+
 // ROM Tools specific tasks
 tasks.register<Copy>("copyRomTools") {
     from("src/main/resources")
@@ -152,6 +161,9 @@ tasks.register<Copy>("copyRomTools") {
     includeEmptyDirs = false
 
     doFirst {
+        val dirFile = romToolsOutputDirectory.get().asFile
+        // The Copy task's into() will handle directory creation
+        logger.lifecycle("📁 ROM tools directory: ${dirFile.absolutePath}")
         val outputDir = romToolsOutputDirectory.get().asFile
         outputDir.mkdirs()
         logger.lifecycle("📁 ROM tools directory: ${outputDir.absolutePath}")
@@ -163,7 +175,6 @@ tasks.register<Copy>("copyRomTools") {
 }
 
 abstract class VerifyRomToolsTask : DefaultTask() {
-    @get:InputDirectory
     @get:Optional
     abstract val romToolsDir: DirectoryProperty
 
@@ -172,6 +183,13 @@ abstract class VerifyRomToolsTask : DefaultTask() {
      *
      * If the task's optional `romToolsDir` is unset or points to a non-existent location, the task emits a warning.
      * If the directory exists, the task logs a lifecycle message including the directory's absolute path.
+     */
+    /**
+     * Verifies that the configured ROM tools directory exists.
+     *
+     * If `romToolsDir` is unset or the directory does not exist, logs a warning that ROM functionality may be limited.
+     * If the directory exists, logs a lifecycle message with its absolute path. This check is informational and does not
+     * fail the build when the directory is missing.
      */
     @TaskAction
     fun verify() {
@@ -185,6 +203,9 @@ abstract class VerifyRomToolsTask : DefaultTask() {
 }
 
 tasks.register<VerifyRomToolsTask>("verifyRomTools") {
+    romToolsDir.set(romToolsOutputDirectory) // Set to the same shared property
+    // Gradle should infer the dependency on copyRomTools because romToolsOutputDirectory
+    // is an output of copyRomTools (via 'into') and an input here.
     romToolsDir.set(romToolsOutputDirectory) // Set to the same shared property
     dependsOn("copyRomTools") // Explicitly depend on copyRomTools for clarity and reliability
     // Gradle should infer the dependency on copyRomTools because romToolsOutputDirectory

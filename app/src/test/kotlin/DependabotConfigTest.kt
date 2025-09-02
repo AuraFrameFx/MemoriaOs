@@ -9,8 +9,9 @@ Scope:
 */
 
 import kotlin.test.Test
-import kotlin.test.assertFalse
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.assertFalse
 
 private data class DependabotUpdate(
     val packageEcosystem: String? = null,
@@ -68,11 +69,9 @@ private fun parseDependabotConfig(yaml: String): DependabotConfig {
                 val v = trimmed.removePrefix("version:").trim().trim('"', '\'')
                 version = v.toIntOrNull()
             }
-
             trimmed.startsWith("updates:") -> {
                 inUpdates = true
             }
-
             inUpdates && trimmed.startsWith("- ") -> {
                 // New update entry
                 pushCurrent()
@@ -86,7 +85,6 @@ private fun parseDependabotConfig(yaml: String): DependabotConfig {
                     current = current!!.copy(packageEcosystem = v.ifBlank { null })
                 }
             }
-
             inUpdates && current != null -> {
                 val parts = trimmed.split(":", limit = 2)
                 if (parts.size == 2) {
@@ -96,15 +94,12 @@ private fun parseDependabotConfig(yaml: String): DependabotConfig {
                         key == "package-ecosystem" -> current = current!!.copy(
                             packageEcosystem = value.ifBlank { null }
                         )
-
                         key == "directory" -> current = current!!.copy(directory = value)
                         key == "schedule" -> {
                             inSchedule = true
                             scheduleIndent = indent
                         }
-
-                        inSchedule && key == "interval" -> current =
-                            current!!.copy(scheduleInterval = value)
+                        inSchedule && key == "interval" -> current = current!!.copy(scheduleInterval = value)
                     }
                 }
             }
@@ -142,31 +137,25 @@ private fun validateDependabotConfig(cfg: DependabotConfig): List<String> {
             errors.add("$at.directory should start with '/' (root-relative), found: '${u.directory}'")
         }
         if (u.scheduleInterval.isNullOrBlank()) {
-            errors.add(
-                "$at.schedule.interval must be one of ${
-                    allowedIntervals.joinToString(\", \")}, found: ${
-                        u.scheduleInterval?.let {
-                            \"'$it'\" } ?: "null"}")
-                        } else if (u.scheduleInterval !in allowedIntervals) {
-                            errors.add(
-                                "$at.schedule.interval must be one of ${
-                                    allowedIntervals.joinToString(\", \")}, found: '${u.scheduleInterval}'")
-                                }
-                        }
-                        return errors
-                    }
+            errors.add("$at.schedule.interval must be one of ${allowedIntervals.joinToString(\", \")}, found: ${u.scheduleInterval?.let { \"'$it'\" } ?: "null"}")
+        } else if (u.scheduleInterval !in allowedIntervals) {
+            errors.add("$at.schedule.interval must be one of ${allowedIntervals.joinToString(\", \")}, found: '${u.scheduleInterval}'")
+        }
+    }
+    return errors
+}
 
-                            /**
-                             * Helper that couples parse + validate for convenience in tests.
-                             */
-                            private fun parseAndValidate(yaml: String): List<String> =
-                        validateDependabotConfig(parseDependabotConfig(yaml))
+/**
+ * Helper that couples parse + validate for convenience in tests.
+ */
+private fun parseAndValidate(yaml: String): List<String> =
+    validateDependabotConfig(parseDependabotConfig(yaml))
 
-                    class DependabotConfigTest {
+class DependabotConfigTest {
 
-                        @Test
-                        fun validConfig_parsesAndValidates() {
-                            val yaml = """
+    @Test
+    fun validConfig_parsesAndValidates() {
+        val yaml = """
             version: 2
             updates:
               - package-ecosystem: "gradle"
@@ -175,17 +164,14 @@ private fun validateDependabotConfig(cfg: DependabotConfig): List<String> {
                   interval: "weekly"
         """.trimIndent()
 
-                            val errors = parseAndValidate(yaml)
-                            assertTrue(
-                                errors.isEmpty(),
-                                "Expected no errors, but found: ${errors.joinToString()}"
-                            )
-                        }
+        val errors = parseAndValidate(yaml)
+        assertTrue(errors.isEmpty(), "Expected no errors, but found: ${errors.joinToString()}")
+    }
 
-                        @Test
-                        fun invalidPackageEcosystem_reportsError_basedOnPRSnippet() {
-                            // Based on the PR diff snippet provided in the task
-                            val yaml = """
+    @Test
+    fun invalidPackageEcosystem_reportsError_basedOnPRSnippet() {
+        // Based on the PR diff snippet provided in the task
+        val yaml = """
             # To get started with Dependabot version updates, you'll need to specify which
             # package ecosystems to update and where the package manifests are located.
             # Please see the documentation for all configuration options:
@@ -199,26 +185,19 @@ private fun validateDependabotConfig(cfg: DependabotConfig): List<String> {
                   interval: "weekly"
         """.trimIndent()
 
-                            val errors = parseAndValidate(yaml)
-                            assertTrue(
-                                errors.any { it.contains("package-ecosystem must be non-empty") },
-                                "Expected error about empty package-ecosystem; got: ${errors.joinToString()}"
-                            )
-                            // Ensure other parts are interpreted correctly
-                            assertFalse(
-                                errors.any { it.startsWith("version must be 2") },
-                                "Version should be valid"
-                            )
-                            assertFalse(errors.any {
-                                it.contains("schedule.interval must be") && it.contains(
-                                    "found: 'weekly'"
-                                )
-                            }, "Weekly should be valid")
-                        }
+        val errors = parseAndValidate(yaml)
+        assertTrue(
+            errors.any { it.contains("package-ecosystem must be non-empty") },
+            "Expected error about empty package-ecosystem; got: ${errors.joinToString()}"
+        )
+        // Ensure other parts are interpreted correctly
+        assertFalse(errors.any { it.startsWith("version must be 2") }, "Version should be valid")
+        assertFalse(errors.any { it.contains("schedule.interval must be") && it.contains("found: 'weekly'") }, "Weekly should be valid")
+    }
 
-                        @Test
-                        fun missingScheduleInterval_reportsError() {
-                            val yaml = """
+    @Test
+    fun missingScheduleInterval_reportsError() {
+        val yaml = """
             version: 2
             updates:
               - package-ecosystem: "maven"
@@ -227,20 +206,16 @@ private fun validateDependabotConfig(cfg: DependabotConfig): List<String> {
                   # interval intentionally missing
         """.trimIndent()
 
-                            val errors = parseAndValidate(yaml)
-                            assertTrue(
-                                errors.any {
-                                    it.contains("schedule.interval must be one of") && it.contains(
-                                        "found: null"
-                                    )
-                                },
-                                "Expected error about missing schedule interval; got: ${errors.joinToString()}"
-                            )
-                        }
+        val errors = parseAndValidate(yaml)
+        assertTrue(
+            errors.any { it.contains("schedule.interval must be one of") && it.contains("found: null") },
+            "Expected error about missing schedule interval; got: ${errors.joinToString()}"
+        )
+    }
 
-                        @Test
-                        fun multipleUpdates_aggregatesErrors_andIdentifiesIndices() {
-                            val yaml = """
+    @Test
+    fun multipleUpdates_aggregatesErrors_andIdentifiesIndices() {
+        val yaml = """
             version: 2
             updates:
               - package-ecosystem: "gradle"
@@ -251,29 +226,19 @@ private fun validateDependabotConfig(cfg: DependabotConfig): List<String> {
                 directory: "app"   # missing leading slash
                 schedule:
                   interval: "yearly" # invalid interval
-        """.trimIndent()
+        """"".trimIndent()
 
-                            val errors = parseAndValidate(yaml)
-                            // Expect two errors: directory leading slash + invalid interval for second update
-                            assertTrue(
-                                errors.any { it.contains("updates[1].directory should start with '/'") },
-                                "Expected directory leading slash error for updates[1]"
-                            )
-                            assertTrue(errors.any {
-                                it.contains("updates[1].schedule.interval") && it.contains(
-                                    "found: 'yearly'"
-                                )
-                            }, "Expected invalid interval error for updates[1]")
-                            // First update should be fine
-                            assertFalse(
-                                errors.any { it.contains("updates[0].") },
-                                "Did not expect errors for updates[0]; got: ${errors.joinToString()}"
-                            )
-                        }
+        val errors = parseAndValidate(yaml)
+        // Expect two errors: directory leading slash + invalid interval for second update
+        assertTrue(errors.any { it.contains("updates[1].directory should start with '/'") }, "Expected directory leading slash error for updates[1]")
+        assertTrue(errors.any { it.contains("updates[1].schedule.interval") && it.contains("found: 'yearly'") }, "Expected invalid interval error for updates[1]")
+        // First update should be fine
+        assertFalse(errors.any { it.contains("updates[0].") }, "Did not expect errors for updates[0]; got: ${errors.joinToString()}")
+    }
 
-                        @Test
-                        fun parser_ignoresInlineComments_andWhitespace() {
-                            val yaml = """
+    @Test
+    fun parser_ignoresInlineComments_andWhitespace() {
+        val yaml = """
             version: 2    # inline comment
             updates:
               - package-ecosystem: "pip"  # python
@@ -282,16 +247,13 @@ private fun validateDependabotConfig(cfg: DependabotConfig): List<String> {
                   interval: "monthly"     # valid
         """.trimIndent()
 
-                            val errors = parseAndValidate(yaml)
-                            assertTrue(
-                                errors.isEmpty(),
-                                "Expected no errors when inline comments are present: ${errors.joinToString()}"
-                            )
-                        }
+        val errors = parseAndValidate(yaml)
+        assertTrue(errors.isEmpty(), "Expected no errors when inline comments are present: ${errors.joinToString()}")
+    }
 
-                        @Test
-                        fun malformedVersion_nonNumeric_reportsError() {
-                            val yaml = """
+    @Test
+    fun malformedVersion_nonNumeric_reportsError() {
+        val yaml = """
             version: "two"
             updates:
               - package-ecosystem: "gradle"
@@ -300,26 +262,17 @@ private fun validateDependabotConfig(cfg: DependabotConfig): List<String> {
                   interval: "weekly"
         """.trimIndent()
 
-                            val errors = parseAndValidate(yaml)
-                            assertTrue(
-                                errors.any { it.startsWith("version must be 2") },
-                                "Expected version error; got: ${errors.joinToString()}"
-                            )
-                        }
+        val errors = parseAndValidate(yaml)
+        assertTrue(errors.any { it.startsWith("version must be 2") }, "Expected version error; got: ${errors.joinToString()}")
+    }
 
-                        @Test
-                        fun emptyOrWhitespaceInput_isRejected() {
-                            val blanks = listOf("", "   ", "\n\t   \n")
-                            blanks.forEach { blank ->
-                                val errors = parseAndValidate(blank)
-                                assertTrue(
-                                    errors.any { it.contains("version must be 2") },
-                                    "Expected version error for blank input"
-                                )
-                                assertTrue(
-                                    errors.any { it.contains("updates must contain at least one entry") },
-                                    "Expected updates error for blank input"
-                                )
-                            }
-                        }
-                    }
+    @Test
+    fun emptyOrWhitespaceInput_isRejected() {
+        val blanks = listOf("", "   ", "\n\t   \n")
+        blanks.forEach { blank ->
+            val errors = parseAndValidate(blank)
+            assertTrue(errors.any { it.contains("version must be 2") }, "Expected version error for blank input")
+            assertTrue(errors.any { it.contains("updates must contain at least one entry") }, "Expected updates error for blank input")
+        }
+    }
+}
