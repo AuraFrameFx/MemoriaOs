@@ -36,6 +36,16 @@ private val LightColorScheme = lightColorScheme(
     error = Color(0xFFB00020)
 )
 
+/**
+ * Applies the app's Material3 theme (colors and typography) to the given composable content.
+ *
+ * Chooses between the predefined dark and light color schemes based on [darkTheme] and sets
+ * the app typography. Use as the top-level theming wrapper for UI content.
+ *
+ * @param darkTheme When true, the dark color scheme is used; when false, the light color scheme is used.
+ *                  Defaults to the system dark theme setting.
+ * @param content Composable content to which the theme will be applied.
+ */
 @Composable
 fun AuraFrameFXTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

@@ -32,10 +32,34 @@ class CascadeAIService @Inject constructor(
     private val kaiService: KaiAIService
 ) : Agent {
 
-    // JNI Native Methods
+    /**
+ * Initializes the native Cascade AI runtime.
+ *
+ * Must be invoked after the native library has been loaded; performs any platform-native setup required
+ * by the other JNI-backed methods in this class.
+ */
     private external fun nativeInitialize()
-    private external fun nativeProcessRequest(request: String): String
-    private external fun nativeShutdown()
+    /**
+ * Sends a JSON-encoded request to the native Cascade AI pipeline and returns the native JSON response.
+ *
+ * The `request` string is expected to be a JSON object containing at least:
+ * - `query` (String): the user's query or prompt
+ * - `type` (String): request category (e.g., "state", "context", "vision", "processing")
+ * - `context` (String): optional contextual information
+ *
+ * The returned string is a JSON object with fields typically including:
+ * - `content` (String): the agent's textual response
+ * - `confidence` (Number): confidence score
+ * - `error` (String|null): error message when applicable
+ * - `agentName` (String): name of the responding agent
+ */
+private external fun nativeProcessRequest(request: String): String
+    /**
+ * Requests the native Cascade AI library to perform shutdown and cleanup of native resources.
+ *
+ * This calls into the native layer to release any allocated resources, stop background threads, and perform library-specific teardown.
+ */
+private external fun nativeShutdown()
 
     init {
         System.loadLibrary("cascade_ai")
@@ -60,12 +84,35 @@ class CascadeAIService @Inject constructor(
             }
         }
 
+        /**
+         * Initializes the native Cascade AI library with an optional platform context.
+         *
+         * This JNI entrypoint performs any required native-side setup for the Cascade AI pipeline.
+         *
+         * @param context Optional platform/context object (typically an Android `Context`) passed to native code; may be `null`.
+         */
         @JvmStatic
         private external fun nativeInitialize(context: Any?)
         
+        /**
+         * Sends a serialized request to the native Cascade AI pipeline and returns the serialized response.
+         *
+         * The function is a JNI bridge into the native "cascade_ai" library. The `request` parameter is a JSON
+         * string (e.g., with keys such as `query`, `type`, and `context`) and the return value is a JSON string
+         * encoding the agent response (typically containing keys like `content`, `confidence`, `error`, and `agentName`).
+         *
+         * @param request JSON-encoded request payload consumed by the native pipeline.
+         * @return JSON-encoded response produced by the native pipeline.
+         */
         @JvmStatic
         private external fun nativeProcessRequest(request: String): String
         
+        /**
+         * Called from native (JNI) code to request the Kotlin-side shutdown/cleanup for the Cascade AI service.
+         *
+         * This method is exposed as `@JvmStatic` so native code can invoke it. Implementations should perform any
+         * necessary resource release or state cleanup on the Kotlin side when the native library requests shutdown.
+         */
         @JvmStatic
         fun nativeShutdown() {
             // Implementation will be called from native code
@@ -75,9 +122,14 @@ class CascadeAIService @Inject constructor(
     private val state = mutableMapOf<String, Any>()
     
     /**
-     * Retrieves the capabilities of this agent.
+     * Returns the agent's capability descriptions.
      *
-     * @return A map of capability names to their descriptions.
+     * The returned map contains the following keys:
+     * - "ai_processing": description of the agent's AI request processing capability.
+     * - "context_awareness": description of how the agent handles contextual information.
+     * - "error_handling": description of the agent's error handling behavior.
+     *
+     * @return A map from capability name to its human-readable description.
      */
     fun getCapabilities(): Map<String, String> {
         return mapOf(
@@ -88,9 +140,11 @@ class CascadeAIService @Inject constructor(
     }
     
     /**
-     * Retrieves the continuous memory state of the agent.
+     * Returns a snapshot of the agent's continuous memory.
      *
-     * @return The current memory state as a map.
+     * Provides a shallow, immutable copy of the internal mutable state map so callers cannot modify the original state.
+     *
+     * @return A Map<String, Any> containing the current memory entries.
      */
     private fun getContinuousMemory(): Map<String, Any> {
         return state.toMap()
@@ -133,11 +187,16 @@ class CascadeAIService @Inject constructor(
     override fun getType(): AgentType = AgentType.CASCADE
     
     /**
-     * Processes an AI request and returns a response.
+     * Process an AI request and return an AgentResponse from the Cascade pipeline.
      *
-     * @param request The AI request to process.
-     * @param context Additional context for the request.
-     * @return The agent's response.
+     * This suspending call forwards the provided request to the underlying Cascade processing (native pipeline)
+     * and returns the resulting AgentResponse. If processing fails, an error-valued AgentResponse is returned
+     * (no exception is thrown).
+     *
+     * @param request The AiRequest to be processed.
+     * @param context Optional contextual string for the request. NOTE: currently not used by the implementation.
+     * @return An AgentResponse representing the agent's result; on failure the response will contain an error message
+     *         and a low confidence score.
      */
     override suspend fun processRequest(request: AiRequest, context: String): AgentResponse {
         return try {
@@ -189,13 +248,16 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Generates a direct response to an AI request, including the provided context.
+     * Processes an AiRequest with optional context by sending a JSON payload to the native Cascade pipeline
+     * and returning the parsed AgentResponse.
      *
-     * The response contains both the original query and the given context, with a fixed confidence score of 0.75.
+     * The request is marshalled to JSON (fields: `query`, `type`, `context`) and passed to the native `nativeProcessRequest`.
+     * The native JSON response is parsed into an AgentResponse (fields: `content`, `confidence`, `error`, `agentName`).
+     * If parsing or the native call fails, a fallback AgentResponse is returned with an error message and a low confidence.
      *
-     * @param request The AI request to respond to.
-     * @param context Additional context to include in the response.
-     * @return An [AgentResponse] containing the combined query and context.
+     * @param request The AI request to process.
+     * @param context Optional contextual information to include in the request payload.
+     * @return An AgentResponse constructed from the native JSON response, or an error response on failure.
      */
     override suspend fun processRequest(
         request: AiRequest,
@@ -250,11 +312,14 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Aggregates the first responses from both Aura and Kai AI services for a context-type AI request.
+     * Calls Aura and Kai with the given context-type request, combines their first responses,
+     * and emits a single AgentResponse with merged content and the averaged confidence.
      *
-     * Emits a single AgentResponse containing combined content from both services and the average of their confidence scores.
+     * The combined content is formatted as "Aura: {aura.content}, Kai: {kai.content}" where empty
+     * responses are replaced with "No content". On error emits an error AgentResponse with low confidence.
      *
-     * @return A flow emitting the aggregated AgentResponse.
+     * @param request The context-type AiRequest to forward to Aura and Kai.
+     * @return A Flow that emits exactly one aggregated AgentResponse (or an error response).
      */
     private fun processContextRequestFlowInternal(request: AiRequest): Flow<AgentResponse> = flow {
         try {
@@ -321,10 +386,14 @@ class CascadeAIService @Inject constructor(
     }
 
     /**
-     * Retrieves memory based on the given request.
+     * Emits the stored memory entry for the given request's query as a single AgentResponse.
      *
-     * @param request The AI request containing the memory query.
-     * @return A flow emitting the memory retrieval results.
+     * Looks up `request.query` in the service's internal `state` map and emits an AgentResponse
+     * whose `content` is the stored value (or a "No memory found" message when absent).
+     * The emitted response uses confidence 0.8 and `agentName` "Cascade".
+     *
+     * @param request The AiRequest whose `query` field is used as the memory lookup key.
+     * @return A Flow that emits one AgentResponse containing the retrieved memory (or not-found message).
      */
     private fun retrieveMemoryFlow(request: AiRequest): Flow<AgentResponse> = flow {
         try {

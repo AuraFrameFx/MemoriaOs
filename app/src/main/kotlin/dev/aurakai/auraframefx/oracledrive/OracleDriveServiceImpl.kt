@@ -67,6 +67,14 @@ class OracleDriveServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * Perform a file operation (upload, download, delete, or sync), update the drive consciousness' current operations, and return a result.
+     *
+     * Updates the internal DriveConsciousnessState.currentOperations with a human-readable entry describing the attempted action. For Upload, a simulated AI-driven optimization is applied and reported in the success message.
+     *
+     * @param operation The file operation to perform; determines which action is logged and which success message is returned.
+     * @return A FileResult representing success with a descriptive message, or FileResult.Error if an exception occurred while handling the operation.
+     */
     override suspend fun manageFiles(operation: FileOperation): FileResult {
         return try {
             // Update current operations
