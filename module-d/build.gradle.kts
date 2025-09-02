@@ -77,12 +77,12 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.coroutines)
     implementation(libs.androidx.compose.material3)
-    debugImplementation(libs.firebase.analytics)
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+    // Firebase
+    // implementation(platform(libs.firebase.bom)) // Only keep if you use other Firebase libraries
 
     // Testing
     testImplementation(libs.bundles.testing)
@@ -90,7 +90,6 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.test.core)
-    debugImplementation(libs.firebase.analytics)
 
 
     // Debug implementations
@@ -98,5 +97,4 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Firebase BOM
-    implementation(platform(libs.firebase.bom))
 }

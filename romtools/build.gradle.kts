@@ -104,6 +104,7 @@ dependencies {
 
     // Hilt Dependency Injection (Android version)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 
     // Networking
@@ -126,13 +127,10 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
 
     // Firebase dependencies
-    implementation(platform(libs.firebase.bom))
-    debugImplementation(libs.firebase.analytics)
 
     // Testing
     testImplementation(libs.junit)
@@ -140,12 +138,14 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
-    testRuntimeOnly(libs.junit.engine)
-    
-    androidTestImplementation(libs.androidx.test.ext.junit)
+
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
+
+    // Debug implementations
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 // Define a shared directory property for ROM tools output

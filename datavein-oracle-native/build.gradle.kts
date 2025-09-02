@@ -97,10 +97,8 @@ kotlin {
 
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
-    implementation(platform(libs.firebase.bom))
     // Project modules
     implementation(project(":core-module"))
-    debugImplementation(libs.firebase.analytics)
 
     // Core AndroidX
     implementation(libs.bundles.androidx.core)
@@ -116,7 +114,6 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
 
     // Coroutines - Genesis Async Processing
     implementation(libs.bundles.coroutines)
@@ -143,7 +140,7 @@ dependencies {
     // Testing
     testImplementation(libs.bundles.testing)
     testRuntimeOnly(libs.junit.engine)
-    androidTestImplementation(libs.androidx.test.ext.junit)
+
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

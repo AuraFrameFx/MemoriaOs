@@ -97,7 +97,6 @@ dependencies {
     kspAndroidTest(libs.hilt.compiler)
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
-    debugImplementation(libs.firebase.analytics)
 
     // Networking
     implementation(libs.retrofit)
@@ -121,10 +120,7 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
     testRuntimeOnly(libs.junit.engine)
-    testImplementation(libs.androidx.test.ext.junit)
 
-    androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.core)
 
-    implementation(platform(libs.firebase.bom))
 }

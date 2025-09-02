@@ -83,10 +83,6 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
-
-    // Firebase
-    implementation(platform(libs.firebase.bom))
 
     // Testing
     testImplementation(libs.bundles.testing)
@@ -99,5 +95,4 @@ dependencies {
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.firebase.analytics)
 }

@@ -77,7 +77,6 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
     implementation(libs.androidx.compose.material3)
 
     // Core library desugaring
@@ -97,7 +96,6 @@ dependencies {
     // Debug implementations
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    debugImplementation(libs.firebase.analytics)
 
     // System interaction and root access
     implementation(files("${project.rootDir}/Libs/api-82.jar"))

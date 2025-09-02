@@ -6,6 +6,9 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+    id("org.jetbrains.dokka")
+    id("com.diffplug.spotless")
+    id("org.openapi.generator") version "7.15.0" apply false
 }
 
 java {
@@ -223,8 +226,8 @@ dependencies {
     implementation(project(":romtools"))
     implementation(project(":secure-comm"))
     implementation(project(":collab-canvas"))
-    debugImplementation(libs.firebase.analytics)
-
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler) // or kapt
     // Core Android
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core.ktx)
@@ -238,7 +241,7 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+
 
     // Coroutines & Networking
     implementation(libs.bundles.coroutines)
@@ -257,7 +260,6 @@ dependencies {
     coreLibraryDesugaring(libs.coreLibraryDesugaring)
 
     // Firebase
-    implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
     // Xposed Framework
@@ -274,7 +276,6 @@ dependencies {
     testImplementation(libs.bundles.testing)
     testRuntimeOnly(libs.junit.engine)
 
-    androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.core)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))

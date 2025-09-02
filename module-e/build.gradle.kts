@@ -80,11 +80,8 @@ dependencies {
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
-    debugImplementation(libs.firebase.analytics)
 
     // Firebase BoM
-    implementation(platform(libs.firebase.bom))
 
     // Testing
     testImplementation(libs.bundles.testing)
