@@ -32,9 +32,9 @@ import javax.inject.Singleton
 abstract class OracleDriveModule { // Changed to abstract class
 
     /**
-     * Binds GenesisSecureFileService as the implementation of SecureFileService for dependency injection.
+     * Binds GenesisSecureFileService as the Singleton implementation of SecureFileService for Hilt.
      *
-     * Allows Hilt to supply a GenesisSecureFileService whenever a SecureFileService is requested.
+     * This enables SecureFileService to be injected wherever required, using GenesisSecureFileService.
      */
     @Binds
     @Singleton
@@ -82,9 +82,11 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton CryptographyManager initialized with the application context.
+         * Returns the singleton CryptographyManager for the application.
          *
-         * @return The singleton CryptographyManager.
+         * Uses the provided application Context to obtain the CryptographyManager instance.
+         *
+         * @return The shared CryptographyManager instance.
          */
         @Provides
         @Singleton
@@ -95,9 +97,11 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Returns the application-scoped singleton SecureStorage initialized with the given application context and CryptographyManager.
+         * Returns the singleton SecureStorage instance initialized with the application context and provided CryptographyManager.
          *
-         * @return The SecureStorage instance.
+         * The returned instance is obtained via SecureStorage.getInstance(context, cryptoManager).
+         *
+         * @return The singleton SecureStorage.
          */
         @Provides
         @Singleton
@@ -111,7 +115,8 @@ abstract class OracleDriveModule { // Changed to abstract class
         /**
          * Provides a singleton GenesisSecureFileService configured with the application context, cryptography manager, and secure storage.
          *
-         * @return A ready-to-use GenesisSecureFileService for performing secure file operations.
+         * @param context Application context used to initialize the service.
+         * @return A configured GenesisSecureFileService for secure file operations.
          */
         @Provides
         @Singleton
@@ -124,9 +129,11 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of OracleDriveApi configured with a base URL from the security context, the specified OkHttpClient, and Gson serialization.
+         * Creates a singleton Retrofit implementation of OracleDriveApi using the provided OkHttpClient and the API base URL from the SecurityContext.
          *
-         * @return An implementation of OracleDriveApi for making Oracle Drive network requests.
+         * The Retrofit instance is configured with the base URL computed as `securityContext.getApiBaseUrl() + "/oracle/drive/"` and uses Gson for JSON serialization.
+         *
+         * @return A configured OracleDriveApi instance for making Oracle Drive network requests.
          */
         @Provides
         @Singleton
@@ -143,9 +150,11 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of `OracleDriveServiceImpl` configured with the required agents, security context, and Oracle Drive API.
+         * Provides a singleton OracleDriveServiceImpl configured with the given agents, security context, and Oracle Drive API.
          *
-         * @return A singleton `OracleDriveServiceImpl` for Oracle Drive operations.
+         * Returned instance is intended for injection as the application-scoped Oracle Drive service.
+         *
+         * @return A singleton configured OracleDriveServiceImpl.
          */
         @Provides
         @Singleton
