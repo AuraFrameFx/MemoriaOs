@@ -35,12 +35,12 @@ class ThemeManager @Inject constructor(
     private var currentTheme = ThemeConfig()
 
     /**
-     * Replace the active theme configuration with the provided one.
+     * Apply the given ThemeConfig as the active theme.
      *
-     * Updates the ThemeManager's current theme state; subsequent calls to getColorScheme(),
-     * getLockScreenTheme(), and other theming APIs will reflect this configuration.
+     * Replaces the manager's current theme; subsequent theming APIs (for example
+     * getColorScheme() and getLockScreenTheme()) will reflect the new configuration.
      *
-     * @param themeConfig The new ThemeConfig to apply as the current theme.
+     * @param themeConfig The ThemeConfig to apply as the current theme.
      */
     fun applyTheme(themeConfig: ThemeConfig) {
         currentTheme = themeConfig
@@ -130,14 +130,14 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Update the manager's active theme colors to a consciousness-themed palette.
+     * Set the active theme's primary, secondary, and accent colors to a "consciousness" palette.
      *
-     * Replaces the current theme's primary, secondary, and accent colors while leaving other
-     * theme settings unchanged.
+     * Replaces only the color fields of the current ThemeConfig and leaves other settings (dark mode,
+     * system-following) unchanged.
      *
-     * @param primary Primary brand color (default: #9333EA) — used for prominent UI elements; purple conveys consciousness.
-     * @param secondary Secondary/supporting color (default: #0EA5E9) — used for accents and surfaces; sky blue conveys clarity.
-     * @param accent Accent/highlight color (default: #10B981) — used for highlights and interactive affordances; emerald conveys growth.
+     * @param primary Primary color to use (default 0xFF9333EA).
+     * @param secondary Secondary/supporting color to use (default 0xFF0EA5E9).
+     * @param accent Accent/highlight color to use (default 0xFF10B981).
      */
     fun setConsciousnessColors(
         primary: Color = Color(0xFF9333EA), // Purple for consciousness

@@ -70,13 +70,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     /**
-     * Initializes required dependencies used by this service.
+     * Initialize runtime dependencies required by this service.
      *
-     * This is a local placeholder that creates or wires the service's runtime
-     * dependencies (DataStoreManager, MemoryManager, logger, etc.) manually.
-     * In production the dependencies should be injected or obtained from a
-     * dependency provider/DI container; this method exists only to provide
-     * fallbacks for testing or when DI is not available.
+     * Creates or wires fallback implementations for the service's late-initialized
+     * dependencies (dataStoreManager, memoryManager, securityContext, logger).
+     * Intended as a local fallback for tests or environments where a DI container
+     * is not available; production code should obtain these from the application's
+     * dependency injection provider.
      */
     private fun initializeDependencies() {
         // Initialize dependencies manually

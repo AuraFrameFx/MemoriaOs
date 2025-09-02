@@ -107,6 +107,17 @@ import androidx.compose.ui.unit.dp
  * @param onClear Called when the user presses the Clear button.
  * @param modifier Optional [Modifier] for styling and layout.
  */
+/**
+ * A compact toolbar for a drawing canvas that provides color selection, stroke-width selection, and a clear action.
+ *
+ * Displays a single-row toolbar with controls to toggle an inline color picker and an inline stroke-width selector.
+ * When a picker is visible, selecting a value invokes the corresponding callback and hides the picker.
+ *
+ * @param onColorSelected Callback invoked with the chosen Color from the inline color picker.
+ * @param onStrokeWidthSelected Callback invoked with the chosen stroke width (in pixels) from the inline selector.
+ * @param onClear Callback invoked when the Clear action is triggered.
+ * @param modifier Optional [Modifier] for styling and layout.
+ */
 @Composable
 fun CanvasToolbar(
     onColorSelected: (Color) -> Unit,
@@ -173,10 +184,11 @@ fun CanvasToolbar(
 }
 
 /**
- * Displays a horizontal palette of circular color swatches and reports the selected color.
+ * A horizontal palette of circular color swatches that reports the selected color.
  *
- * Renders a LazyRow of eight fixed colors (Black, Red, Green, Blue, Yellow, Magenta, Cyan, Gray).
- * Each swatch is a 40.dp circular item; tapping a swatch invokes [onColorSelected] with that color.
+ * Displays eight fixed colors (Black, Red, Green, Blue, Yellow, Magenta, Cyan, Gray)
+ * in a horizontally scrolling row. Each swatch is a 40.dp circle; tapping a swatch
+ * invokes [onColorSelected] with that color.
  *
  * @param onColorSelected Callback invoked with the chosen Color when a swatch is tapped.
  */

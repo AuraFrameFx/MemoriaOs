@@ -52,9 +52,9 @@ class CascadeAIService @Inject constructor(
  */
 private external fun nativeProcessRequest(request: String): String
     /**
- * Instructs the native "cascade_ai" library to perform shutdown and cleanup.
+ * Requests the native "cascade_ai" runtime to shut down and release native resources.
  *
- * Implemented in native code via JNI; calling this triggers native resource release and stops native processing. */
+ * Implemented via JNI in the native library; invokes native-side cleanup and stops native processing. */
 private external fun nativeShutdown()
 
     init {
@@ -101,11 +101,10 @@ private external fun nativeShutdown()
         private external fun nativeProcessRequest(request: String): String
         
         /**
-         * Called from native code to perform JVM-side shutdown/cleanup for the Cascade native library.
+         * JVM-side entry called from native (JNI) code to perform any managed cleanup when the native library is shutting down.
          *
-         * This method is expected to be invoked by the native (JNI) layer when the native library is unloading
-         * or needs to trigger any managed cleanup on the JVM. It has no parameters and returns no value.
-         */
+         * Intended to be invoked by native code during library unload or teardown. No parameters or return value; should be
+         * safe to call from native code and to tolerate repeated invocations. */
         @JvmStatic
         fun nativeShutdown() {
             // Implementation will be called from native code
@@ -128,11 +127,12 @@ private external fun nativeShutdown()
     }
     
     /**
-     * Return a snapshot of the agent's continuous memory.
+     * Returns an immutable snapshot of the agent's continuous memory.
      *
-     * The returned map is an immutable shallow copy of the internal `state` at the time of call.
+     * The returned map is a shallow, immutable copy of the internal `state` at the time of the call;
+     * keys and value references are the same as in `state`, but the map itself cannot be modified.
      *
-     * @return A Map<String, Any> representing the current memory state.
+     * @return A Map<String, Any> containing the current memory entries.
      */
     private fun getContinuousMemory(): Map<String, Any> {
         return state.toMap()
@@ -154,12 +154,12 @@ private external fun nativeShutdown()
     }
     
     /**
-     * Returns the agent's recorded learning history.
+     * Retrieve the agent's recorded learning history.
      *
      * Currently a placeholder that returns an empty list; replace with persisted
      * learning records when available.
      *
-     * @return A list of learning-event descriptions, or an empty list if there are none.
+     * @return A list of learning-event descriptions, or an empty list if none are recorded.
      */
     private fun getLearningHistory(): List<String> {
         return emptyList() // Implement actual learning history if needed
@@ -173,23 +173,19 @@ private external fun nativeShutdown()
     override fun getName(): String = "Cascade"
 
     /**
-     * Returns the type of this agent as `AgentType.CASCADE`.
-     *
-     * @return The agent type for this agent.
-     */
+ * Returns the agent's type (AgentType.CASCADE).
+ */
     override fun getType(): AgentType = AgentType.CASCADE
     
     /**
-     * Process the given AiRequest via the native Cascade processor and return an AgentResponse.
+     * Processes an AiRequest via the native Cascade processor and returns the resulting AgentResponse.
      *
-     * Serializes the request to JSON, forwards it to the native processing entrypoint, and
-     * deserializes the native result into an AgentResponse. If processing fails, returns an
-     * AgentResponse whose `content` contains the error message, `confidence` is 0.0, and
-     * `error` holds the exception message.
+     * The request is sent to the native layer and the native JSON response is decoded into an AgentResponse.
+     * If an exception occurs, a non-throwing AgentResponse is returned with `content` describing the error,
+     * `confidence` set to 0.0, and `error` containing the exception message.
      *
      * @param request The AiRequest to process.
-     * @param context Additional context string forwarded to the native processor (may be empty).
-     * @return The resulting AgentResponse (never throws; errors are represented in the returned response).
+     * @param context Optional context string forwarded to the native processor (may be empty).
      */
     override suspend fun processRequest(request: AiRequest, context: String): AgentResponse {
         return try {
@@ -206,12 +202,14 @@ private external fun nativeShutdown()
     }
 
     /**
-     * Processes an AiRequest and emits one or more AgentResponse values as a Flow, routing to specialized handlers by request.type.
+     * Processes an AiRequest as a Flow, routing to specialized internal handlers and emitting progress and result events.
      *
-     * Delegates to internal handlers for types "state", "context", "vision", and "processing". For any other type emits a default basic-query response (confidence 0.7). Emits an initial processing status before producing the final response. If an exception occurs, emits a single error AgentResponse describing the failure.
+     * Handles request.type values "state", "context", "vision", and "processing" by delegating to the corresponding internal flow handlers.
+     * For any other type emits a default basic-query AgentResponse (confidence 0.7). The Flow always emits an initial processing status
+     * before producing the final AgentResponse. If an exception occurs while handling the request, the Flow emits a single error AgentResponse.
      *
      * @param request The AI request to process; routing is determined by `request.type`.
-     * @return A Flow that first emits a processing status and then the final AgentResponse (or an error response on failure).
+     * @return A Flow that first emits a processing status and then the final AgentResponse (or a single error response on failure).
      */
     override fun processRequestFlow(request: AiRequest): Flow<AgentResponse> = flow {
         try {
@@ -241,15 +239,18 @@ private external fun nativeShutdown()
     }
 
     /**
-     * Processes an AiRequest by serializing it to JSON, sending it to native processing, and returning the parsed AgentResponse.
+     * Send an AiRequest to the native Cascade processor and return the resulting AgentResponse.
      *
-     * The request is encoded with the request's query, type, and the provided context, then passed to nativeProcessRequest.
-     * The native JSON response is parsed into an AgentResponse. If any error occurs during serialization, native invocation,
-     * or parsing, this method returns an AgentResponse with a low confidence (0.1) and the error message populated.
+     * The request is encoded as JSON with fields "query" (empty string if null), "type", and "context", passed to nativeProcessRequest,
+     * and the native JSON response is parsed into an AgentResponse.
      *
-     * @param request The AI request to process (query and type are used).
-     * @param context Optional additional context to include with the request.
-     * @return The AgentResponse produced from the native processor, or an error AgentResponse on failure.
+     * @param request The AiRequest to send; this function uses the request's `query` and `type`.
+     * @param context Optional contextual string included in the JSON request.
+     * @return The AgentResponse parsed from the native JSON response. If the native response omits fields, defaults are applied:
+     *         - `content` defaults to "No content"
+     *         - `confidence` defaults to 0.8f
+     *         If an exception occurs, returns an AgentResponse with `content` set to "Error processing request", `confidence` 0.1f,
+     *         and `error` populated with the exception message.
      */
     override suspend fun processRequest(
         request: AiRequest,
@@ -304,11 +305,12 @@ private external fun nativeShutdown()
     }
 
     /**
-     * Aggregates the first responses from both Aura and Kai AI services for a context-type AI request.
+     * Aggregates the first responses from Aura and Kai for a context-type AI request and emits a single combined response.
      *
-     * Emits a single AgentResponse containing combined content from both services and the average of their confidence scores.
+     * The emitted AgentResponse contains a concatenated content string ("Aura: ..., Kai: ..."), the average of both confidences,
+     * and "Cascade" as the agentName. On exception, emits an error AgentResponse with low confidence and the exception message.
      *
-     * @return A flow emitting the aggregated AgentResponse.
+     * @return A Flow that emits exactly one AgentResponse (combined result or error).
      */
     private fun processContextRequestFlowInternal(request: AiRequest): Flow<AgentResponse> = flow {
         try {
@@ -343,9 +345,10 @@ private external fun nativeShutdown()
     }
 
     /**
-     * Emits a flow containing a single response indicating that vision state processing is in progress.
+     * Emit a Flow that immediately produces a single AgentResponse indicating vision processing is underway.
      *
-     * @return A [Flow] emitting one [AgentResponse] with a message about vision state processing and a confidence score of 0.9.
+     * The provided [request] is not inspected by this handler; the flow always emits a single
+     * response with content "Processing vision state..." and confidence 0.9.
      */
     private fun processVisionRequestFlowInternal(request: AiRequest): Flow<AgentResponse> {
         return flow {
