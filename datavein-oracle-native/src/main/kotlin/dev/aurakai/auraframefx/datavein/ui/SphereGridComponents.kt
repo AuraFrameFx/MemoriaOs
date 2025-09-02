@@ -69,6 +69,18 @@ import dev.aurakai.auraframefx.datavein.model.NodeType
  *
  * @param node The DataVeinNode to display (used for type, identification, XP, description, data, unlocked/activated state).
  */
+/**
+ * Renders a stylized information card for a DataVeinNode.
+ *
+ * Displays the node type header with a colored glow and a small circular status dot
+ * (green = activated, yellow = unlocked, red = locked). Shows identification rows
+ * (Tag, ID, Ring, Level), the node description, optional data, and a one-line status
+ * message reflecting locked/dormant/active state. If the node is unlocked, an XP row
+ * and a horizontal XP progress bar are shown (progress = node.xp / 1000f).
+ *
+ * @param node The DataVeinNode to render.
+ * @param modifier Optional Compose [Modifier] applied to the outer card.
+ */
 @Composable
 fun NodeInfoPanel(
     node: DataVeinNode,
@@ -262,19 +274,14 @@ fun NodeTypeLegend(modifier: Modifier = Modifier) {
 }
 
 /**
- * Displays a status card summarizing real-time DataVein metrics.
+ * Renders a compact status card summarizing real-time DataVein metrics.
  *
- * Shows a pulsing header, three compact status rows (Active Flows, Active Nodes, Unlocked)
- * and two horizontal progress indicators for activation and progression. Percentages
- * are computed relative to `totalNodes`; if `totalNodes` is zero the percentages are treated
- * as 0 to avoid division by zero.
+ * Shows a pulsing header, three status rows (Active Flows, Active Nodes, Unlocked)
+ * and two horizontal progress indicators (Activation, Progression).
+ * Activation and Progression percentages are computed as a ratio over `totalNodes`; when
+ * `totalNodes` is zero the percentages are treated as 0 to avoid division by zero.
  *
- * @param activeFlows Number of currently active flows.
- * @param activeNodes Number of currently active nodes.
- * @param totalNodes Total number of nodes; used to compute percentage values.
- * @param unlockedNodes Number of unlocked nodes; used to compute percentage values.
- * @param modifier Optional Compose modifier for the panel.
-
+ * @param totalNodes Total number of nodes used as the denominator for percentage calculations.
  */
 @Composable
 fun StatusPanel(

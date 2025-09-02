@@ -51,6 +51,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         COLLABORATION_REQUEST
     }
 
+    /**
+     * Initializes the service: performs manual dependency initialization, creates notification channels,
+     * and logs service creation.
+     *
+     * This override of `onCreate` is used because automatic injection via `@AndroidEntryPoint` is not
+     * available. It must run before the service handles any incoming messages so dependencies and
+     * notification channels are ready.
+     */
     override fun onCreate() {
         super.onCreate()
 
@@ -61,6 +69,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Timber.d("Genesis Firebase Messaging Service created")
     }
 
+    /**
+     * Initializes required dependencies used by this service.
+     *
+     * This is a local placeholder that creates or wires the service's runtime
+     * dependencies (DataStoreManager, MemoryManager, logger, etc.) manually.
+     * In production the dependencies should be injected or obtained from a
+     * dependency provider/DI container; this method exists only to provide
+     * fallbacks for testing or when DI is not available.
+     */
     private fun initializeDependencies() {
         // Initialize dependencies manually
         // In a real implementation, get these from a dependency provider
