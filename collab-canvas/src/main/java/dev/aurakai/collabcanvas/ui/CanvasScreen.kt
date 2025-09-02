@@ -167,19 +167,27 @@ import kotlinx.coroutines.launch
  * - The Save action is present in the UI but is a placeholder (no save implementation).
  */
 /**
- * Full-screen composable providing an interactive collaborative drawing canvas.
+ * Full-screen interactive drawing canvas composable with multi-tool support, pan/zoom, and animated playback.
  *
- * Renders a drawable canvas with three tools (freehand path, rectangle, oval), color and stroke controls,
- * pinch-to-zoom and pan, a faint grid background, and support for replayable/animated committed paths.
- * User gestures create in-progress content (kept in `currentPath`) which is committed to the in-memory
- * `paths` list when finished. Composable also maintains `elements` for persisted shapes and `animatedPaths`
- * for per-path replay state. Top app bar exposes clear and save actions (save is a placeholder); toolbar
- * controls color, stroke width, and clearing of animated paths.
+ * Provides an in-memory drawing surface where the user can draw freeform paths, create rectangles and ovals,
+ * pan and zoom the view, and see an animated replay of completed paths. Maintains internal state for:
+ * - persisted drawable paths and elements,
+ * - the in-progress path, color, stroke width, selected tool, and drawing flag,
+ * - per-path animation state (scale, offset, alpha),
+ * - global scale and pan offset for the canvas.
  *
- * This composable is stateful and stores all drawing state in remembered Compose state (no external
- * persistence). Side effects:
- * - "Delete" action clears all in-memory drawings (paths, elements, animatedPaths).
- * - Toolbar "Clear" clears paths and animatedPaths.
+ * Interaction details:
+ * - PATH tool: freehand drawing via drag gestures (start -> lineTo -> commit on drag end). Taps begin a path.
+ * - RECTANGLE / OVAL tools: reserved in the UI; element creation derives bounds from a Path (no explicit shape-drag behaviour implemented here).
+ * - Pinch-to-zoom and pan gestures update the canvas transform; panning is adjusted by the current scale to remain intuitive.
+ *
+ * Side effects:
+ * - Clearing actions (toolbar Clear or top-bar Clear) remove in-memory paths, elements, and animated state only.
+ * - The top-bar "Save" action is a placeholder and does not persist data.
+ *
+ * Visual notes:
+ * - The in-progress path stroke is scaled to remain visually consistent under zoom.
+ * - A grid background is drawn under all content.
  */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
