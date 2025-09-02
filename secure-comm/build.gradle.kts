@@ -20,7 +20,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 23  // FIXED: Raised from 33 to support Android KeyStore APIs
+        minSdk = 33  // FIXED: Raised to 33 to support Android KeyStore APIs and newer features
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
