@@ -76,33 +76,15 @@ class SecureKeyStoreTest {
 
     @Test
     fun storeData_encryptsAndStoresSuccessfully() {
-        val key = "test_key"
-        val data = "sensitive data".toByteArray()
-        val keyAlias = "aura_secure_key_$key"
-        val iv = ByteArray(12) { it.toByte() }
-        val encryptedData = "encrypted_data".toByteArray()
+        // ... earlier setup and verifications ...
 
-        // Mock key creation (key doesn't exist initially)
-        every { keyStore.containsAlias(keyAlias) } returns false
-
-        // Mock encryption
-        every { cipher.init(Cipher.ENCRYPT_MODE, secretKey) } just Runs
-        every { cipher.iv } returns iv
-        every { cipher.doFinal(data) } returns encryptedData
-
-        val storedData = slot<String>()
-        every { editor.putString(key, capture(storedData)) } returns editor
-
-        secureKeyStore.storeData(key, data)
-
-        verify { keyGenerator.generateKey() }
-        verify { cipher.init(Cipher.ENCRYPT_MODE, secretKey) }
-        verify { cipher.doFinal(data) }
-        verify { editor.putString(key, any()) }
         verify { editor.apply() }
 
-        // Verify the stored data is Base64 encoded
-        assertNotNull(storedData.captured)
+        // Verify stored data layout: Base64(IV(12) + ciphertext)
+        val decoded = java.util.Base64.getDecoder().decode(storedData.captured)
+        assertTrue(decoded.size >= 12)
+        assertArrayEquals(iv, decoded.copyOfRange(0, 12))
+        assertArrayEquals(encryptedData, decoded.copyOfRange(12, decoded.size))
     }
 
     @Test
