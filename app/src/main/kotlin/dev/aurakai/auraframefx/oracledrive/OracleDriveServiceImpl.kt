@@ -67,6 +67,14 @@ class OracleDriveServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * Performs a file operation (upload, download, delete, or sync), updates the service's drive consciousness state to record the operation, and returns the operation result.
+     *
+     * The function appends a human-readable entry to the internal `DriveConsciousnessState.currentOperations` for tracking, then returns a `FileResult.Success` with an operation-specific message. If an unexpected error occurs, it returns `FileResult.Error`.
+     *
+     * @param operation The file operation to perform; one of `FileOperation.Upload`, `FileOperation.Download`, `FileOperation.Delete`, or `FileOperation.Sync`.
+     * @return A `FileResult` representing success with a descriptive message for the performed operation, or `FileResult.Error` containing the caught exception on failure.
+     */
     override suspend fun manageFiles(operation: FileOperation): FileResult {
         return try {
             // Update current operations

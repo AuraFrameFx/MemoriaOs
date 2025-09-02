@@ -7,6 +7,12 @@ import org.gradle.api.Project
  */
 class BuildLogicMemoriaConventionPlugin : Plugin<Project> {
 
+    /**
+     * Applies the MemoriaOs base conventions to the given Gradle project.
+     *
+     * Sets the project's `group` and `version`, and emits a confirmation message.
+     *
+     * @param project The Gradle project to configure; its `group` and `version` will be mutated.
     override fun apply(project: Project) {
         // Set basic project properties directly
         project.group = "dev.aurakai.memoria"

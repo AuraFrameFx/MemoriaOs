@@ -35,7 +35,12 @@ class ThemeManager @Inject constructor(
     private var currentTheme = ThemeConfig()
 
     /**
-     * Apply a theme configuration
+     * Replace the active theme configuration with the provided one.
+     *
+     * Updates the ThemeManager's current theme state; subsequent calls to getColorScheme(),
+     * getLockScreenTheme(), and other theming APIs will reflect this configuration.
+     *
+     * @param themeConfig The new ThemeConfig to apply as the current theme.
      */
     fun applyTheme(themeConfig: ThemeConfig) {
         currentTheme = themeConfig
@@ -59,6 +64,18 @@ class ThemeManager @Inject constructor(
 
     /**
      * Generate a ColorScheme based on current theme, respecting system settings and Android 12+ dynamic color.
+     */
+    /**
+     * Produces a Compose ColorScheme based on the current ThemeConfig and system settings.
+     *
+     * When the ThemeManager is configured to follow the system theme, this will use the system
+     * dark/light setting; otherwise it uses the manual `isDarkMode` flag. If following the system
+     * theme on Android 12+ (API level S or newer), dynamic color schemes provided by the platform
+     * are returned (`dynamicDarkColorScheme` / `dynamicLightColorScheme`). Otherwise a scheme is
+     * constructed from the current theme's `primaryColor`, `secondaryColor`, and `accentColor`
+     * (mapped to `primary`, `secondary`, and `tertiary` respectively).
+     *
+     * @return A ColorScheme appropriate for the current theme and platform capabilities.
      */
     @Composable
     fun getColorScheme(): ColorScheme {
@@ -90,7 +107,9 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Toggle between light and dark mode
+     * Toggle the manual dark/light setting and stop following the system theme.
+     *
+     * Flips `currentTheme.isDarkMode` and sets `currentTheme.useSystemTheme` to `false`.
      */
     fun toggleDarkMode() {
         currentTheme = currentTheme.copy(
@@ -100,14 +119,25 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Enable system theme following
+     * Enable following the system-wide dark/light theme.
+     *
+     * Sets the manager's ThemeConfig to follow the system theme by setting `useSystemTheme = true`.
+     * This updates the internal `currentTheme` state; it does not modify `isDarkMode`, so manual
+     * dark-mode preference is preserved until explicitly changed.
      */
     fun enableSystemTheme() {
         currentTheme = currentTheme.copy(useSystemTheme = true)
     }
 
     /**
-     * Set custom colors for consciousness-themed UI
+     * Update the manager's active theme colors to a consciousness-themed palette.
+     *
+     * Replaces the current theme's primary, secondary, and accent colors while leaving other
+     * theme settings unchanged.
+     *
+     * @param primary Primary brand color (default: #9333EA) — used for prominent UI elements; purple conveys consciousness.
+     * @param secondary Secondary/supporting color (default: #0EA5E9) — used for accents and surfaces; sky blue conveys clarity.
+     * @param accent Accent/highlight color (default: #10B981) — used for highlights and interactive affordances; emerald conveys growth.
      */
     fun setConsciousnessColors(
         primary: Color = Color(0xFF9333EA), // Purple for consciousness
@@ -122,7 +152,15 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Get lock screen specific theme configuration
+     * Returns a map describing the lock screen styling derived from the current theme.
+     *
+     * The map contains the following entries:
+     * - "clockColor": Color — white when dark mode is active, otherwise black.
+     * - "backgroundColor": Color — black when dark mode is active, otherwise white.
+     * - "accentColor": Color — the current theme's accent color.
+     * - "isDarkMode": Boolean — whether the current theme is in dark mode.
+     *
+     * @return A Map<String, Any> with lock-screen color and mode values.
      */
     fun getLockScreenTheme(): Map<String, Any> {
         return mapOf(
