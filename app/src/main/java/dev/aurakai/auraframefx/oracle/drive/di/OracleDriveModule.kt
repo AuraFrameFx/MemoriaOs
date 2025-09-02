@@ -31,9 +31,14 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class OracleDriveModule { // Changed to abstract class
 
-    /*
-    * This allows dependency injection of SecureFileService throughout the application using the GenesisSecureFileService implementation.
-    */
+    /**
+     * Binds GenesisSecureFileService as the application-wide implementation of SecureFileService.
+     *
+     * This registers the provided `GenesisSecureFileService` in the DI graph so any injection of
+     * `SecureFileService` receives the singleton `GenesisSecureFileService` instance.
+     *
+     * @param impl The `GenesisSecureFileService` instance to bind to `SecureFileService`.
+     */
     @Binds
     @Singleton
     abstract fun bindSecureFileService(
@@ -45,13 +50,13 @@ abstract class OracleDriveModule { // Changed to abstract class
         // Complex providers will be re-enabled after successful build - This comment can likely be removed if providers are present
 
         /**
-         * Provides a singleton OkHttpClient configured with security and logging interceptors.
+         * Provides a singleton OkHttpClient configured with security headers, request ID, and basic logging.
          *
-         * The client automatically adds a secure token and a unique request ID to each request header,
-         * and logs HTTP requests and responses at the BASIC level. Connection, read, and write timeouts
-         * are set to 30 seconds.
+         * The client adds an "X-Security-Token" (from CryptographyManager.generateSecureToken()) and a unique
+         * "X-Request-ID" (UUID) to every request, logs at HttpLoggingInterceptor.Level.BASIC, and uses 30s
+         * connect/read/write timeouts.
          *
-         * @return A configured OkHttpClient instance for secure network communication.
+         * @return Configured OkHttpClient for secure network communication.
          */
         @Provides
         @Singleton
@@ -80,9 +85,11 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of CryptographyManager using the application context.
+         * Returns the singleton CryptographyManager initialized with the application context.
          *
-         * @return The singleton CryptographyManager instance.
+         * This obtains the shared CryptographyManager instance via CryptographyManager.getInstance(context).
+         *
+         * @return The singleton CryptographyManager.
          */
         @Provides
         @Singleton
@@ -93,7 +100,7 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of SecureStorage initialized with the application context and cryptography manager.
+         * Provides a singleton SecureStorage initialized with the application context and cryptography manager.
          *
          * @return The singleton SecureStorage instance.
          */
@@ -107,9 +114,9 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of `GenesisSecureFileService` initialized with the application context, cryptography manager, and secure storage.
+         * Provide a singleton GenesisSecureFileService preconfigured with the application Context, CryptographyManager, and SecureStorage.
          *
-         * @return A configured `GenesisSecureFileService` for secure file operations.
+         * @return Configured GenesisSecureFileService for secure file operations.
          */
         @Provides
         @Singleton
@@ -141,9 +148,9 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of `OracleDriveServiceImpl` configured with the required agents, security context, and Oracle Drive API.
+         * Provides a singleton OracleDriveServiceImpl configured with the required agents, security context, and OracleDriveApi.
          *
-         * @return A singleton `OracleDriveServiceImpl` for Oracle Drive operations.
+         * @return A singleton OracleDriveServiceImpl for Oracle Drive operations.
          */
         @Provides
         @Singleton

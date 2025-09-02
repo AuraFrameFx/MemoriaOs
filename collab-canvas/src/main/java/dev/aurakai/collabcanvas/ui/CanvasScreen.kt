@@ -166,6 +166,23 @@ import kotlinx.coroutines.launch
  * - Clearing the canvas or the Delete action removes only in-memory state; there is no persistence.
  * - The Save action is present in the UI but is a placeholder (no save implementation).
  */
+/**
+ * Full-screen collaborative drawing canvas Composable with multi-tool drawing, pan/zoom, and animated replay.
+ *
+ * Renders an interactive canvas that lets the user draw freehand paths, place rectangle and oval elements,
+ * pan and zoom the viewport, and replay committed paths using per-path animated state. Internally manages
+ * transient drawing state (current path, color, stroke width, selected tool, isDrawing), collections of
+ * committed drawable items (`paths`, `elements`) and animated copies (`animatedPaths`), and viewport
+ * transforms (`scale`, `offset`). Provides a top app bar with Clear/Save actions and floating tool buttons
+ * to switch between PATH, RECTANGLE, and OVAL modes. Includes a toolbar for selecting color, stroke width,
+ * and clearing animated paths.
+ *
+ * Side effects:
+ * - Mutates internal Compose state (no external parameters). Clearing actions remove committed and animated paths.
+ * - Uses gesture detectors to update drawing and viewport state.
+ *
+ * This Composable is self-contained and intended to be used as a screen within an app's navigation scaffold.
+ */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun CanvasScreen() {

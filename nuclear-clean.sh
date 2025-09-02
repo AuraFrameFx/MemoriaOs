@@ -18,7 +18,7 @@ fi
 echo ""
 echo "🚀 Beginning nuclear clean sequence..."
 
-# Function to safely remove directory if it exists
+# safe_remove removes the directory at the given path if it exists, printing a removal message before recursively deleting it.
 safe_remove() {
     if [ -d "$1" ]; then
         echo "🗑️  Removing: $1"
@@ -26,7 +26,7 @@ safe_remove() {
     fi
 }
 
-# Function to safely remove file if it exists
+# safe_remove_file removes the file at the given path if it exists, printing a removal message and quietly deleting it.
 safe_remove_file() {
     if [ -f "$1" ]; then
         echo "🗑️  Removing file: $1"
