@@ -31,9 +31,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class OracleDriveModule { // Changed to abstract class
 
-    /*
-    * This allows dependency injection of SecureFileService throughout the application using the GenesisSecureFileService implementation.
-    */
+    /**
+     * Binds GenesisSecureFileService as the implementation of SecureFileService for dependency injection.
+     *
+     * Allows Hilt to supply a GenesisSecureFileService whenever a SecureFileService is requested.
+     */
     @Binds
     @Singleton
     abstract fun bindSecureFileService(
@@ -80,9 +82,9 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of CryptographyManager using the application context.
+         * Provides a singleton CryptographyManager initialized with the application context.
          *
-         * @return The singleton CryptographyManager instance.
+         * @return The singleton CryptographyManager.
          */
         @Provides
         @Singleton
@@ -93,9 +95,9 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of SecureStorage initialized with the application context and cryptography manager.
+         * Returns the application-scoped singleton SecureStorage initialized with the given application context and CryptographyManager.
          *
-         * @return The singleton SecureStorage instance.
+         * @return The SecureStorage instance.
          */
         @Provides
         @Singleton
@@ -107,9 +109,9 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of `GenesisSecureFileService` initialized with the application context, cryptography manager, and secure storage.
+         * Provides a singleton GenesisSecureFileService configured with the application context, cryptography manager, and secure storage.
          *
-         * @return A configured `GenesisSecureFileService` for secure file operations.
+         * @return A ready-to-use GenesisSecureFileService for performing secure file operations.
          */
         @Provides
         @Singleton
