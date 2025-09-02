@@ -31,9 +31,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 abstract class OracleDriveModule { // Changed to abstract class
 
-    /*
-    * This allows dependency injection of SecureFileService throughout the application using the GenesisSecureFileService implementation.
-    */
+    /**
+     * Binds GenesisSecureFileService as the @Singleton implementation for SecureFileService.
+     */
     @Binds
     @Singleton
     abstract fun bindSecureFileService(
@@ -80,7 +80,7 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of CryptographyManager using the application context.
+         * Returns the singleton CryptographyManager initialized with the application context.
          *
          * @return The singleton CryptographyManager instance.
          */
@@ -93,7 +93,8 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of SecureStorage initialized with the application context and cryptography manager.
+         * Returns the singleton SecureStorage instance for the application, initialized with the given
+         * application context and cryptography manager.
          *
          * @return The singleton SecureStorage instance.
          */
@@ -107,9 +108,9 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of `GenesisSecureFileService` initialized with the application context, cryptography manager, and secure storage.
+         * Returns a singleton GenesisSecureFileService configured with the application context, cryptography manager, and secure storage.
          *
-         * @return A configured `GenesisSecureFileService` for secure file operations.
+         * @return A ready-to-use GenesisSecureFileService for secure file operations.
          */
         @Provides
         @Singleton
@@ -122,9 +123,14 @@ abstract class OracleDriveModule { // Changed to abstract class
         }
 
         /**
-         * Provides a singleton instance of OracleDriveApi configured with a base URL from the security context, the specified OkHttpClient, and Gson serialization.
+         * Provides a singleton OracleDriveApi backed by Retrofit.
          *
-         * @return An implementation of OracleDriveApi for making Oracle Drive network requests.
+         * The Retrofit instance is configured with Gson serialization, the provided OkHttpClient,
+         * and a base URL formed by appending "/oracle/drive/" to the value returned by
+         * securityContext.getApiBaseUrl().
+         *
+         * @param securityContext Used to obtain the API base URL via `getApiBaseUrl()`.
+         * @return An implementation of OracleDriveApi.
          */
         @Provides
         @Singleton
