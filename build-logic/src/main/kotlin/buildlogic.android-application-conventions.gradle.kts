@@ -12,12 +12,12 @@ plugins {
 android {
     namespace = "com.aegenesis.${project.name.replace("-", "")}"
 
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.aegenesis.${project.name.replace("-", "").toLowerCase()}"
+        applicationId = "com.aegenesis.${project.name.replace("-", "").lowercase()}"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -96,9 +96,6 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
-
-            // Enable debugging for dev builds
-            isDebuggable = true
             isDefault = true
         }
 
@@ -106,9 +103,6 @@ android {
             dimension = "environment"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
-
-            // Enable debugging for staging builds
-            isDebuggable = true
         }
 
         create("production") {
@@ -133,33 +127,4 @@ android.applicationVariants.all {
                 }"
             output.outputFileName = outputFileName
         }
-}
-
-// Configure dependency updates
-dependencyUpdates {
-    checkForGradleUpdate = true
-    outputDir = "build/dependencyUpdates"
-    outputFormatter = "json"
-    revision = "release"
-    checkConstraints = true
-    rejectVersionIf {
-        isNonStable(candidate.version) && !isNonStable(currentVersion)
-    }
-}
-
-/**
- * Returns true if the provided version string is considered non-stable.
- *
- * A version is treated as stable when it either contains one of the keywords
- * "RELEASE", "FINAL", or "GA" (case-insensitive) or matches the pattern
- * `^[0-9,.v-]+(-r)?$` (numeric-like versions, optionally suffixed with `-r`).
- *
- * @param version The version string to evaluate.
- * @return `true` when the version is non-stable, `false` when it is considered stable.
- */
-fun isNonStable(version: String): Boolean {
-    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
-    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
-    val isStable = stableKeyword || regex.matches(version)
-    return isStable.not()
 }

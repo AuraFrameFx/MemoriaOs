@@ -5,6 +5,7 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.*
+import org.gradle.api.tasks.Delete
 
 class AndroidNativeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -69,15 +70,17 @@ class AndroidNativeConventionPlugin : Plugin<Project> {
             }
 
             // Enhanced clean task for native modules
-            tasks.named<Delete>("cleanGeneratedSources") {
-                delete(
-                    layout.buildDirectory.dir("generated/ksp"),
-                    layout.buildDirectory.dir("generated/source/ksp"),
-                    layout.buildDirectory.dir("tmp/kapt3"),
-                    layout.buildDirectory.dir("tmp/kotlin-classes"),
-                    layout.buildDirectory.dir("kotlin"),
-                    layout.buildDirectory.dir("intermediates/cmake")
-                )
+            tasks.named("cleanGeneratedSources") {
+                doLast {
+                    delete(
+                        layout.buildDirectory.dir("generated/ksp"),
+                        layout.buildDirectory.dir("generated/source/ksp"),
+                        layout.buildDirectory.dir("tmp/kapt3"),
+                        layout.buildDirectory.dir("tmp/kotlin-classes"),
+                        layout.buildDirectory.dir("kotlin"),
+                        layout.buildDirectory.dir("intermediates/cmake")
+                    )
+                }
             }
 
             // Native verification task

@@ -61,4 +61,11 @@ publishing {
     }
 }
 
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.12.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.12.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.12.1")
+}
+
 println("🔧 MemoriaOs Build Logic: LOADED (Conflict-Free)")

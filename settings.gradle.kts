@@ -42,11 +42,11 @@ pluginManagement {
         }
     }
 }
-
-// Configure Java toolchain resolution
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
+// Configure Java toolchain resolution
+
 
 dependencyResolutionManagement {
     // Enforce consistent dependency resolution
