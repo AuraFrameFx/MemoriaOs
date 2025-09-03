@@ -173,6 +173,15 @@ fun CanvasToolbar(
     }
 }
 
+/**
+ * A horizontal palette of circular color swatches that reports the selected color.
+ *
+ * Displays eight fixed colors (Black, Red, Green, Blue, Yellow, Magenta, Cyan, Gray)
+ * in a horizontally scrolling row. Each swatch is a 40.dp circle; tapping a swatch
+ * invokes [onColorSelected] with that color.
+ *
+ * @param onColorSelected Callback invoked with the chosen Color when a swatch is tapped.
+ */
 @Composable
 private fun ColorPicker(
     onColorSelected: (Color) -> Unit
@@ -198,6 +207,13 @@ private fun ColorPicker(
     }
 }
 
+/**
+ * A horizontal selector of predefined stroke widths; renders buttons for each option.
+ *
+ * When a width button is clicked, the provided callback is invoked with the selected stroke width (in pixels).
+ *
+ * @param onStrokeWidthSelected Callback invoked with the selected stroke width value (e.g., 2f, 5f).
+ */
 @Composable
 private fun StrokeWidthSelector(
     onStrokeWidthSelected: (Float) -> Unit

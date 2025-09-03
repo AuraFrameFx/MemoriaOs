@@ -35,6 +35,17 @@ class OracleDriveServiceImpl @Inject constructor(
         )
     )
 
+    /**
+     * Initializes the drive's consciousness and storage optimization, and activates the drive.
+     *
+     * Creates a DriveConsciousness (awake, intelligenceLevel 95, activeAgents ["Genesis","Aura","Kai"])
+     * and a StorageOptimization (compressionRatio 0.75, 100 MB deduplication savings, intelligentTiering = true),
+     * updates the internal drive consciousness state to isActive = true with currentOperations = ["Initialization"]
+     * and performanceMetrics containing the compression ratio and number of connected agents, then returns the results.
+     *
+     * @return DriveInitResult.Success containing the created DriveConsciousness and StorageOptimization on success,
+     *         or DriveInitResult.Error wrapping the thrown exception if initialization fails.
+     */
     override suspend fun initializeDrive(): DriveInitResult {
         return try {
             // Initialize consciousness with AI agents
@@ -67,6 +78,15 @@ class OracleDriveServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * Execute a file operation (Upload, Download, Delete, or Sync), record a human-readable entry in
+     * DriveConsciousnessState.currentOperations, and return the operation result.
+     *
+     * Updates the service's internal consciousness state with a new operation entry before returning.
+     *
+     * @param operation The file operation to perform.
+     * @return FileResult.Success with an operation-specific message, or FileResult.Error if an exception occurs.
+     */
     override suspend fun manageFiles(operation: FileOperation): FileResult {
         return try {
             // Update current operations
