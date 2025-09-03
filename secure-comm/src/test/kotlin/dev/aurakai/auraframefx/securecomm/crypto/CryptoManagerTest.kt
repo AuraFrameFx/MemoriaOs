@@ -46,7 +46,7 @@ class CryptoManagerTest {
         }
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun keyPairGeneration_createsValidKeyPair() {
         val keyPair = cryptoManager.getOrCreateKeyPair()
         assertNotNull("KeyPair should not be null", keyPair)
@@ -55,7 +55,7 @@ class CryptoManagerTest {
         assertEquals("Key algorithm should be EC", "EC", keyPair.private.algorithm)
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun keyPairGeneration_isDeterministic() {
         val keyPair1 = cryptoManager.getOrCreateKeyPair()
         val keyPair2 = cryptoManager.getOrCreateKeyPair()
@@ -67,7 +67,7 @@ class CryptoManagerTest {
         )
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun keyAgreement_generatesSharedSecret() {
         // Generate two key pairs to simulate two parties
         val keyPairA = cryptoManager.getOrCreateKeyPair()
@@ -111,7 +111,7 @@ class CryptoManagerTest {
         assertArrayEquals("Decrypted message should match original", testMessage, decrypted)
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun signatureVerification_worksCorrectly() {
         cryptoManager.getOrCreateKeyPair()
 
@@ -145,7 +145,7 @@ class CryptoManagerTest {
         )
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun encryptionWithDifferentKeys_producesDifferentOutput() {
         val keyPair1 = cryptoManager.getOrCreateKeyPair()
         val keyPair2 = cryptoManager.getOrCreateKeyPair()

@@ -1,4 +1,3 @@
-
 package dev.aurakai.auraframefx.services
 
 import android.app.Service
@@ -10,10 +9,6 @@ import android.util.Log
 import dagger.hilt.android.AndroidEntryPoint
 import dev.aurakai.auraframefx.ipc.IAuraDriveService
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.security.MessageDigest
 import javax.inject.Inject
 
 /**
@@ -32,8 +27,19 @@ class AuraDriveService : Service() {
     lateinit var secureFileManager: dev.aurakai.auraframefx.oracle.drive.utils.SecureFileManager
 
     private val binder = object : IAuraDriveService.Stub() {
+        /**
+         * Return the current Oracle Drive status string including the caller UID.
+         *
+         * Indicates the Oracle Drive is active and the R.G.S.F. (Redundant Generative Storage Framework)
+         * is nominal. This method logs the status request (includes caller UID and PID).
+         *
+         * @return A short status message containing the active state, R.G.S.F. health, and caller UID.
+         */
         override fun getOracleDriveStatus(): String {
-            Log.d(TAG, "Oracle Drive Status Requested. UID: ${Process.myUid()}, PID: ${Process.myPid()}")
+            Log.d(
+                TAG,
+                "Oracle Drive Status Requested. UID: ${Process.myUid()}, PID: ${Process.myPid()}"
+            )
             return "Oracle Drive Active - R.G.S.F. Nominal (UID: ${Process.myUid()}) "
         }
 

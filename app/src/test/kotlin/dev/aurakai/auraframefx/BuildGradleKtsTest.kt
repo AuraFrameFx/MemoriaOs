@@ -59,6 +59,10 @@ class BuildGradleKtsTest {
             "Expected correct namespace"
         )
 
+        val compile =
+            Regex("""compileSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
+        val target =
+            Regex("""targetSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
         val compile = Regex("""compileSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
         val target = Regex("""targetSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
         val min = Regex("""minSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
@@ -75,6 +79,10 @@ class BuildGradleKtsTest {
             Regex("""applicationId\s*=\s*"dev\.aurakai\.auraframefx"""").containsMatchIn(script),
             "Expected applicationId"
         )
+        assertTrue(
+            Regex("""versionCode\s*=\s*1\b""").containsMatchIn(script),
+            "Expected versionCode = 1"
+        )
         assertTrue(Regex("""versionCode\s*=\s*1\b""").containsMatchIn(script), "Expected versionCode = 1")
         assertTrue(
             Regex("""versionName\s*=\s*"1\.0\.0-genesis-alpha"""").containsMatchIn(script),
@@ -87,6 +95,10 @@ class BuildGradleKtsTest {
         )
         assertTrue(
             Regex("""vectorDrawables\s*\{[^}]*useSupportLibrary\s*=\s*true""", RegexOption.DOT_MATCHES_ALL)
+            Regex(
+                """vectorDrawables\s*\{[^}]*useSupportLibrary\s*=\s*true""",
+                RegexOption.DOT_MATCHES_ALL
+            )
                 .containsMatchIn(script),
             "Expected vectorDrawables.useSupportLibrary = true"
         )
@@ -116,6 +128,10 @@ class BuildGradleKtsTest {
     fun buildTypesConfigured() {
         assertTrue(
             Regex("""buildTypes\s*\{\s*[^}]*release\s*\{[^}]*isMinifyEnabled\s*=\s*true""", RegexOption.DOT_MATCHES_ALL)
+            Regex(
+                """buildTypes\s*\{\s*[^}]*release\s*\{[^}]*isMinifyEnabled\s*=\s*true""",
+                RegexOption.DOT_MATCHES_ALL
+            )
                 .containsMatchIn(script),
             "Expected release.isMinifyEnabled = true"
         )
@@ -126,11 +142,19 @@ class BuildGradleKtsTest {
         )
         assertTrue(
             Regex("""proguardFiles\([^)]*"proguard-android-optimize\.txt"[^)]*"proguard-rules\.pro"[^)]*\)""", RegexOption.DOT_MATCHES_ALL)
+            Regex(
+                """proguardFiles\([^)]*"proguard-android-optimize\.txt"[^)]*"proguard-rules\.pro"[^)]*\)""",
+                RegexOption.DOT_MATCHES_ALL
+            )
                 .containsMatchIn(script),
             "Expected proguard files configuration"
         )
         assertTrue(
             Regex("""buildTypes\s*\{[^}]*debug\s*\{[^}]*proguardFiles\(""", RegexOption.DOT_MATCHES_ALL)
+            Regex(
+                """buildTypes\s*\{[^}]*debug\s*\{[^}]*proguardFiles\(""",
+                RegexOption.DOT_MATCHES_ALL
+            )
                 .containsMatchIn(script),
             "Expected debug.proguardFiles to be present"
         )
@@ -155,7 +179,10 @@ class BuildGradleKtsTest {
             )
         }
         assertTrue(
-            Regex("""jniLibs\s*\{[^}]*useLegacyPackaging\s*=\s*false""", RegexOption.DOT_MATCHES_ALL)
+            Regex(
+                """jniLibs\s*\{[^}]*useLegacyPackaging\s*=\s*false""",
+                RegexOption.DOT_MATCHES_ALL
+            )
                 .containsMatchIn(script),
             "Expected jniLibs.useLegacyPackaging = false"
         )
@@ -190,12 +217,10 @@ class BuildGradleKtsTest {
     @DisplayName("Compile options: Java 24 source and target compatibility")
     fun compileOptionsConfigured() {
         assertTrue(
-            Regex("""compileOptions\s*\{[^}]*sourceCompatibility\s*=\s*JavaVersion\.VERSION_24""", RegexOption.DOT_MATCHES_ALL)
                 .containsMatchIn(script),
             "Expected sourceCompatibility = JavaVersion.VERSION_24"
         )
         assertTrue(
-            Regex("""compileOptions\s*\{[^}]*targetCompatibility\s*=\s*JavaVersion\.VERSION_24""", RegexOption.DOT_MATCHES_ALL)
                 .containsMatchIn(script),
             "Expected targetCompatibility = JavaVersion.VERSION_24"
         )
@@ -209,17 +234,14 @@ class BuildGradleKtsTest {
             "Expected registration of cleanKspCache task"
         )
         assertTrue(
-            Regex("""tasks\.named\("preBuild"\)\s*\{\s*[^}]*dependsOn\("cleanKspCache"\)""", RegexOption.DOT_MATCHES_ALL)
                 .containsMatchIn(script),
             "Expected preBuild.dependsOn(\"cleanKspCache\")"
         )
         assertTrue(
-            Regex("""tasks\.named\("preBuild"\)\s*\{[^}]*dependsOn\(":cleanApiGeneration"\)""", RegexOption.DOT_MATCHES_ALL)
                 .containsMatchIn(script),
             "Expected preBuild.dependsOn(\":cleanApiGeneration\")"
         )
         assertTrue(
-            Regex("""tasks\.named\("preBuild"\)\s*\{[^}]*dependsOn\(":openApiGenerate"\)""", RegexOption.DOT_MATCHES_ALL)
                 .containsMatchIn(script),
             "Expected preBuild.dependsOn(\":openApiGenerate\")"
         )

@@ -12,8 +12,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +26,42 @@ import androidx.compose.ui.unit.sp
 /**
  * Simple DataVein Screen for testing basic Compose setup
  * This serves as a fallback while we resolve KSP issues
+ */
+/**
+ * Renders the "DataVein Sphere Grid" status card UI.
+ *
+ * Displays a centered card on a dark background containing:
+ * - title and subtitle,
+ * - a divider and system status line,
+ * - three status chips (Core Nodes, Active Flows, Data Streams),
+ * - a multi-line status overview,
+ * - an action button labeled "🚀 Launch Sphere Grid" (currently a placeholder with no action),
+ * - and an informational note about KSP compilation.
+ *
+ * The composable accepts a Modifier to customize its outer container.
+
+ */
+/**
+ * Renders a centered, dark-themed status card for the "DataVein Sphere Grid" UI.
+ *
+ * The composable displays a title and subtitle, a cyan divider, a system status line,
+ * three compact status chips (Core Nodes, Active Flows, Data Streams), a multi-line
+ * status overview, an action button ("Launch Sphere Grid") with a placeholder onClick,
+ * and a small note about KSP compilation. Designed for previewing or testing the
+ * static screen layout; content is currently static and non-interactive.
+ *
+ * @param modifier Modifier applied to the outermost Box container (use to customize sizing,
+ * padding, or alignment of the whole composable).
+ */
+/**
+ * A centered, read-only overview card that displays a stylized "DataVein Sphere Grid" system status.
+ *
+ * The composable renders a full-screen dark background with a semi-transparent black Card centered at 80% width.
+ * Inside the card it shows a title, subtitle, a cyan divider, an overall system status line, a row of compact
+ * status chips (Core Nodes, Active Flows, Data Streams), a multiline status overview, an action button placeholder,
+ * and a small informational note about KSP compilation availability.
+ *
+ * @param modifier Optional [Modifier] to be applied to the root Box container.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,7 +102,7 @@ fun SimpleDataVeinScreen(
                     fontSize = 16.sp
                 )
 
-                Divider(color = Color.Cyan.copy(alpha = 0.3f))
+                HorizontalDivider(color = Color.Cyan.copy(alpha = 0.3f))
 
                 Text(
                     text = "System Status: ⚡ ACTIVE",

@@ -15,10 +15,10 @@ import javax.inject.Singleton
 class TokenManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    
+
     private val keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC
     private val mainKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec)
-    
+
     private val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
         "aura_secure_prefs",
         mainKeyAlias,
@@ -55,15 +55,21 @@ class TokenManager @Inject constructor(
         }
 
     /**
-     * Updates the stored tokens.
-     */
+     * Stores the access and refresh tokens and records their expiry time.
+     *
+     * The expiry timestamp is computed as the current system time plus `expiresInSeconds`
+     * (converted to milliseconds) and saved under KEY_TOKEN_EXPIRY.
+     *
+     * @param accessToken The new access token to persist.
+     * @param refreshToken The new refresh token to persist.
+     * @param expiresInSeconds Time-to-live for the tokens, in seconds, from now. */
     fun updateTokens(
         accessToken: String,
         refreshToken: String,
         expiresInSeconds: Long
     ) {
         val expiryTime = System.currentTimeMillis() + (expiresInSeconds * 1000)
-        
+
         sharedPreferences.edit()
             .putString(KEY_ACCESS_TOKEN, accessToken)
             .putString(KEY_REFRESH_TOKEN, refreshToken)

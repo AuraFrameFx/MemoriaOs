@@ -3,6 +3,9 @@
 package dev.aurakai.auraframefx
 
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -90,12 +93,28 @@ class AppBuildScriptTest {
         fun `prints expected header and dividers`() {
             val out = fakeStatusOutput(apiExists = false, apiSizeBytes = 0, nativeCode = false, kspMode = null)
             assertTrue(out.lines().first().contains("AEGENESIS APP MODULE STATUS"), "Header should contain module status title")
+            val out = fakeStatusOutput(
+                apiExists = false,
+                apiSizeBytes = 0,
+                nativeCode = false,
+                kspMode = null
+            )
+            assertTrue(
+                out.lines().first().contains("AEGENESIS APP MODULE STATUS"),
+                "Header should contain module status title"
+            )
             assertEquals(50, out.lines()[1].length, "Second line should be a 50-char divider")
         }
 
         @Test
         fun `indicates API missing and native disabled by default`() {
             val out = fakeStatusOutput(apiExists = false, apiSizeBytes = 0, nativeCode = false, kspMode = null)
+            val out = fakeStatusOutput(
+                apiExists = false,
+                apiSizeBytes = 0,
+                nativeCode = false,
+                kspMode = null
+            )
             assertTrue(out.contains("🔌 Unified API Spec: ❌ Missing"))
             assertTrue(out.contains("🔧 Native Code: ❌ Disabled"))
             assertTrue(out.contains("🧠 KSP Mode: default"))
@@ -107,14 +126,40 @@ class AppBuildScriptTest {
         fun `includes API size line only when API exists`() {
             val present = fakeStatusOutput(apiExists = true, apiSizeBytes = 4096, nativeCode = true, kspMode = "true")
             val missing = fakeStatusOutput(apiExists = false, apiSizeBytes = 0, nativeCode = true, kspMode = "true")
+            val present = fakeStatusOutput(
+                apiExists = true,
+                apiSizeBytes = 4096,
+                nativeCode = true,
+                kspMode = "true"
+            )
+            val missing = fakeStatusOutput(
+                apiExists = false,
+                apiSizeBytes = 0,
+                nativeCode = true,
+                kspMode = "true"
+            )
 
             assertTrue(present.contains("📄 API File Size: 4KB"), "When API exists, size should be shown in KB")
             assertFalse(missing.contains("📄 API File Size:"), "When API is missing, size line should not appear")
+            assertTrue(
+                present.contains("📄 API File Size: 4KB"),
+                "When API exists, size should be shown in KB"
+            )
+            assertFalse(
+                missing.contains("📄 API File Size:"),
+                "When API is missing, size line should not appear"
+            )
         }
 
         @Test
         fun `reflects provided KSP mode property when set`() {
             val out = fakeStatusOutput(apiExists = true, apiSizeBytes = 1024, nativeCode = false, kspMode = "ksp2")
+            val out = fakeStatusOutput(
+                apiExists = true,
+                apiSizeBytes = 1024,
+                nativeCode = false,
+                kspMode = "ksp2"
+            )
             assertTrue(out.contains("🧠 KSP Mode: ksp2"))
         }
     }
@@ -127,6 +172,10 @@ class AppBuildScriptTest {
         fun `preBuild has expected dependencies`() {
             // Ensure dependsOn for all three tasks as per PR
             assertTrue(buildScript.contains("tasks.named(\"preBuild\")"), "preBuild task configuration should exist")
+            assertTrue(
+                buildScript.contains("tasks.named(\"preBuild\")"),
+                "preBuild task configuration should exist"
+            )
             listOf("cleanKspCache", ":cleanApiGeneration", ":openApiGenerate").forEach { dep ->
                 assertTrue(
                     buildScript.contains("dependsOn(\"$dep\")"),
@@ -140,6 +189,18 @@ class AppBuildScriptTest {
             assertTrue(buildScript.contains("tasks.register<Delete>(\"cleanKspCache\")"), "cleanKspCache should be a Delete task")
             assertTrue(buildScript.contains("group = \"build setup\""), "cleanKspCache should have a 'build setup' group")
             assertTrue(buildScript.contains("description = \"Clean KSP caches (fixes NullPointerException)\""), "cleanKspCache should have description")
+            assertTrue(
+                buildScript.contains("tasks.register<Delete>(\"cleanKspCache\")"),
+                "cleanKspCache should be a Delete task"
+            )
+            assertTrue(
+                buildScript.contains("group = \"build setup\""),
+                "cleanKspCache should have a 'build setup' group"
+            )
+            assertTrue(
+                buildScript.contains("description = \"Clean KSP caches (fixes NullPointerException)\""),
+                "cleanKspCache should have description"
+            )
         }
 
         @Test
@@ -183,6 +244,14 @@ class AppBuildScriptTest {
         @Test
         fun `jniLibs config disables legacy packaging and picks first specific libs`() {
             assertTrue(buildScript.contains("jniLibs {"), "jniLibs block expected")
+            assertTrue(
+                buildScript.contains("useLegacyPackaging = false"),
+                "Legacy packaging should be disabled"
+            )
+            assertTrue(
+                buildScript.contains("pickFirsts += listOf(\"**/libc++_shared.so\", \"**/libjsc.so\")"),
+                "pickFirsts should include libc++_shared.so and libjsc.so"
+            )
             assertTrue(buildScript.contains("useLegacyPackaging = false"), "Legacy packaging should be disabled")
             assertTrue(buildScript.contains("pickFirsts += listOf(\"**/libc++_shared.so\", \"**/libjsc.so\")"), "pickFirsts should include libc++_shared.so and libjsc.so")
         }
@@ -193,12 +262,24 @@ class AppBuildScriptTest {
             assertTrue(buildScript.contains("compose = true"), "Compose should be enabled")
             assertTrue(buildScript.contains("buildConfig = true"), "BuildConfig should be enabled")
             assertTrue(buildScript.contains("viewBinding = false"), "viewBinding should be disabled")
+            assertTrue(
+                buildScript.contains("viewBinding = false"),
+                "viewBinding should be disabled"
+            )
         }
 
         @Test
         fun `Java source and target compatibility set to JavaVersion VERSION_24`() {
             assertTrue(buildScript.contains("sourceCompatibility = JavaVersion.VERSION_24"), "sourceCompatibility should be VERSION_24")
             assertTrue(buildScript.contains("targetCompatibility = JavaVersion.VERSION_24"), "targetCompatibility should be VERSION_24")
+            assertTrue(
+                buildScript.contains("sourceCompatibility = JavaVersion.VERSION_24"),
+                "sourceCompatibility should be VERSION_24"
+            )
+            assertTrue(
+                buildScript.contains("targetCompatibility = JavaVersion.VERSION_24"),
+                "targetCompatibility should be VERSION_24"
+            )
         }
 
         @Test
@@ -231,6 +312,11 @@ class AppBuildScriptTest {
             if (sizeBytes > 0) {
                 val chunk = "a".repeat(1024).toByteArray()
                 var remaining = sizeBytes
+                Files.newOutputStream(
+                    api,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+                ).use { os ->
                 Files.newOutputStream(api, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING).use { os ->
                     while (remaining > 0) {
                         val toWrite = minOf(remaining, chunk.size)
@@ -240,6 +326,12 @@ class AppBuildScriptTest {
                 }
             } else {
                 Files.writeString(api, "", StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
+                Files.writeString(
+                    api,
+                    "",
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.TRUNCATE_EXISTING
+                )
             }
             return api
         }
@@ -252,6 +344,10 @@ class AppBuildScriptTest {
             }
             assertTrue(simulatedOutput.contains("❌ Missing"))
             assertFalse(simulatedOutput.contains("📄 API File Size:"), "No size line expected when file is missing")
+            assertFalse(
+                simulatedOutput.contains("📄 API File Size:"),
+                "No size line expected when file is missing"
+            )
         }
 
         @Test
