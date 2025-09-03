@@ -1,4 +1,7 @@
-// ==== GENESIS PROTOCOL - ROM TOOLS ====
+
+import dev.aurakai.gradle.tasks.VerifyRomToolsTask
+
+ 
 plugins {
     id("genesis.android.compose")
     alias(libs.plugins.kotlin.serialization)
@@ -48,4 +51,36 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
-tasks.register("romStatus") { group = "aegenesis"; doLast { println("🛠️ ROM TOOLS - Ready!") } }
+// Define a shared directory property for ROM tools output
+val romToolsOutputDirectory: DirectoryProperty =
+    project.objects.directoryProperty().convention(layout.buildDirectory.dir("rom-tools"))
+
+// ROM Tools specific tasks
+tasks.register<Copy>("copyRomTools") {
+    from("src/main/resources")
+    into(romToolsOutputDirectory) // Use the shared property with into()
+    include("**/*.so", "**/*.bin", "**/*.img", "**/*.jar")
+    includeEmptyDirs = false
+
+    doFirst {
+        val outputDir = romToolsOutputDirectory.get().asFile
+        outputDir.mkdirs()
+        logger.lifecycle("📁 ROM tools directory: ${outputDir.absolutePath}")
+    }
+
+    doLast {
+        logger.lifecycle("✅ ROM tools copied to: ${romToolsOutputDirectory.get().asFile.absolutePath}")
+    }
+}
+
+
+tasks.register<VerifyRomToolsTask>("verifyRomTools") {
+    romToolsDir.set(romToolsOutputDirectory) // Set to the same shared property
+    dependsOn("copyRomTools") // Explicitly depend on copyRomTools for clarity and reliability
+    // Gradle should infer the dependency on copyRomTools because romToolsOutputDirectory
+    // is an output of copyRomTools (via 'into') and an input here.
+}
+
+tasks.named("build") {
+    dependsOn("verifyRomTools")
+} 
