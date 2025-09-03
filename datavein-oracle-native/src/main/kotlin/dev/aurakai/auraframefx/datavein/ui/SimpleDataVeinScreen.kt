@@ -39,6 +39,17 @@ import androidx.compose.ui.unit.sp
  * positioning from the caller.
 
  */
+/**
+ * A centered, translucent debug dashboard composable that renders a mocked "DataVein Sphere Grid"
+ * status card on a full-screen dark background.
+ *
+ * The UI is intentionally self-contained and non-functional: it displays a title, subtitle, a
+ * system status line, three small status chips, multi-line status details, an action button (no-op
+ * placeholder), and a build note. Use this screen as a fallback or visual test harness for layouts
+ * while the real Sphere Grid implementation is unavailable.
+ *
+ * @param modifier Modifier to apply to the outer container for layout adjustments from the caller.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleDataVeinScreen(
