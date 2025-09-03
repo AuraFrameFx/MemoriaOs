@@ -44,12 +44,11 @@ class LinkedList {
     /**
      * Removes the first occurrence of the given element from the list.
      *
-     * Searches the list from the head and unlinks the first node whose string equals
-     * the provided element (case-sensitive). If a matching node is found it is
-     * removed and the method returns true; otherwise returns false.
+     * Searches from the head and unlinks the first node whose data equals the provided
+     * element (case-sensitive). Only the first match is removed.
      *
-     * @param element The string value to remove.
-     * @return True if an element was removed; false if no matching element was found.
+     * @param element The string value to remove (case-sensitive).
+     * @return True if a node was removed; false if no matching element was found.
      */
     fun remove(element: String): Boolean {
         var result = false

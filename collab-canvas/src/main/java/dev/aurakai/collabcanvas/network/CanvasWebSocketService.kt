@@ -26,11 +26,28 @@ class CanvasWebSocketService @Inject constructor(
     val events: SharedFlow<CanvasWebSocketEvent> = _events.asSharedFlow()
 
     private val webSocketListener = object : WebSocketListener() {
+        /**
+         * Called when the WebSocket connection is successfully established.
+         *
+         * Emits a CanvasWebSocketEvent.Connected to the service's event stream.
+         *
+         * @param webSocket The newly opened WebSocket.
+         * @param response The HTTP handshake response from the server.
+         */
         override fun onOpen(webSocket: WebSocket, response: Response) {
             Timber.d("WebSocket connection opened")
             _events.tryEmit(CanvasWebSocketEvent.Connected)
         }
 
+        /**
+         * Parse an incoming text payload and emit the corresponding CanvasWebSocketEvent.
+         *
+         * Attempts to deserialize the JSON `text` into a CanvasWebSocketMessage and emits
+         * CanvasWebSocketEvent.MessageReceived on success. If deserialization fails, emits
+         * CanvasWebSocketEvent.Error with the parse error message.
+         *
+         * @param text The received text payload (expected JSON representing a CanvasWebSocketMessage).
+         */
         override fun onMessage(webSocket: WebSocket, text: String) {
             Timber.d("Message received: $text") // Changed to Timber
             try {
@@ -79,11 +96,28 @@ class CanvasWebSocketService @Inject constructor(
         webSocket = okHttpClient.newWebSocket(request, webSocketListener)
     }
 
+    /**
+     * Closes the active WebSocket connection (if any) and clears the stored reference.
+     *
+     * If a connection exists, it is closed with normal closure code 1000 and reason "User initiated disconnect".
+     * If no connection is active, the call is a no-op.
+     */
     fun disconnect() {
         webSocket?.close(1000, "User initiated disconnect")
         webSocket = null
     }
 
+    /**
+     * Serialize a CanvasWebSocketMessage to JSON and send it over the active WebSocket connection.
+     *
+     * If a connection is active the message is converted to JSON with the injected Gson instance and
+     * enqueued for sending. Serialization or send failures (including missing connection) result in
+     * a false return value; the function does not throw.
+     *
+     * @param message The canvas message to serialize and send.
+     * @return true if the message was successfully queued for sending by the WebSocket, false if no
+     * connection exists or an error occurred during serialization or send.
+     */
     fun sendMessage(message: CanvasWebSocketMessage): Boolean {
         return try {
             val json = gson.toJson(message)
