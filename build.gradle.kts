@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.hilt) apply false // Expose Hilt plugin for convention plugins
     alias(libs.plugins.ksp) apply false // Expose KSP plugin for convention plugins
+    alias(libs.plugins.kotlin.compose) apply false // Expose Compose plugin for convention plugins
 
     // Optional plugins to be applied in specific modules
     alias(libs.plugins.openapi.generator) apply false
