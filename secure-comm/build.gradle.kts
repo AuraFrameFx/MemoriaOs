@@ -131,7 +131,6 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
-    testRuntimeOnly(libs.junit.engine)
 
     androidTestImplementation(libs.androidx.test.core)
 
