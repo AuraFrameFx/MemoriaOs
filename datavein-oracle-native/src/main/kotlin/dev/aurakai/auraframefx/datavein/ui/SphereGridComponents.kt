@@ -42,6 +42,7 @@ import dev.aurakai.auraframefx.datavein.model.NodeType
  * Enhanced Node Info Panel with FFX-style progression details
  */
 /**
+
  * Renders a stylized info card displaying a DataVein node's type, identification, progression, description, and current status.
  *
  * Shows the node type title with a colored status dot, tag/ID/ring/level rows, and — when unlocked — XP and a horizontal XP bar.
@@ -201,6 +202,7 @@ fun NodeInfoPanel(
 }
 
 /**
+
  * Renders a legend Card listing DataVein node types grouped by category.
  *
  * Displays a titled card that iterates NodeCategory values and shows each NodeType in that
@@ -282,6 +284,7 @@ fun NodeTypeLegend(modifier: Modifier = Modifier) {
 }
 
 /**
+
  * Renders a compact status card summarizing real-time DataVein metrics.
  *
  * The card shows a pulsing header, three status rows (Active Flows, Active Nodes, Unlocked),

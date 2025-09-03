@@ -28,40 +28,16 @@ import androidx.compose.ui.unit.sp
  * This serves as a fallback while we resolve KSP issues
  */
 /**
- * Renders the "DataVein Sphere Grid" status card UI.
+ * A centered card-based debug UI that displays a mocked DataVein status dashboard.
  *
- * Displays a centered card on a dark background containing:
- * - title and subtitle,
- * - a divider and system status line,
- * - three status chips (Core Nodes, Active Flows, Data Streams),
- * - a multi-line status overview,
- * - an action button labeled "🚀 Launch Sphere Grid" (currently a placeholder with no action),
- * - and an informational note about KSP compilation.
+ * Renders a full-screen dark background with a centered translucent card containing
+ * title/subtitle, a divider, overall system status, three small status chips, multiline
+ * status details, an action button, and a build note. The action button currently
+ * contains a placeholder (no navigation or side effects are performed).
  *
- * The composable accepts a Modifier to customize its outer container.
+ * @param modifier Modifier applied to the outer container (Box); use to adjust layout or
+ * positioning from the caller.
 
- */
-/**
- * Renders a centered, dark-themed status card for the "DataVein Sphere Grid" UI.
- *
- * The composable displays a title and subtitle, a cyan divider, a system status line,
- * three compact status chips (Core Nodes, Active Flows, Data Streams), a multi-line
- * status overview, an action button ("Launch Sphere Grid") with a placeholder onClick,
- * and a small note about KSP compilation. Designed for previewing or testing the
- * static screen layout; content is currently static and non-interactive.
- *
- * @param modifier Modifier applied to the outermost Box container (use to customize sizing,
- * padding, or alignment of the whole composable).
- */
-/**
- * A centered, read-only overview card that displays a stylized "DataVein Sphere Grid" system status.
- *
- * The composable renders a full-screen dark background with a semi-transparent black Card centered at 80% width.
- * Inside the card it shows a title, subtitle, a cyan divider, an overall system status line, a row of compact
- * status chips (Core Nodes, Active Flows, Data Streams), a multiline status overview, an action button placeholder,
- * and a small informational note about KSP compilation availability.
- *
- * @param modifier Optional [Modifier] to be applied to the root Box container.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
