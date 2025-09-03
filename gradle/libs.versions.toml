@@ -140,9 +140,9 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 # ===== Networking =====
-moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.15.1" }
-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.15.1" }
-moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version = "1.15.1" }
+moshi = { group = "com.squareup.moshi", name = "moshi", version = "1.15.2" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version = "1.15.2" }
+moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version = "1.15.2" }
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
