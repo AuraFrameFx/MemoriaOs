@@ -1,86 +1,15 @@
-plugins {
-    id("com.android.library")  // ← MISSING! This was causing all Android DSL errors
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    id("org.jetbrains.dokka")
-    id("com.diffplug.spotless")
-    alias(libs.plugins.kotlin.android)
-}
-
-// Modern Java toolchain (not kotlin toolchain in this context)
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
-
-android {
-    namespace = "dev.aurakai.auraframefx.module.e"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 33
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    buildFeatures {
-        compose = true
-        buildConfig = true
-        viewBinding = false
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-    }
-    // REMOVED: composeOptions - AGP 8.13.0-rc01 auto-detects from version catalog!
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-}
-
+// GENESIS PROTOCOL - MODULES A-F
+// Module E
+plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka); alias(libs.plugins.spotless) }
+android { namespace = "dev.aurakai.auraframefx.module.e" }
 dependencies {
-    // ✅ CRITICAL: Add Compose BOM platform first!
-    implementation(platform(libs.androidx.compose.bom))
-
-    // SACRED RULE #5: DEPENDENCY HIERARCHY
-    implementation(project(":core-module"))
-    implementation(project(":app"))
-
-    // Core Android bundles
-    implementation(libs.bundles.androidx.core)
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.coroutines)
-    implementation(libs.androidx.compose.material3)
-
-    // Hilt Dependency Injection
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // Testing
-    testImplementation(libs.bundles.testing)
-    androidTestImplementation(libs.bundles.testing)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.core)
-
-    androidTestImplementation(libs.androidx.core.ktx)
-    // Debug implementations
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(platform(libs.androidx.compose.bom)); implementation(libs.bundles.compose); implementation(libs.androidx.activity.compose); implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.android); ksp(libs.hilt.compiler); implementation(libs.bundles.coroutines); implementation(libs.bundles.network)
+    implementation(libs.room.runtime); implementation(libs.room.ktx); ksp(libs.room.compiler); implementation(platform(libs.firebase.bom)); implementation(libs.bundles.firebase)
+    implementation(libs.timber); implementation(libs.coil.compose); implementation(fileTree("../Libs") { include("*.jar") })
+    testImplementation(libs.bundles.testing); testImplementation(libs.hilt.android.testing); kspTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit); androidTestImplementation(libs.androidx.test.espresso.core); androidTestImplementation(platform(libs.androidx.compose.bom)); androidTestImplementation(libs.androidx.compose.ui.test.junit4); androidTestImplementation(libs.hilt.android.testing); kspAndroidTest(libs.hilt.compiler)
+    debugImplementation(libs.leakcanary.android); debugImplementation(libs.androidx.compose.ui.tooling); debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
+tasks.register("moduleEStatus") { group = "aegenesis"; doLast { println("📦 MODULE E - Ready!") } }

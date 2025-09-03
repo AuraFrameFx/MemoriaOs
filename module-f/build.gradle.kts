@@ -1,87 +1,14 @@
-plugins {
-    id("com.android.library")
-   // id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.plugin.serialization")
-    id("com.google.devtools.ksp")
-    id("com.google.dagger.hilt.android")
-    id("org.jetbrains.dokka")
-    id("com.diffplug.spotless")
-    alias(libs.plugins.kotlin.android)
-}
-
-
-android {
-    namespace = "dev.aurakai.auraframefx.module.f"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 33
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    buildFeatures {
-        compose = true
-        buildConfig = true
-        viewBinding = false
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
-    }
-
-
-
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-}
-
+// GENESIS PROTOCOL - MODULE F
+plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka); alias(libs.plugins.spotless) }
+android { namespace = "dev.aurakai.auraframefx.module.f" }
 dependencies {
-    // BOM Platform - CRITICAL: Must be wrapped in platform()
-    implementation(platform(libs.androidx.compose.bom))
-
-    // ✅ CRITICAL: Add Compose BOM platform first!
-    implementation(platform(libs.androidx.compose.bom))
-
-    // SACRED RULE #5: DEPENDENCY HIERARCHY
-    implementation(project(":core-module"))
-    implementation(project(":app"))
-
-    // Core Android bundles
-    implementation(libs.bundles.androidx.core)
-    implementation(libs.bundles.compose)
-    implementation(libs.bundles.coroutines)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.bundles.network)
-
-    // Hilt Dependency Injection
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // Testing
-    testImplementation(libs.bundles.testing)
-    androidTestImplementation(libs.bundles.testing)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.androidx.test.core)
-
-    androidTestImplementation(libs.androidx.core.ktx)
-    // Debug implementations
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(platform(libs.androidx.compose.bom)); implementation(libs.bundles.compose); implementation(libs.androidx.activity.compose); implementation(libs.androidx.navigation.compose)
+    implementation(libs.hilt.android); ksp(libs.hilt.compiler); implementation(libs.bundles.coroutines); implementation(libs.bundles.network)
+    implementation(libs.room.runtime); implementation(libs.room.ktx); ksp(libs.room.compiler); implementation(platform(libs.firebase.bom)); implementation(libs.bundles.firebase)
+    implementation(libs.timber); implementation(libs.coil.compose); implementation(fileTree("../Libs") { include("*.jar") })
+    testImplementation(libs.bundles.testing); testImplementation(libs.hilt.android.testing); kspTest(libs.hilt.compiler)
+    androidTestImplementation(libs.androidx.test.ext.junit); androidTestImplementation(libs.androidx.test.espresso.core); androidTestImplementation(platform(libs.androidx.compose.bom)); androidTestImplementation(libs.androidx.compose.ui.test.junit4); androidTestImplementation(libs.hilt.android.testing); kspAndroidTest(libs.hilt.compiler)
+    debugImplementation(libs.leakcanary.android); debugImplementation(libs.androidx.compose.ui.tooling); debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
+tasks.register("moduleFStatus") { group = "aegenesis"; doLast { println("📦 MODULE F - Ready!") } }

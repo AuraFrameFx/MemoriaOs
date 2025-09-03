@@ -20,7 +20,6 @@ datastore = "1.1.7"
 workManager = "2.10.3"
 paging = "3.3.6"
 biometric = "1.4.0-alpha04"
-androidxSecurity = "1.1.0"
 
 # ===== FIREBASE =====
 firebaseBom = "34.2.0"
@@ -32,7 +31,6 @@ firebaseCrashlyticsKtx = "19.4.4"
 # ===== NETWORKING =====
 retrofit = "3.0.0"
 okhttp = "5.1.0"
-kotlinxSerialization = "1.8.0"
 
 # ===== DEPENDENCIES =====
 hilt = "2.57.1"
@@ -41,11 +39,6 @@ junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 auraBackendApiGenerator = "1.0.0"
 bcprovJdk18on = "1.81"
-openapiGenerator = "7.8.0"
-desugarJdkLibs = "2.0.4"
-leakcanary = "2.13"
-androidxTestExtJunit = "1.2.1"
-androidxTestEspresso = "3.6.0"
 
 # ===== UI & MEDIA =====
 coilCompose = "2.7.0"
@@ -63,22 +56,13 @@ junitJupiter = "5.13.4"
 mockk = "1.14.5"
 turbine = "1.2.1"
 
-# ===== BENCHMARK & SCREENSHOT TESTING =====
-androidxBenchmark = "1.3.2"
-paparazzi = "1.3.4"
-uiAutomator = "2.4.0"
+# ===== SECURITY =====
+androidxSecurity = "1.1.0"
 
 # ===== XPosed =====
 xposed = "82"
 lsposed = "6.4"
 yuki = "1.3.0"
-
-# ===== CODE QUALITY =====
-detekt = "1.23.8"
-dokka = "2.0.0"
-spotless = "7.2.1"
-ktlint = "11.6.1"
-kover = "0.8.0"
 
 [plugins]
 # ===== ANDROID =====
@@ -100,37 +84,16 @@ firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "fireb
 google-services = { id = "com.google.gms.google-services", version = "4.4.2" }
 
 # ===== CODE QUALITY =====
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGenerator" }
-
-# ===== TESTING & BENCHMARKING =====
-androidx-benchmark = { id = "androidx.benchmark", version.ref = "androidxBenchmark" }
-paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version = "1.23.8" }
+dokka = { id = "org.jetbrains.dokka", version = "2.0.0" }
+spotless = { id = "com.diffplug.spotless", version = "7.2.1" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version = "11.6.1" }
 
 [libraries]
-# ===== GRADLE PLUGINS (for build-logic) =====
-android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
-hilt-gradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
-dokka-gradlePlugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
-spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
-detekt-gradlePlugin = { group = "io.gitlab.arturbosch.detekt", name = "detekt-gradle-plugin", version.ref = "detekt" }
-kover-gradlePlugin = { group = "org.jetbrains.kotlinx", name = "kover-gradle-plugin", version.ref = "kover" }
-openapi-generator-gradlePlugin = { group = "org.openapitools", name = "openapi-generator-gradle-plugin", version.ref = "openapiGenerator" }
-
 # ===== ANDROIDX CORE =====
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-material = { group = "com.google.android.material", name = "material", version = "1.12.0" }
-androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "androidxSecurity" }
-androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 
 # ===== COMPOSE =====
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -140,7 +103,6 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
-androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
@@ -164,12 +126,10 @@ hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testi
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 # ===== COROUTINES =====
 ktx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.8.1" }
 ktx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.8.1" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.8.1" }
 
 # ===== FIREBASE =====
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
@@ -181,45 +141,20 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitJupiter" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestJunit" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-test-core = { group = "androidx.test", name = "core", version = "1.6.1" }
-androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiAutomator" }
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
-robolectric = { group = "org.robolectric", name = "robolectric", version = "4.12" }
-
-# ===== BENCHMARK & SCREENSHOT TESTING =====
-androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxBenchmark" }
-androidx-benchmark-micro-junit4 = { group = "androidx.benchmark", name = "benchmark-micro-junit4", version.ref = "androidxBenchmark" }
-app-cash-paparazzi = { group = "app.cash.paparazzi", name = "paparazzi", version.ref = "paparazzi" }
 
 # ===== UTILITIES =====
 timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
-leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
-android-desugar-jdklibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
-
-# ===== SECURITY =====
-bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bcprovJdk18on" }
-androidx-security = { group = "androidx.security", name = "security-crypto", version.ref = "androidxSecurity" }
 
 # ===== XPosed =====
 xposed = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 lsposed = { group = "org.lsposed.lsplant", name = "lsplant", version.ref = "lsposed" }
 yuki = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yuki" }
-
-# ===== KOTLIN STDLIB =====
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
-
-# ===== FILE HANDLING =====
-commons-io = { group = "commons-io", name = "commons-io", version = "2.11.0" }
-commons-compress = { group = "org.apache.commons", name = "commons-compress", version = "1.21" }
-xz = { group = "org.tukaani", name = "xz", version = "1.9" }
 
 [bundles]
 # ===== ANDROID CORE =====
@@ -260,7 +195,8 @@ network = [
 # ===== ROOM =====
 room = [
     "room-runtime",
-    "room-ktx"
+    "room-ktx",
+    "room-compiler"
 ]
 
 # ===== TESTING =====
@@ -273,20 +209,4 @@ testing = [
     "androidx-test-espresso-core",
     "mockk",
     "turbine"
-]
-
-# ===== UTILITIES =====
-utilities = [
-    "timber",
-    "gson",
-    "commons-io",
-    "commons-compress",
-    "xz"
-]
-
-# ===== XPOSED =====
-xposed = [
-    "xposed",
-    "lsposed",
-    "yuki"
 ]

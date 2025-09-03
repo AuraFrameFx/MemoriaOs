@@ -467,5 +467,3 @@ start = Offset(0f, y.toFloat()),
 end = Offset(size.width, y.toFloat()),
 strokeWidth = strokeWidth
 )
-}
-}
