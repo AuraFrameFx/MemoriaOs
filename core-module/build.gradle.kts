@@ -42,8 +42,8 @@ if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
     }
 }
 
-// Ensure Kotlin compilation depends on OpenAPI generation
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+// Ensure KSP processing depends on OpenAPI generation
+tasks.withType<com.google.devtools.ksp.gradle.KspTask>().configureEach {
     if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
         dependsOn(":openApiGenerate")
     }
