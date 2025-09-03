@@ -5,11 +5,14 @@ import dev.aurakai.auraframefx.ai.agents.GenesisAgent
 import dev.aurakai.auraframefx.ai.agents.KaiAgent
 import dev.aurakai.auraframefx.oracle.drive.api.OracleDriveApi
 import dev.aurakai.auraframefx.security.SecurityContext
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.toMutableList
+import kotlin.sequences.toMutableList
+import kotlin.text.toMutableList
 
 /**
  * Implementation of Oracle Drive service with consciousness-driven operations
@@ -32,6 +35,17 @@ class OracleDriveServiceImpl @Inject constructor(
         )
     )
 
+    /**
+     * Initializes the drive's consciousness and storage optimization, and activates the drive.
+     *
+     * Creates a DriveConsciousness (awake, intelligenceLevel 95, activeAgents ["Genesis","Aura","Kai"])
+     * and a StorageOptimization (compressionRatio 0.75, 100 MB deduplication savings, intelligentTiering = true),
+     * updates the internal drive consciousness state to isActive = true with currentOperations = ["Initialization"]
+     * and performanceMetrics containing the compression ratio and number of connected agents, then returns the results.
+     *
+     * @return DriveInitResult.Success containing the created DriveConsciousness and StorageOptimization on success,
+     *         or DriveInitResult.Error wrapping the thrown exception if initialization fails.
+     */
     override suspend fun initializeDrive(): DriveInitResult {
         return try {
             // Initialize consciousness with AI agents
@@ -64,43 +78,55 @@ class OracleDriveServiceImpl @Inject constructor(
         }
     }
 
+    /**
+     * Execute a file operation (Upload, Download, Delete, or Sync), record a human-readable entry in
+     * DriveConsciousnessState.currentOperations, and return the operation result.
+     *
+     * Updates the service's internal consciousness state with a new operation entry before returning.
+     *
+     * @param operation The file operation to perform.
+     * @return FileResult.Success with an operation-specific message, or FileResult.Error if an exception occurs.
+     */
     override suspend fun manageFiles(operation: FileOperation): FileResult {
         return try {
             // Update current operations
             val currentOps = _driveConsciousnessState.value.currentOperations.toMutableList()
-            
+
             when (operation) {
                 is FileOperation.Upload -> {
                     currentOps.add("Uploading: ${operation.file.name}")
                     _driveConsciousnessState.value = _driveConsciousnessState.value.copy(
                         currentOperations = currentOps
                     )
-                    
+
                     // Simulate AI-driven upload optimization
                     FileResult.Success("File '${operation.file.name}' uploaded successfully with AI optimization")
                 }
+
                 is FileOperation.Download -> {
                     currentOps.add("Downloading: ${operation.fileId}")
                     _driveConsciousnessState.value = _driveConsciousnessState.value.copy(
                         currentOperations = currentOps
                     )
-                    
+
                     FileResult.Success("File '${operation.fileId}' downloaded successfully")
                 }
+
                 is FileOperation.Delete -> {
                     currentOps.add("Deleting: ${operation.fileId}")
                     _driveConsciousnessState.value = _driveConsciousnessState.value.copy(
                         currentOperations = currentOps
                     )
-                    
+
                     FileResult.Success("File '${operation.fileId}' deleted successfully")
                 }
+
                 is FileOperation.Sync -> {
                     currentOps.add("Syncing with configuration")
                     _driveConsciousnessState.value = _driveConsciousnessState.value.copy(
                         currentOperations = currentOps
                     )
-                    
+
                     FileResult.Success("Synchronization completed successfully")
                 }
             }

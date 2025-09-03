@@ -14,11 +14,11 @@ val AeGenesisSerializersModule = SerializersModule {
     // Core type serializers
     contextual(Any::class, AnySerializer)
     contextual(Instant::class, InstantSerializer)
-    
+
     // System model serializers
     contextual(HapticFeedbackConfig.serializer())
     contextual(LockScreenAnimationConfig.serializer())
-    
+
     // Add more contextual serializers as needed for other custom types
 }
 

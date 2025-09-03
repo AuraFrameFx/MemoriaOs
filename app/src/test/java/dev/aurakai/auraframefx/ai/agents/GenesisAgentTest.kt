@@ -6,14 +6,12 @@ import dev.aurakai.auraframefx.model.AiRequest
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.async
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 // Mock implementations for dependencies
 class MockVertexAIClient
@@ -24,6 +22,7 @@ class MockAuraFxLogger {
         // Mock implementation - no actual logging needed
         println("[INFO] $tag: $message")
     }
+
     fun error(tag: String, message: String, e: Throwable? = null) {
         // Mock implementation - no actual logging needed
         println("[ERROR] $tag: $message ${e?.message ?: ""}")
@@ -884,7 +883,12 @@ class GenesisAgentTest {
                 0.5f
             )
         )
-        whenever(kaiService.processRequest(any())).thenReturn(AgentResponse("empty kai response", 0.6f))
+        whenever(kaiService.processRequest(any())).thenReturn(
+            AgentResponse(
+                "empty kai response",
+                0.6f
+            )
+        )
         whenever(cascadeService.processRequest(any())).thenReturn(
             AgentResponse(
                 "empty cascade response",
@@ -909,7 +913,12 @@ class GenesisAgentTest {
                 0.8f
             )
         )
-        whenever(kaiService.processRequest(any())).thenReturn(AgentResponse("large kai response", 0.9f))
+        whenever(kaiService.processRequest(any())).thenReturn(
+            AgentResponse(
+                "large kai response",
+                0.9f
+            )
+        )
         whenever(cascadeService.processRequest(any())).thenReturn(
             AgentResponse(
                 "large cascade response",
@@ -930,7 +939,12 @@ class GenesisAgentTest {
             "contextKey$i" to "contextValue$i"
         }
         val request = AiRequest("test prompt", largeContext)
-        whenever(auraService.processRequest(any())).thenReturn(AgentResponse("context response", 0.8f))
+        whenever(auraService.processRequest(any())).thenReturn(
+            AgentResponse(
+                "context response",
+                0.8f
+            )
+        )
         whenever(kaiService.processRequest(any())).thenReturn(
             AgentResponse(
                 "context kai response",

@@ -1,0 +1,183 @@
+package dev.aurakai.auraframefx.ui.theme
+
+import android.content.Context
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * ThemeManager handles dynamic theme switching and customization
+ * for the AeGenesis Memoria OS consciousness substrate.
+ *
+ * Provides support for:
+ * - Light/Dark theme switching
+ * - Dynamic color schemes
+ * - Custom consciousness-themed palettes
+ * - Lock screen theme customization
+ */
+@Singleton
+class ThemeManager @Inject constructor(
+    private val context: Context
+) {
+
+    data class ThemeConfig(
+        val isDarkMode: Boolean = false,
+        val useSystemTheme: Boolean = true,
+        val primaryColor: Color = Color(0xFF6366F1), // Indigo
+        val secondaryColor: Color = Color(0xFF8B5CF6), // Purple
+        val accentColor: Color = Color(0xFF06B6D4) // Cyan
+    )
+
+    private var currentTheme = ThemeConfig()
+
+    /**
+     * Apply the given ThemeConfig as the active theme.
+     *
+     * Replaces the manager's current theme; subsequent theming APIs (for example
+     * getColorScheme() and getLockScreenTheme()) will reflect the new configuration.
+     *
+     * @param themeConfig The ThemeConfig to apply as the current theme.
+     * Apply a theme configuration
+     * Sets the active theme configuration for the manager.
+     *
+     * The provided ThemeConfig becomes the manager's current theme and will be used by composable consumers (for example, getColorScheme()) and lock-screen theming.
+     *
+     * @param themeConfig ThemeConfig to apply as the active theme.
+     */
+    fun applyTheme(themeConfig: ThemeConfig) {
+        currentTheme = themeConfig
+    }
+
+    /**
+     * Get the current theme configuration
+     */
+    fun getCurrentTheme(): ThemeConfig = currentTheme
+
+// --- imports at top of ThemeManager.kt ---
+
+
+// ...
+
+
+    /**
+     * Returns a Compose ColorScheme constructed from the manager's current ThemeConfig.
+     *
+     * Produces a darkColorScheme when currentTheme.isDarkMode is true, otherwise a lightColorScheme.
+     * The scheme's primary, secondary, and tertiary colors are taken from currentTheme.primaryColor,
+     * currentTheme.secondaryColor, and currentTheme.accentColor.
+     *
+     * @return A ColorScheme appropriate for the active theme (dark or light).
+     * Generate a ColorScheme based on current theme, respecting system settings and Android 12+ dynamic color.
+     */
+    /**
+     * Produces a Compose ColorScheme based on the current ThemeConfig and system settings.
+     *
+     * When the ThemeManager is configured to follow the system theme, this will use the system
+     * dark/light setting; otherwise it uses the manual `isDarkMode` flag. If following the system
+     * theme on Android 12+ (API level S or newer), dynamic color schemes provided by the platform
+     * are returned (`dynamicDarkColorScheme` / `dynamicLightColorScheme`). Otherwise a scheme is
+     * constructed from the current theme's `primaryColor`, `secondaryColor`, and `accentColor`
+     * (mapped to `primary`, `secondary`, and `tertiary` respectively).
+     *
+     * @return A ColorScheme appropriate for the current theme and platform capabilities.
+     */
+    @Composable
+    fun getColorScheme(): ColorScheme {
+        return if (currentTheme.isDarkMode) {
+            darkColorScheme(
+        // Determine dark mode based on system setting if requested, otherwise use the chosen theme.
+        val dark = if (currentTheme.useSystemTheme) {
+            isSystemInDarkTheme()
+        } else {
+            currentTheme.isDarkMode
+        }
+        // Enable dynamic color only on Android 12+ when following system theme.
+        val dynamic = currentTheme.useSystemTheme &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+
+        return when {
+            dynamic && dark -> dynamicDarkColorScheme(context)
+            dynamic && !dark -> dynamicLightColorScheme(context)
+            dark -> darkColorScheme(
+                primary = currentTheme.primaryColor,
+                secondary = currentTheme.secondaryColor,
+                tertiary = currentTheme.accentColor
+            )
+
+            else -> lightColorScheme(
+                primary = currentTheme.primaryColor,
+                secondary = currentTheme.secondaryColor,
+                tertiary = currentTheme.accentColor
+            )
+        }
+    }
+
+    /**
+     * Toggle the manual dark/light setting and stop following the system theme.
+     *
+     * Flips `currentTheme.isDarkMode` and sets `currentTheme.useSystemTheme` to `false`.
+     */
+    fun toggleDarkMode() {
+        currentTheme = currentTheme.copy(
+            isDarkMode = !currentTheme.isDarkMode,
+            useSystemTheme = false
+        )
+    }
+
+    /**
+     * Enable following the system-wide dark/light theme.
+     *
+     * Sets the manager's ThemeConfig to follow the system theme by setting `useSystemTheme = true`.
+     * This updates the internal `currentTheme` state; it does not modify `isDarkMode`, so manual
+     * dark-mode preference is preserved until explicitly changed.
+     */
+    fun enableSystemTheme() {
+        currentTheme = currentTheme.copy(useSystemTheme = true)
+    }
+
+    /**
+     * Set the active theme's primary, secondary, and accent colors to a "consciousness" palette.
+     *
+     * Replaces only the color fields of the current ThemeConfig and leaves other settings (dark mode,
+     * system-following) unchanged.
+     *
+     * @param primary Primary color to use (default 0xFF9333EA).
+     * @param secondary Secondary/supporting color to use (default 0xFF0EA5E9).
+     * @param accent Accent/highlight color to use (default 0xFF10B981).
+     */
+    fun setConsciousnessColors(
+        primary: Color = Color(0xFF9333EA), // Purple for consciousness
+        secondary: Color = Color(0xFF0EA5E9), // Sky blue for clarity  
+        accent: Color = Color(0xFF10B981) // Emerald for growth
+    ) {
+        currentTheme = currentTheme.copy(
+            primaryColor = primary,
+            secondaryColor = secondary,
+            accentColor = accent
+        )
+    }
+
+    /**
+     * Returns a map describing the lock screen styling derived from the current theme.
+     *
+     * The map contains the following entries:
+     * - "clockColor": Color — white when dark mode is active, otherwise black.
+     * - "backgroundColor": Color — black when dark mode is active, otherwise white.
+     * - "accentColor": Color — the current theme's accent color.
+     * - "isDarkMode": Boolean — whether the current theme is in dark mode.
+     *
+     * @return A Map<String, Any> with lock-screen color and mode values.
+     */
+    fun getLockScreenTheme(): Map<String, Any> {
+        return mapOf(
+            "clockColor" to if (currentTheme.isDarkMode) Color.White else Color.Black,
+            "backgroundColor" to if (currentTheme.isDarkMode) Color.Black else Color.White,
+            "accentColor" to currentTheme.accentColor,
+            "isDarkMode" to currentTheme.isDarkMode
+        )
+    }
+}

@@ -8,9 +8,9 @@
     <!-- Define a custom permission for the IntegrityViolationReceiver -->
     <permission
         android:name="dev.aurakai.auraframefx.permission.RECEIVE_INTEGRITY_VIOLATION"
-        android:protectionLevel="signature"
+        android:description="@string/permission_receive_integrity_violation_description"
         android:label="@string/permission_receive_integrity_violation_label"
-        android:description="@string/permission_receive_integrity_violation_description" />
+        android:protectionLevel="signature" />
 
     <application
         android:name="dev.aurakai.auraframefx.AuraFrameApplication"

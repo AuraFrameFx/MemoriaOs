@@ -42,15 +42,53 @@ import dev.aurakai.auraframefx.datavein.model.NodeType
  * Enhanced Node Info Panel with FFX-style progression details
  */
 /**
- * Displays a stylized card with detailed information for a DataVeinNode.
+
+ * Renders a stylized info card displaying a DataVein node's type, identification, progression, description, and current status.
  *
- * Shows the node type header with a colored status indicator (Green = activated, Yellow = unlocked, Red = locked),
- * identification rows (Tag, ID, Ring, Level), the node description, and an optional Data row.
- * If the node is unlocked, displays XP as "xp/1000" and a horizontal progress bar filled proportionally to xp/1000.
- * A short status line is shown at the bottom with one of:
- *  - "🔒 Locked - Requires Path Progression" (not unlocked)
- *  - "💤 Dormant - Click to Activate" (unlocked but not activated)
- *  - "⚡ Active - Processing Data Flow" (activated)
+ * Shows the node type title with a colored status dot, tag/ID/ring/level rows, and — when unlocked — XP and a horizontal XP bar.
+ * Also displays the node description, optional data row (when present), and a one-line status message reflecting locked, dormant, or active states.
+ *
+ * @param node The DataVeinNode whose details are rendered.
+ * @param modifier Optional Compose modifier applied to the outer Card.
+
+ */
+/**
+ * Renders a stylized information card for a DataVeinNode.
+ *
+ * The card (250.dp wide, rounded corners, 2.dp border tinted by the node type glow color)
+ * shows the node type title and a small circular status indicator (green = activated, yellow = unlocked but dormant,
+ * red = locked). Below the header it presents identification rows (Tag, ID, Ring, Level).
+ *
+ * If the node is unlocked an XP row (`XP: {xp}/1000`) and a horizontal progress track are shown; the progress fill
+ * reflects `node.xp / 1000f`. The node type description is displayed beneath those rows. If `node.data` is non-empty
+ * a "Data" row is shown.
+ *
+ * A single-line status message is shown at the bottom with one of:
+ * - "🔒 Locked - Requires Path Progression" (locked)
+ * - "💤 Dormant - Click to Activate" (unlocked but not activated)
+ * - "⚡ Active - Processing Data Flow" (activated)
+ *
+ * @param node The DataVeinNode to display (used for type, identification, XP, description, data, unlocked/activated state).
+ */
+/**
+ * Renders a stylized information card for a DataVeinNode.
+ *
+ * Displays the node type header with a colored glow and a small circular status dot
+ * (green = activated, yellow = unlocked, red = locked). Shows identification rows
+ * (Tag, ID, Ring, Level), the node description, optional data, and a one-line status
+ * message reflecting locked/dormant/active state. If the node is unlocked, an XP row
+ * and a horizontal XP progress bar are shown (progress = node.xp / 1000f).
+ *
+ * @param node The DataVeinNode to render.
+ * @param modifier Optional Compose [Modifier] applied to the outer card.
+ */
+/**
+ * Renders a stylized info card for a DataVeinNode showing type, status, identity, progression and a short description.
+ *
+ * The card displays the node type (with glow color) and a colored status dot (green = activated, yellow = unlocked, red = locked),
+ * identification rows (Tag, ID, Ring, Level), and the node description. If the node is unlocked it also shows XP as "xp/1000"
+ * with a horizontal progress bar. If the node has non-empty data, a Data row is shown. A one-line status message is rendered
+ * at the bottom and varies by node state: locked, dormant (unlocked but not activated), or active.
  */
 @Composable
 fun NodeInfoPanel(
@@ -164,14 +202,14 @@ fun NodeInfoPanel(
 }
 
 /**
- * Displays a categorized legend of DataVein node types.
+
+ * Renders a legend Card listing DataVein node types grouped by category.
  *
- * Renders a compact card listing NodeType values grouped by their NodeCategory.
- * Each entry shows a small color dot (filled with the type's color and bordered
- * by its glow color) and the type's display name. A short explanatory note
- * about interactions is shown at the bottom.
- *
- * @param modifier Optional modifier applied to the outer Card container.
+ * Displays a titled card that iterates NodeCategory values and shows each NodeType in that
+ * category as a small colored swatch (filled with `type.color` and bordered with `type.glowColor`)
+ * followed by the type's display name. Ends with a short explanatory legend about interaction
+ * and unlocking. Designed as a small, translucent UI panel for quick reference.
+
  */
 @Composable
 fun NodeTypeLegend(modifier: Modifier = Modifier) {
@@ -246,16 +284,19 @@ fun NodeTypeLegend(modifier: Modifier = Modifier) {
 }
 
 /**
- * Displays a compact status card showing real-time-like metrics and progress for the DataVein.
+
+ * Renders a compact status card summarizing real-time DataVein metrics.
  *
- * Shows an animated glyph with a title, three metric rows (Active Flows, Active Nodes, Unlocked),
- * and two progress bars for "Activation" and "Progression" computed as ratios against totalNodes.
+ * The card shows a pulsing header, three status rows (Active Flows, Active Nodes, Unlocked),
+ * and two horizontal progress indicators (Activation, Progression).
+ * Activation = activeNodes / totalNodes and Progression = unlockedNodes / totalNodes.
+ * When `totalNodes` is zero, both percentages are treated as 0 to avoid division by zero.
  *
- * @param activeFlows Current number of active data flows.
- * @param activeNodes Number of nodes currently active.
- * @param totalNodes Total number of nodes; used as the denominator for percentage calculations (safe-divide: 0 if zero).
- * @param unlockedNodes Number of nodes that have been unlocked.
- * @param modifier Modifier to apply to the root Card composable.
+ * @param activeFlows Number of currently active flows.
+ * @param activeNodes Number of currently active nodes.
+ * @param totalNodes Total number of nodes used as the denominator for percentage calculations.
+ * @param unlockedNodes Number of nodes that are unlocked.
+ * @param modifier Modifier for styling and layout; defaults to Modifier.
  */
 @Composable
 fun StatusPanel(

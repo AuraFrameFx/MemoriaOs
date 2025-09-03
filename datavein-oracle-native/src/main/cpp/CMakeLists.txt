@@ -17,22 +17,22 @@ find_library(android-lib android)
 
 # Native library
 add_library(datavein_oracle_native SHARED
-    oracle_drive_jni.cpp
+        oracle_drive_jni.cpp
 )
 
 # Include directories
 target_include_directories(datavein_oracle_native PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 # Link libraries
 target_link_libraries(datavein_oracle_native
-    ${log-lib}
-    ${android-lib}
+        ${log-lib}
+        ${android-lib}
 )
 
 # Genesis Protocol - Multi-architecture support
 set_target_properties(datavein_oracle_native PROPERTIES
-    ANDROID_ARM_MODE arm
-    ANDROID_STL c++_shared
+        ANDROID_ARM_MODE arm
+        ANDROID_STL c++_shared
 )
