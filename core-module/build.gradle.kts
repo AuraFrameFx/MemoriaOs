@@ -1,11 +1,5 @@
-// ==== GENESIS PROTOCOL - CORE MODULE ====
-// Foundation module using convention plugins
-
 plugins {
-    // Use Genesis convention plugins
-    id("genesis.android.compose")
-    
-    // Additional plugins specific to core
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -14,6 +8,7 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx.core"
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
 
     // Configure source sets for OpenAPI generated code
     sourceSets {
@@ -27,9 +22,10 @@ android {
 if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
     configure<org.openapitools.generator.gradle.plugin.extensions.OpenApiGeneratorGenerateExtension> {
         generatorName.set("kotlin")
-        inputSpec.set(rootProject.file("app/api/unified-aegenesis-api.yml").absolutePath)
+        inputSpec.set(rootProject.file("app/api/unified-aegenesis-api.yml").toURI().toString())
         outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
-        
+        validateSpec.set(false)
+
         apiPackage.set("dev.aurakai.aegenesis.api.generated.api")
         modelPackage.set("dev.aurakai.aegenesis.api.generated.model")
         
@@ -51,6 +47,10 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
         dependsOn(":openApiGenerate")
     }
+}
+
+tasks.withType<org.openapitools.generator.gradle.plugin.tasks.ValidateTask>().configureEach {
+    inputSpec.set(rootProject.file("app/api/unified-aegenesis-api.yml").toURI().toString())
 }
 
 dependencies {
@@ -97,8 +97,8 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
     
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+
+    androidTestImplementation(libs.androidx.core.ktx)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)

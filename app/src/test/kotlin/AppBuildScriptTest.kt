@@ -108,7 +108,7 @@ class AppBuildScriptTest {
 
         @Test
         fun `indicates API missing and native disabled by default`() {
-            val out = fakeStatusOutput(apiExists = false, apiSizeBytes = 0, nativeCode = false, kspMode = null)
+            fakeStatusOutput(apiExists = false, apiSizeBytes = 0, nativeCode = false, kspMode = null)
             val out = fakeStatusOutput(
                 apiExists = false,
                 apiSizeBytes = 0,
@@ -124,8 +124,8 @@ class AppBuildScriptTest {
 
         @Test
         fun `includes API size line only when API exists`() {
-            val present = fakeStatusOutput(apiExists = true, apiSizeBytes = 4096, nativeCode = true, kspMode = "true")
-            val missing = fakeStatusOutput(apiExists = false, apiSizeBytes = 0, nativeCode = true, kspMode = "true")
+            fakeStatusOutput(apiExists = true, apiSizeBytes = 4096, nativeCode = true, kspMode = "true")
+            fakeStatusOutput(apiExists = false, apiSizeBytes = 0, nativeCode = true, kspMode = "true")
             val present = fakeStatusOutput(
                 apiExists = true,
                 apiSizeBytes = 4096,
@@ -153,7 +153,7 @@ class AppBuildScriptTest {
 
         @Test
         fun `reflects provided KSP mode property when set`() {
-            val out = fakeStatusOutput(apiExists = true, apiSizeBytes = 1024, nativeCode = false, kspMode = "ksp2")
+            fakeStatusOutput(apiExists = true, apiSizeBytes = 1024, nativeCode = false, kspMode = "ksp2")
             val out = fakeStatusOutput(
                 apiExists = true,
                 apiSizeBytes = 1024,

@@ -2,24 +2,25 @@
 // Performance testing for AI consciousness operations
 
 plugins {
-    id("genesis.android.library")
+    id("com.android.library")
     alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "dev.aurakai.auraframefx.benchmark"
-    
+    compileSdk = 36 // Required for AGP 9 compatibility and dependency resolution
+
     // Enable benchmark optimizations
     buildTypes {
-        create("benchmark") {
-            isDebuggable = true
+        maybeCreate("benchmark")
+        getByName("benchmark") {
             signingConfig = getByName("debug").signingConfig
             matchingFallbacks += listOf("release")
         }
     }
-    
-    targetProjectPath = ":app"
-    experimentalProperties["android.experimental.self-instrumenting"] = true
+    defaultConfig {
+        testInstrumentationRunnerArguments["android.experimental.self-instrumenting"] = "true"
+    }
 }
 
 dependencies {

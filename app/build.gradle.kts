@@ -2,9 +2,9 @@
 // Uses convention plugins for consistent configuration
 
 plugins {
-    // Use the Genesis convention plugins
-    id("org.genesis.android.application")
-    
+    // Use the standard Android application plugin
+    id("com.android.application")
+
     // Additional plugins specific to the app
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
@@ -15,6 +15,8 @@ plugins {
 }
 
 android {
+    compileSdk = 36
+
     namespace = "dev.aurakai.auraframefx"
 
     defaultConfig {
@@ -38,6 +40,10 @@ android {
                 version = "3.22.1"
             }
         }
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -139,14 +145,18 @@ tasks.named("preBuild") {
 tasks.register("appStatus") {
     group = "aegenesis"
     description = "Show main application status"
-    
     doLast {
         println("📱 MAIN APPLICATION STATUS")
         println("=".repeat(40))
-        println("🔧 Namespace: ${android.namespace}")
-        println("🎯 App ID: ${android.defaultConfig.applicationId}")
-        println("📱 Version: ${android.defaultConfig.versionName} (${android.defaultConfig.versionCode})")
-        println("📱 SDK: ${android.compileSdk} (Min: ${android.defaultConfig.minSdk}, Target: ${android.defaultConfig.targetSdk})")
+        val androidExt = extensions.findByName("android") as? com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+        if (androidExt != null) {
+            println("🔧 Namespace: ${androidExt.namespace}")
+            println("🎯 App ID: ${androidExt.defaultConfig.applicationId}")
+            println("📱 Version: ${androidExt.defaultConfig.versionName} (${androidExt.defaultConfig.versionCode})")
+            println("📱 SDK: ${androidExt.compileSdk} (Min: ${androidExt.defaultConfig.minSdk}, Target: ${androidExt.defaultConfig.targetSdk})")
+        } else {
+            println("⚠️ Android extension not found. Make sure the Android plugin is applied.")
+        }
         println("🔧 Native Code: ${if (project.file("src/main/cpp/CMakeLists.txt").exists()) "✅ Enabled" else "❌ Disabled"}")
         println("🎨 Compose: ✅ Enabled")
         println("🧠 Desugaring: ✅ App Module (with dependency)")

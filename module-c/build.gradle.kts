@@ -1,6 +1,9 @@
 // GENESIS PROTOCOL - MODULE C
 plugins { id("genesis.android.compose"); alias(libs.plugins.ksp); alias(libs.plugins.hilt) }
-android { namespace = "dev.aurakai.auraframefx.module.c" }
+android {
+    namespace = "dev.aurakai.auraframefx.module.c"
+    compileSdk = 36
+}
 dependencies {
     api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.androidx.compose.bom)); implementation(libs.bundles.compose); implementation(libs.androidx.activity.compose); implementation(libs.androidx.navigation.compose)

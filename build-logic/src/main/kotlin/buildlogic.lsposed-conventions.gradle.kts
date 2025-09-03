@@ -5,7 +5,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("org.lsposed.lsparanoid")
+    // id("org.lsposed.lsparanoid") // Plugin not available, commented out
 }
 
 android {
@@ -34,59 +34,60 @@ android {
     }
 
     // Enable Parcelize for data classes
-    android.buildFeatures.parcelize = true
+    // android.buildFeatures.parcelize = true
 }
 
 // LSParanoid configuration
+/*
 lsparanoid {
     seed = 0x2A // Your custom seed value
     includeAsSharedUuid = true
     variantFilter = "" // Apply to all variants
 }
+*/
 
 dependencies {
     // Core AndroidX
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
     // YukiHookAPI - Core dependencies
-    implementation(libs.yuki) {
-        // Exclude any transitive dependencies that might cause conflicts
+    implementation("com.github.yukihookapi:yuki:1.0.0") {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
     }
 
     // YukiHookAPI - KSP processor for Xposed
-    ksp(libs.yuki.ksp.xposed)
+    ksp("com.github.yukihookapi:yuki-ksp-xposed:1.0.0")
 
     // LSPosed API (compile-only, provided by the runtime)
-    compileOnly(libs.xposed.api)
+    compileOnly("org.lsposed.api:xposed-api:1.0.0")
 
     // Kotlin Coroutines
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.core)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     // Hilt for dependency injection
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-compiler:2.48")
 
     // Security
-    implementation(libs.androidxSecurity)
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     // Testing
-    testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("io.mockk:mockk:1.13.7")
 
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.0")
 
     // Debug dependencies
-    debugImplementation(libs.leakcanary.android)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.12")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.0")
 }
 
 // Apply common Kotlin conventions

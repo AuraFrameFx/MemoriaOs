@@ -1,1 +1,2 @@
-implementation-class=AndroidLibraryConventionPlugin
+implementation-class=dev.genesis.android.AndroidLibraryConventionPlugin
+

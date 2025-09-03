@@ -1,6 +1,9 @@
 // GENESIS PROTOCOL - MODULE F
 plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka); alias(libs.plugins.spotless) }
-android { namespace = "dev.aurakai.auraframefx.module.f" }
+android {
+    namespace = "dev.aurakai.auraframefx.module.f"
+    compileSdk = 36
+}
 dependencies {
     api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.androidx.compose.bom)); implementation(libs.bundles.compose); implementation(libs.androidx.activity.compose); implementation(libs.androidx.navigation.compose)

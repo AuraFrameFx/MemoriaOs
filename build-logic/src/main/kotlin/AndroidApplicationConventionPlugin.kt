@@ -5,8 +5,8 @@ import com.android.build.api.dsl.ApplicationExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.jvm.toolchain.JvmVendorSpec
+import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.Delete
 import org.gradle.kotlin.dsl.*
 
 class AndroidApplicationConventionPlugin : Plugin<Project> {
@@ -16,14 +16,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 apply("com.android.application")
                 apply("org.jetbrains.kotlin.plugin.compose")
                 // Kotlin plugin applied automatically by AGP 9.0.0-alpha02
-            }
-
-            // Java toolchain configuration
-            extensions.configure<JavaPluginExtension> {
-                toolchain {
-                    languageVersion.set(JavaLanguageVersion.of(24))
-                    vendor.set(JvmVendorSpec.AZUL)
-                }
             }
 
             extensions.configure<ApplicationExtension> {
@@ -61,8 +53,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 compileOptions {
                     // App module DOES get desugaring dependency
                     isCoreLibraryDesugaringEnabled = true
-                    sourceCompatibility = JavaVersion.VERSION_24
-                    targetCompatibility = JavaVersion.VERSION_24
                 }
 
                 packaging {
@@ -94,16 +84,20 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 }
             }
 
+            extensions.configure<JavaPluginExtension>("java") {
+                sourceCompatibility = JavaVersion.VERSION_24
+                targetCompatibility = JavaVersion.VERSION_24
+            }
+
             // Kotlin JVM toolchain
             extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
                 jvmToolchain(24)
             }
 
             // Clean tasks for app module
-            tasks.register<Delete>("cleanKspCache") {
+            tasks.register("cleanKspCache", Delete::class.java) {
                 group = "build setup"
                 description = "Clean KSP caches (fixes NullPointerException)"
-                
                 delete(
                     layout.buildDirectory.dir("generated/ksp"),
                     layout.buildDirectory.dir("tmp/kapt3"),

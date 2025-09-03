@@ -1,6 +1,16 @@
 // ==== GENESIS PROTOCOL - COLOR BLENDR ====
-plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka) }
-android { namespace = "dev.aurakai.auraframefx.colorblendr" }
+plugins {
+    id("com.android.library")
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.dokka)
+}
+android {
+    namespace = "dev.aurakai.auraframefx.colorblendr"
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
+    buildFeatures { compose = true }
+}
 dependencies {
     api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(platform(libs.androidx.compose.bom)); implementation(libs.bundles.compose); implementation(libs.androidx.activity.compose); implementation(libs.androidx.navigation.compose); implementation(libs.androidx.compose.material.icons.extended)

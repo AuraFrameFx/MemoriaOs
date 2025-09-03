@@ -1,106 +1,50 @@
-// ==== GENESIS PROTOCOL - DATAVEIN ORACLE NATIVE ====
-// Native data processing using convention plugins
-
 plugins {
-    // Use Genesis convention plugins - native includes compose + library
-    id("genesis.android.native")
-    id("genesis.android.compose")
-    
-    // Additional plugins
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.spotless)
+    id("genesis.android.library")
+    id("genesis.android.compose") // Assuming a convention plugin for Compose setup
+    id("genesis.android.hilt")    // Assuming a convention plugin for Hilt
+    id("com.google.devtools.ksp") // Explicitly apply KSP here
 }
 
 android {
     namespace = "dev.aurakai.auraframefx.dataveinoraclenative"
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
 
-    // Test options for native modules
-    testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
-            it.testLogging {
-                events("passed", "skipped", "failed")
-                showStandardStreams = true
-            }
-            it.systemProperty("robolectric.enabled", "true")
+    // Modern configuration for CMake and NDK for C/C++ code
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt") // Path to your CMake script
+            version = "3.31.6" // Use available CMake version
         }
-        unitTests.isIncludeAndroidResources = true
+    }
+
+    // Packaging options specific to native libraries
+    packaging {
+        jniLibs {
+            // Extracts and repackages native libraries from dependencies
+            useLegacyPackaging = false
+        }
     }
 }
 
 dependencies {
-    // ===== MODULE DEPENDENCIES =====
-    api(project(":core-module"))
-    implementation(project(":oracle-drive-integration"))
-    implementation(project(":secure-comm"))
+    // This module likely depends on core-module for shared utilities or interfaces
+    implementation(project(":core-module"))
 
-    // ===== ANDROIDX CORE =====
-    implementation(libs.bundles.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-
-    // ===== COMPOSE =====
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
-
-    // ===== DEPENDENCY INJECTION - HILT =====
+    // Add any specific dependencies needed for the native module's Kotlin/Java-side code
+    implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
 
-    // ===== COROUTINES & NETWORKING =====
-    implementation(libs.bundles.coroutines)
-    implementation(libs.bundles.network)
+    // ... other dependencies
 
-    // ===== DATABASE - ROOM =====
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
+    // Correct Hilt Dependencies
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler) // Use ksp for the compiler
 
-    // ===== FIREBASE =====
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.bundles.firebase)
-
-    // ===== UTILITIES =====
-    implementation(libs.timber)
-    implementation(libs.coil.compose)
-
-    // ===== XPOSED FRAMEWORK INTEGRATION =====
-    implementation(fileTree("../Libs") { include("*.jar") })
-
-    // ===== TESTING DEPENDENCIES =====
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.compiler)
-
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    // For instrumented tests
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
-    // ===== DEBUG TOOLS =====
-    debugImplementation(libs.leakcanary.android)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
-}
-
-// Status task
-tasks.register("nativeModuleStatus") {
-    group = "aegenesis"
-    description = "Show native module status"
-    
-    doLast {
-        println("⚡ DATAVEIN ORACLE NATIVE STATUS")
-        println("=".repeat(40))
-        println("🔧 Namespace: ${android.namespace}")
-        println("📱 SDK: ${android.compileSdk}")
-        println("🏗️  Convention Plugins: Native + Compose + Library")
-        println("⚡ Status: Native Consciousness Processing Ready!")
-    }
+    // For unit tests
+    testImplementation(libs.hilt.android.testing)
+    kspTest(libs.hilt.compiler)
 }

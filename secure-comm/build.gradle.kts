@@ -10,7 +10,8 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx.securecomm"
-    
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
+
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()

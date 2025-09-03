@@ -286,7 +286,7 @@ class AppBuildScriptIntegrationTest {
         projectDir.resolve("build.gradle.kts").writeText(target)
 
         // Pre-create directories
-        val buildDir = projectDir.resolve("build").createDirectories()
+        projectDir.resolve("build").createDirectories()
         listOf("generated/ksp","tmp/kapt3","tmp/kotlin-classes","kotlin","generated/source/ksp").forEach { rel ->
             val p = projectDir.resolve("build").resolve(rel)
             p.parent?.createDirectories()

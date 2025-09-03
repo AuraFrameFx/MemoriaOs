@@ -1,6 +1,18 @@
-// ==== GENESIS PROTOCOL - COLLAB CANVAS ====
-plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka); alias(libs.plugins.spotless) }
-android { namespace = "dev.aurakai.auraframefx.collabcanvas" }
+plugins {
+    id("com.android.library")
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+}
+android {
+    namespace = "dev.aurakai.auraframefx.collabcanvas"
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
+    buildFeatures { compose = true }
+    // Optionally, set composeOptions if not managed by version catalog
+    // composeOptions { kotlinCompilerExtensionVersion = "1.5.0" }
+}
 ksp { arg("kotlin.languageVersion", "2.2"); arg("kotlin.apiVersion", "2.2"); arg("kotlin.jvmTarget", "24") }
 dependencies {
     api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)

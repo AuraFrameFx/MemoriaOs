@@ -23,4 +23,8 @@ dependencies {
     implementation(libs.detekt.gradlePlugin)
     implementation(libs.kover.gradlePlugin)
     implementation(libs.openapi.generator.gradlePlugin)
+    implementation(gradleApi())
+    implementation(localGroovy())
+    implementation(libs.android.gradlePlugin)
+    implementation(libs.kotlin.gradlePlugin)
 }

@@ -115,14 +115,14 @@ class BuildScriptTest {
 
         @Test
         fun `kotlin libraries configured`() {
-            val txt = readBuildFile()
+            readBuildFile()
             assertAll(
             )
         }
 
         @Test
         fun `hilt and ksp wiring is complete for all source sets`() {
-            val txt = readBuildFile()
+            readBuildFile()
             assertAll(
             )
         }
@@ -159,13 +159,13 @@ class BuildScriptTest {
     inner class Defensive {
         @Test
         fun `file does not accidentally enable compose or viewBinding`() {
-            val txt = readBuildFile()
+            readBuildFile()
             // Ensure no stray enablements slipped through; the explicit checks above already assert exact values.
         }
 
         @Test
         fun `proguard configuration present only in release`() {
-            val txt = readBuildFile()
+            readBuildFile()
             // Rough heuristic: ensure no debug minify enabling.
         }
     }

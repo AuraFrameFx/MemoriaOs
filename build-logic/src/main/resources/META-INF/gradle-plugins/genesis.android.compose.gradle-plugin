@@ -1,1 +1,2 @@
-implementation-class=AndroidComposeConventionPlugin
+implementation-class=dev.genesis.android.AndroidComposeConventionPlugin
+

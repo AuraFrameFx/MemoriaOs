@@ -59,10 +59,8 @@ class BuildGradleKtsTest {
             "Expected correct namespace"
         )
 
-        val compile =
-            Regex("""compileSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
-        val target =
-            Regex("""targetSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
+        Regex("""compileSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
+        Regex("""targetSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
         val compile = Regex("""compileSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
         val target = Regex("""targetSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()
         val min = Regex("""minSdk\s*=\s*(\d+)""").find(script)?.groupValues?.get(1)?.toIntOrNull()

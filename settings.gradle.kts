@@ -11,30 +11,30 @@ enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 pluginManagement {
     // Include build-logic for convention plugins
     includeBuild("build-logic")
-    
+
     repositories {
         // Primary repositories
         google()
         gradlePluginPortal()
         mavenCentral()
-        
+
         // AndroidX Compose
         maven("https://androidx.dev/storage/compose-compiler/repository/") {
             name = "AndroidX Compose"
             content { includeGroup("androidx.compose.compiler") }
         }
-        
+
         // JetBrains Compose
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
             name = "JetBrains Compose"
         }
-        
+
         // Snapshots
         maven("https://oss.sonatype.org/content/repositories/snapshots/") {
             name = "Sonatype Snapshots"
             mavenContent { snapshotsOnly() }
         }
-        
+
         // JitPack for GitHub dependencies
         maven("https://jitpack.io") {
             name = "JitPack"
@@ -51,53 +51,31 @@ plugins {
 dependencyResolutionManagement {
     // Enforce consistent dependency resolution
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    
-    // Configure repositories with content filtering
+
+    // FIX: Simplified repository configuration to resolve dependencies correctly.
+    // The previous strict filtering was preventing many common libraries from being found.
     repositories {
-        // Primary repositories
-        google {
-            content {
-                includeGroupByRegex("android\\..*")
-                includeGroupByRegex("com\\.android\\..*")
-                includeGroupByRegex("com\\.google\\..*")
-                includeGroupByRegex("com\\.crashlytics\\..*")
-                includeGroupByRegex("com\\.google\\.firebase\\..*")
-            }
-        }
-        
-        mavenCentral {
-            content {
-                excludeGroupByRegex("android\\..*")
-                excludeGroupByRegex("com\\.android\\..*")
-                excludeGroupByRegex("com\\.google\\..*")
-            }
-        }
-        
+        google()
+        mavenCentral()
+
         // AndroidX Compose
         maven("https://androidx.dev/storage/compose-compiler/repository/") {
             name = "AndroidX Compose"
-            content { includeGroup("androidx.compose.compiler") }
         }
-        
+
         // JetBrains Compose
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev") {
             name = "JetBrains Compose"
-            content { 
-                includeGroupByRegex("org\\.jetbrains\\..*")
-                includeGroupByRegex("com\\.jetbrains\\..*")
-            }
         }
-        
-        // Snapshots
+
+        // Snapshots for pre-release libraries
         maven("https://oss.sonatype.org/content/repositories/snapshots/") {
             name = "Sonatype Snapshots"
-            mavenContent { snapshotsOnly() }
         }
-        
+
         // JitPack for GitHub dependencies
         maven("https://jitpack.io") {
             name = "JitPack"
-            content { includeGroupByRegex("com\\.github\\..*") }
         }
     }
 }

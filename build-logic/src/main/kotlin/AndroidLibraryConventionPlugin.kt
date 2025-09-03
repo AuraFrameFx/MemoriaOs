@@ -5,9 +5,11 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.jvm.toolchain.JvmVendorSpec
-import org.gradle.kotlin.dsl.*
+import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.tasks.Delete
+import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.register
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -15,14 +17,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("com.android.library")
                 // Kotlin plugin applied automatically by AGP 9.0.0-alpha02
-            }
-
-            // Java toolchain configuration
-            extensions.configure<JavaPluginExtension> {
-                toolchain {
-                    languageVersion.set(JavaLanguageVersion.of(24))
-                    vendor.set(JvmVendorSpec.AZUL)
-                }
             }
 
             extensions.configure<LibraryExtension> {
@@ -56,8 +50,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
                 compileOptions {
                     isCoreLibraryDesugaringEnabled = true
-                    sourceCompatibility = JavaVersion.VERSION_24
-                    targetCompatibility = JavaVersion.VERSION_24
                 }
 
                 packaging {
@@ -83,8 +75,13 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 }
             }
 
+            extensions.configure<JavaPluginExtension>("java") {
+                sourceCompatibility = JavaVersion.VERSION_24
+                targetCompatibility = JavaVersion.VERSION_24
+            }
+
             // Kotlin JVM toolchain
-            extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
+            extensions.configure<KotlinProjectExtension> {
                 jvmToolchain(24)
             }
 

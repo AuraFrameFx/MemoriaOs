@@ -9,7 +9,8 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx.screenshottests"
-    
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
+
     // Disable unnecessary features for screenshot testing
     buildFeatures {
         compose = true
@@ -35,7 +36,8 @@ dependencies {
     // Hilt for DI in tests
     testImplementation(libs.hilt.android.testing)
     kspTest(libs.hilt.compiler)
-    
+    implementation(libs.hilt.android) // Added to satisfy Hilt Gradle plugin requirement
+
     // Robolectric for screenshot tests
     testImplementation(libs.robolectric)
 }

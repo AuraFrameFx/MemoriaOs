@@ -32,7 +32,7 @@ class ThemeManagerTest {
         } catch (_: Throwable) {
             try {
                 // Try MockK if available
-                val mockk = Class.forName("io.mockk.MockK")
+                Class.forName("io.mockk.MockK")
                 // If class exists, create relaxed mock through reflection helper method
                 // but if unavailable, fall back to FakeContext
                 FakeContext()

@@ -229,7 +229,7 @@ class SecureKeyStoreTest {
         val originalData = "test data for round trip".toByteArray()
         val iv = ByteArray(12) { it.toByte() }
         val encryptedData = "mock_encrypted_data".toByteArray()
-        val combinedData = iv + encryptedData
+        iv + encryptedData
 
         // Setup for store operation
         every { keyStore.containsAlias(keyAlias) } returns false

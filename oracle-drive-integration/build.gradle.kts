@@ -11,6 +11,7 @@ plugins {
 
 android {
     namespace = "dev.aurakai.auraframefx.oracledriveintegration"
+    compileSdk = 36 // Required for AGP 9 and dependency resolution
 }
 
 // KSP configuration for this module
