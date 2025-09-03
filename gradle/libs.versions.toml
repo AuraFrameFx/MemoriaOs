@@ -96,6 +96,7 @@ openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGenera
 androidx-benchmark = { id = "androidx.benchmark", version.ref = "androidxBenchmark" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlinVersion" }
 
 [libraries]
 # ===== GRADLE PLUGINS (for build-logic) =====

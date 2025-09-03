@@ -5,9 +5,7 @@ plugins { id("genesis.android.compose"); alias(libs.plugins.ksp); alias(libs.plu
 android {
     namespace = "dev.aurakai.auraframefx.module.b"
     compileSdk = 36
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+
 }
 dependencies {
     api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
