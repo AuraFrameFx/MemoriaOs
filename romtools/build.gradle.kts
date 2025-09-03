@@ -1,3 +1,5 @@
+import dev.aurakai.gradle.tasks.VerifyRomToolsTask
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
@@ -162,27 +164,6 @@ tasks.register<Copy>("copyRomTools") {
     }
 }
 
-abstract class VerifyRomToolsTask : DefaultTask() {
-    @get:InputDirectory
-    @get:Optional
-    abstract val romToolsDir: DirectoryProperty
-
-    /**
-     * Verify that the configured ROM tools directory exists and log the outcome.
-     *
-     * If the task's optional `romToolsDir` is unset or points to a non-existent location, the task emits a warning.
-     * If the directory exists, the task logs a lifecycle message including the directory's absolute path.
-     */
-    @TaskAction
-    fun verify() {
-        val dir = romToolsDir.orNull?.asFile
-        if (dir?.exists() != true) {
-            logger.warn("⚠️  ROM tools directory not found - ROM functionality may be limited")
-        } else {
-            logger.lifecycle("✅ ROM tools verified and ready: ${dir.absolutePath}")
-        }
-    }
-}
 
 tasks.register<VerifyRomToolsTask>("verifyRomTools") {
     romToolsDir.set(romToolsOutputDirectory) // Set to the same shared property

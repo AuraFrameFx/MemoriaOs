@@ -37,6 +37,10 @@ class CascadeAIService @Inject constructor(
     private external fun nativeProcessRequest(request: String): String
     private external fun nativeShutdown()
 
+    init {
+        System.loadLibrary("cascade_ai")
+        nativeInitialize()
+    }
 
     init {
         try {
@@ -70,6 +74,18 @@ class CascadeAIService @Inject constructor(
 
     private val state = mutableMapOf<String, Any>()
     
+    /**
+     * Retrieves the capabilities of this agent.
+     *
+     * @return A map of capability names to their descriptions.
+     */
+    fun getCapabilities(): Map<String, String> {
+        return mapOf(
+            "ai_processing" to "Basic AI request processing",
+            "context_awareness" to "Basic context handling",
+            "error_handling" to "Basic error handling"
+        )
+    }
     
     /**
      * Retrieves the continuous memory state of the agent.

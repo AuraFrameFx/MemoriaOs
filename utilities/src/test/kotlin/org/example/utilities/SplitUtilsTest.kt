@@ -10,8 +10,50 @@ import org.example.list.LinkedList
 class SplitUtilsTest {
 
     private fun linkedListToList(ll: LinkedList): List<String> {
-        // Assumes LinkedList implements Iterable<String>
-        return ll.toList()
+        // Try common APIs first to avoid brittle reflection:
+        // 1) size() + get(index)
+        // 2) iterator() if Iterable<String>
+        // 3) toString() fallback split (less preferred, only if necessary)
+        return try {
+            // Attempt size() + get(index)
+            val sizeMethod =
+                ll::class.java.methods.firstOrNull { it.name == "size" && it.parameterCount == 0 }
+            val getMethod =
+                ll::class.java.methods.firstOrNull { it.name == "get" && it.parameterCount == 1 }
+            if (sizeMethod != null && getMethod != null) {
+                val size = (sizeMethod.invoke(ll) as? Int) ?: 0
+                (0 until size).map { idx -> getMethod.invoke(ll, idx) as String }
+            } else {
+                // Attempt iterator()
+                val iteratorMethod =
+                    ll::class.java.methods.firstOrNull { it.name == "iterator" && it.parameterCount == 0 }
+                if (iteratorMethod != null) {
+                    val it = iteratorMethod.invoke(ll) as java.util.Iterator<*>
+                    val out = mutableListOf<String>()
+                    while (it.hasNext()) {
+                        out.add(it.next() as String)
+                    }
+                    out
+                } else {
+                    // Last resort: toArray or values() pattern
+                    val toArrayMethod =
+                        ll::class.java.methods.firstOrNull { it.name == "toArray" && it.parameterCount == 0 }
+                    if (toArrayMethod != null) {
+                        (toArrayMethod.invoke(ll) as Array<*>).map { it as String }
+                    } else {
+                        // Fallback: toString parsing is not ideal but prevents hard coupling to internals.
+                        ll.toString()
+                            .removePrefix("[")
+                            .removeSuffix("]")
+                            .split(",")
+                            .map { it.trim() }
+                            .filter { it.isNotEmpty() }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            fail("Unable to adapt LinkedList to List<String>: ${e.message}", e)
+        }
     }
 
     @Nested
