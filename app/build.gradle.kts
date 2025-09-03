@@ -4,6 +4,7 @@
 plugins {
     // Use the standard Android application plugin
     id("com.android.application")
+    alias(libs.plugins.kotlin.compose)
 
     // Additional plugins specific to the app
     alias(libs.plugins.kotlin.serialization)
@@ -24,7 +25,7 @@ android {
         applicationId = "dev.aurakai.auraframefx"
         versionCode = 1
         versionName = "1.0.0-genesis-alpha"
-        minSdk = 21
+        minSdk = 34
 
         // NDK configuration only if native code exists
         if (project.file("src/main/cpp/CMakeLists.txt").exists()) {
@@ -46,6 +47,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 
     buildTypes {
@@ -66,11 +68,11 @@ android {
     }
     // Migrate deprecated kotlinOptions to compilerOptions DSL
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
     }
     kotlin {
-        jvmToolchain(8)
+        jvmToolchain(24)
     }
 }
 

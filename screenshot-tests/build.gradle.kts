@@ -2,11 +2,11 @@
 // Visual regression testing for Genesis UI components
 
 plugins {
-    id("genesis.android.library") 
+    id("genesis.android.library")
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -17,8 +17,13 @@ android {
     buildFeatures {
         compose = true
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    // Modern Kotlin configuration
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+    kotlin {
+        jvmToolchain(24)
     }
 }
 

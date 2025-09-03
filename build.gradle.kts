@@ -5,13 +5,6 @@ import org.openapitools.generator.gradle.plugin.extensions.OpenApiGeneratorGener
 // ==== GENESIS PROTOCOL - ROOT BUILD CONFIGURATION ====
 // Modernized to use build-logic for conventions and correct root plugin application.
 plugins {
-    id("genesis.detekt")
-    id("genesis.dokka")
-    id("genesis.kover")
-    id("genesis.spotless")
-    id("genesis.root")
-    id("genesis.android")
-    id("genesis.android.compose")
 
     // Base plugins applied at root level for project-wide configuration
     alias(libs.plugins.detekt) apply true

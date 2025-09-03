@@ -1,12 +1,12 @@
 // ==== GENESIS PROTOCOL - COLOR BLENDR ====
 plugins {
     id("com.android.library")
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
 }
 android {
     namespace = "dev.aurakai.auraframefx.colorblendr"

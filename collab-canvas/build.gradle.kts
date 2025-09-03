@@ -1,23 +1,23 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+
 plugins {
     id("com.android.library")
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
 }
 android {
     namespace = "dev.aurakai.auraframefx.collabcanvas"
     compileSdk = 36 // Required for AGP 9 and dependency resolution
     buildFeatures { compose = true }
-    kotlinOptions {
-        jvmTarget = "1.8"
+
     }
     // Optionally, set composeOptions if not managed by version catalog
     // composeOptions { kotlinCompilerExtensionVersion = "1.5.0" }
-}
 ksp { arg("kotlin.languageVersion", "2.2"); arg("kotlin.apiVersion", "2.2"); arg("kotlin.jvmTarget", "24") }
 dependencies {
     api(project(":core-module")); implementation(libs.bundles.androidx.core); implementation(libs.androidx.lifecycle.runtime.ktx); implementation(libs.androidx.lifecycle.viewmodel.ktx); implementation(libs.androidx.lifecycle.viewmodel.compose)
