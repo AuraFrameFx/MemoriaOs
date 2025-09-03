@@ -32,37 +32,10 @@ class CascadeAIService @Inject constructor(
     private val kaiService: KaiAIService
 ) : Agent {
 
-    /**
- * Initializes native JNI resources used by CascadeAIService.
- *
- * Implemented in the native `cascade_ai` library. Must be called before any other native entry
- * points (for example, `nativeProcessRequest`) to allocate and initialize native-side state.
- */
+    // JNI Native Methods
     private external fun nativeInitialize()
-// In CascadeAIService.kt, inside the companion object:
-
-companion object {
-    init {
-        System.loadLibrary("cascade_ai")
-    }
-
-    // removed duplicate; use the instance-level external method defined above
-
-    // …any other companion methods…
-}
- * Requests the native library to perform shutdown and release any native resources.
- *
- * This external JNI entry triggers native-side cleanup (for example freeing native memory,
- * stopping background native threads, and closing native handles). It does not return a value
- * and should be called when the service is being destroyed to avoid native resource leaks.
- */
-/**
- * Performs native-side cleanup of resources allocated by the cascade_ai library.
- *
- * Calls into the native layer to release JNI resources, background threads, and native memory
- * associated with this service. Intended to be invoked during service shutdown to avoid leaks.
- */
-private external fun nativeShutdown()
+    private external fun nativeProcessRequest(request: String): String
+    private external fun nativeShutdown()
 
     init {
         System.loadLibrary("cascade_ai")
@@ -102,13 +75,9 @@ private external fun nativeShutdown()
     private val state = mutableMapOf<String, Any>()
     
     /**
-     * Provide human-readable descriptions for the agent's capabilities.
+     * Retrieves the capabilities of this agent.
      *
-     * Returns a map where keys are capability identifiers and values are short, user-facing descriptions.
-     * Known keys: "ai_processing" (request handling), "context_awareness" (uses contextual information),
-     * and "error_handling" (how errors are managed).
-     *
-     * @return Map from capability identifier to its short description.
+     * @return A map of capability names to their descriptions.
      */
     fun getCapabilities(): Map<String, String> {
         return mapOf(
