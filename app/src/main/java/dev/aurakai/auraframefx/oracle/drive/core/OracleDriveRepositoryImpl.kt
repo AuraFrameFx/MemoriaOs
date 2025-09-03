@@ -25,16 +25,7 @@ class OracleDriveRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context // Added @ApplicationContext
 ) : OracleDriveRepository {
 
-    /**
-         * List objects in the specified bucket, optionally filtered by an object-name prefix.
-         *
-         * Returns a list of OracleDriveFile representing each object. If the remote API call is unsuccessful
-         * or an exception occurs, an empty list is returned.
-         *
-         * @param prefix Optional object-name prefix to filter results.
-         * @return A list of files in the bucket; empty on failure or when no objects match.
-         */
-        override suspend fun listFiles(bucketName: String, prefix: String?): List<OracleDriveFile> =
+    override suspend fun listFiles(bucketName: String, prefix: String?): List<OracleDriveFile> =
         withContext(Dispatchers.IO) {
             try {
                 val response = oracleCloudApi.listFiles(bucketName = bucketName, prefix = prefix)
@@ -56,17 +47,6 @@ class OracleDriveRepositoryImpl @Inject constructor(
             }
         }
 
-    /**
-     * Uploads a local file to the specified Oracle Cloud bucket.
-     *
-     * Uploads the file at the given local `filePath` to `bucketName` using `objectName` as the object key.
-     * Returns true if the upload request completed successfully; returns false if the local file does not exist,
-     * the upload failed, or an error occurred.
-     *
-     * @param bucketName Target bucket in Oracle Cloud.
-     * @param objectName Target object key/name to store in the bucket.
-     * @param filePath Local filesystem path to the file to upload (must exist).
-     */
     override suspend fun uploadFile(
         bucketName: String,
         objectName: String,
@@ -89,18 +69,6 @@ class OracleDriveRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-     * Downloads an object from the given bucket and saves it to the specified destination directory.
-     *
-     * This suspending function performs IO and writes the downloaded object to disk. The object name
-     * is normalized to its basename to prevent path traversal. Parent directories of the destination
-     * file will be created if they do not exist.
-     *
-     * @param bucketName Name of the Oracle Cloud bucket containing the object.
-     * @param objectName Path or name of the object in the bucket; only the basename is used for the saved file.
-     * @param destinationPath Filesystem directory path where the downloaded file will be placed.
-     * @return The File pointing to the saved file on success, or `null` if the download failed or an error occurred.
-     */
     override suspend fun downloadFile(
         bucketName: String,
         objectName: String,
@@ -129,17 +97,7 @@ class OracleDriveRepositoryImpl @Inject constructor(
         }
     }
 
-    /**
-         * Deletes an object from the specified Oracle Cloud Storage bucket.
-         *
-         * Performs the delete operation and returns true if the remote API reports success.
-         * If the operation fails or an exception occurs, the function returns false.
-         *
-         * @param bucketName Name of the bucket containing the object.
-         * @param objectName Path or name of the object to delete within the bucket.
-         * @return `true` when the remote delete request was successful; `false` on failure or error.
-         */
-        override suspend fun deleteFile(bucketName: String, objectName: String): Boolean =
+    override suspend fun deleteFile(bucketName: String, objectName: String): Boolean =
         withContext(Dispatchers.IO) {
             try {
                 val response =

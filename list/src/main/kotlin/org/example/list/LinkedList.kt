@@ -86,9 +86,11 @@ class LinkedList {
     }
 
     /**
-     * Returns the number of elements in this list.
+     * Returns the number of elements in the list.
      *
-     * @return The number of elements currently contained in the list.
+     * Traverses the linked list from the head and counts nodes.
+     *
+     * @return The current size (number of nodes) in this list.
      */
     fun size(): Int {
         var size = 0
@@ -103,14 +105,14 @@ class LinkedList {
     }
 
     /**
-     * Return the element at the given 0-based index.
+     * Returns the element at the given 0-based index in the list.
      *
-     * Negative `idx` is treated as 0 (the head). Traverses the list and returns the node's data
-     * at the requested position.
+     * If `idx` is negative it is treated as 0 (the head element). Throws
+     * IndexOutOfBoundsException when the index is out of range or the list is empty.
      *
-     * @param idx 0-based index of the element to retrieve.
+     * @param idx 0-based position of the element to retrieve.
      * @return the string stored at the specified index.
-     * @throws IndexOutOfBoundsException if the index is out of range or the list is empty.
+     * @throws IndexOutOfBoundsException if no element exists at the requested index.
      */
     fun get(idx: Int): String {
         var index = idx

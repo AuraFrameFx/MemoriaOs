@@ -33,29 +33,10 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
         return false // Default to non-secure for development
     }
 
-    /**
-     * Checks whether the current context is allowed to access the given resource.
-     *
-     * Default implementation always permits access (intended for development/default wiring).
-     * Production implementations should override this to enforce real access controls.
-     *
-     * @param resource Identifier or path of the resource to validate access for.
-     * @return `true` if access is allowed, `false` otherwise.
-     */
     override fun validateAccess(resource: String): Boolean {
         return true // Default allow for development
     }
 
-    /**
-     * Returns a default, always-valid application integrity result.
-     *
-     * This implementation provides a placeholder integrity result used by the default security context:
-     * it returns an ApplicationIntegrity with a constant signature hash ("default_signature_hash") and
-     * isValid set to true. Use a real integrity check in production to verify application signatures or
-     * binary integrity.
-     *
-     * @return An ApplicationIntegrity indicating the application is valid (placeholder data).
-     */
     override fun verifyApplicationIntegrity(): ApplicationIntegrity {
         return ApplicationIntegrity(
             signatureHash = "default_signature_hash",
@@ -63,15 +44,6 @@ class DefaultSecurityContext @Inject constructor() : SecurityContext {
         )
     }
 
-    /**
-     * Records a security event.
-     *
-     * This placeholder implementation writes a brief representation of the event to standard output
-     * (prints the event type and details). Production implementations should persist or forward
-     * events to an appropriate audit/logging system.
-     *
-     * @param event The security event to record.
-     */
     override fun logSecurityEvent(event: SecurityEvent) {
         // Log security events (placeholder implementation)
         println("Security Event: ${event.type} - ${event.details}")

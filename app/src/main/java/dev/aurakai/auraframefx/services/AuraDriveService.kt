@@ -27,13 +27,6 @@ class AuraDriveService : Service() {
     lateinit var secureFileManager: dev.aurakai.auraframefx.oracle.drive.utils.SecureFileManager
 
     private val binder = object : IAuraDriveService.Stub() {
-        /**
-         * Returns a short status string for the Oracle Drive service.
-         *
-         * The returned string indicates the drive is active and includes the caller process UID.
-         *
-         * @return A human-readable status message (includes the calling process UID).
-         */
         override fun getOracleDriveStatus(): String {
             Log.d(
                 TAG,

@@ -31,15 +31,6 @@ class CanvasWebSocketService @Inject constructor(
             _events.tryEmit(CanvasWebSocketEvent.Connected)
         }
 
-        /**
-         * Handles an incoming text WebSocket frame by attempting to parse it into a CanvasWebSocketMessage
-         * and emitting an appropriate CanvasWebSocketEvent.
-         *
-         * On successful parse emits CanvasWebSocketEvent.MessageReceived(message).
-         * On parse failure emits CanvasWebSocketEvent.Error with the parsing error message.
-         *
-         * @param text The UTF-8 text payload received from the WebSocket.
-         */
         override fun onMessage(webSocket: WebSocket, text: String) {
             Timber.d("Message received: $text") // Changed to Timber
             try {
@@ -93,15 +84,6 @@ class CanvasWebSocketService @Inject constructor(
         webSocket = null
     }
 
-    /**
-     * Serializes the given CanvasWebSocketMessage to JSON and sends it over the active WebSocket.
-     *
-     * Returns true if the message was successfully handed off to the WebSocket, or false if there is
-     * no active connection or an error occurred during serialization/sending.
-     *
-     * @param message The canvas message to send.
-     * @return True on successful send; false otherwise.
-     */
     fun sendMessage(message: CanvasWebSocketMessage): Boolean {
         return try {
             val json = gson.toJson(message)
