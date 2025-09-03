@@ -1,5 +1,5 @@
 // ==== GENESIS PROTOCOL - SANDBOX UI ====
-plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka) }
+plugins { id("genesis.android.compose"); alias(libs.plugins.kotlin.compose); alias(libs.plugins.kotlin.serialization); alias(libs.plugins.ksp); alias(libs.plugins.hilt); alias(libs.plugins.dokka) }
 android {
     namespace = "dev.aurakai.auraframefx.sandboxui"
     compileSdk = 36

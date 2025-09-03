@@ -4,6 +4,7 @@
 plugins {
     // Use the standard Android application plugin
     id("com.android.application")
+    alias(libs.plugins.kotlin.compose)
 
     // Additional plugins specific to the app
     alias(libs.plugins.kotlin.serialization)
@@ -44,6 +45,7 @@ android {
 
     buildFeatures {
         buildConfig = true
+        compose = true
     }
 
     buildTypes {
