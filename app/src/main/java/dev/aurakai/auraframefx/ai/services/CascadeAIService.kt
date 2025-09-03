@@ -33,10 +33,10 @@ class CascadeAIService @Inject constructor(
 ) : Agent {
 
     /**
- * Initialize native JNI resources used by CascadeAIService.
+ * Initializes native JNI resources used by CascadeAIService.
  *
- * Implemented in the native `cascade_ai` library; must be called once before any other native calls
- * (for example, before `nativeProcessRequest`) to set up native-side state.
+ * Implemented in the native `cascade_ai` library. Must be called before any other native entry
+ * points (for example, `nativeProcessRequest`) to allocate and initialize native-side state.
  */
     private external fun nativeInitialize()
 // In CascadeAIService.kt, inside the companion object:
@@ -55,6 +55,12 @@ companion object {
  * This external JNI entry triggers native-side cleanup (for example freeing native memory,
  * stopping background native threads, and closing native handles). It does not return a value
  * and should be called when the service is being destroyed to avoid native resource leaks.
+ */
+/**
+ * Performs native-side cleanup of resources allocated by the cascade_ai library.
+ *
+ * Calls into the native layer to release JNI resources, background threads, and native memory
+ * associated with this service. Intended to be invoked during service shutdown to avoid leaks.
  */
 private external fun nativeShutdown()
 
@@ -96,12 +102,13 @@ private external fun nativeShutdown()
     private val state = mutableMapOf<String, Any>()
     
     /**
-     * Returns human-readable descriptions of the agent's capabilities.
+     * Provide human-readable descriptions for the agent's capabilities.
      *
-     * The returned map's keys are capability identifiers ("ai_processing", "context_awareness", "error_handling")
-     * and the values are short descriptions of each capability.
+     * Returns a map where keys are capability identifiers and values are short, user-facing descriptions.
+     * Known keys: "ai_processing" (request handling), "context_awareness" (uses contextual information),
+     * and "error_handling" (how errors are managed).
      *
-     * @return Map of capability identifier to its short description.
+     * @return Map from capability identifier to its short description.
      */
     fun getCapabilities(): Map<String, String> {
         return mapOf(
