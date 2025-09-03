@@ -84,6 +84,15 @@ abstract class PrepareGenesisWorkspaceTask : DefaultTask() {
     @get:Internal
     abstract val subprojectBuildDirs: ConfigurableFileCollection
 
+    /**
+     * Gradually prepares the Genesis workspace as a Gradle task action.
+     *
+     * Deletes the configured root build directory and each configured subproject build directory
+     * (recursively) so downstream builds start from a clean state. Prints brief status lines
+     * before and after cleanup.
+     *
+     * Uses the task's `rootBuildDir` and `subprojectBuildDirs` properties to locate directories to remove.
+     */
     @TaskAction
     fun prepare() {
         println("🧹 Preparing Genesis workspace...")

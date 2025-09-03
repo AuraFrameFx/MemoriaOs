@@ -51,6 +51,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         COLLABORATION_REQUEST
     }
 
+    /**
+     * Service lifecycle entry point; initializes manual dependencies and sets up notification channels.
+     *
+     * Called when the service is created. Performs manual dependency wiring (used because
+     * @AndroidEntryPoint is not available), creates required notification channels, and logs service creation.
+     */
     override fun onCreate() {
         super.onCreate()
 
@@ -61,6 +67,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Timber.d("Genesis Firebase Messaging Service created")
     }
 
+    /**
+     * Initializes service dependencies used by this Firebase messaging service.
+     *
+     * This is a manual placeholder initializer that constructs or wires local fallback implementations
+     * for collaborators (e.g., DataStoreManager, MemoryManager, logger) when an external dependency
+     * provider is not available. Intended for local/test use; in production these should be supplied
+     * by the application's dependency injection framework.
+     */
     private fun initializeDependencies() {
         // Initialize dependencies manually
         // In a real implementation, get these from a dependency provider

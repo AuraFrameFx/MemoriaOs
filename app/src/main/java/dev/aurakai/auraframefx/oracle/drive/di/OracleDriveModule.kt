@@ -36,6 +36,11 @@ object OracleDriveModule {
 *
 * This allows dependency injection of SecureFileService throughout the application using the GenesisSecureFileService implementation.
 */
+/**
+ * Binds the GenesisSecureFileService implementation to the SecureFileService interface for dependency injection.
+ *
+ * Registered as a singleton binding so injections of SecureFileService receive the single shared GenesisSecureFileService instance.
+ */
 @Binds
 @Singleton
 abstract fun bindSecureFileService(
@@ -51,6 +56,15 @@ companion object {
      * are set to 30 seconds.
      *
      * @return A configured OkHttpClient instance for secure network communication.
+     */
+    /**
+     * Provides a singleton OkHttpClient configured for Oracle Drive API use.
+     *
+     * The client injects two request headers on every call: `X-Security-Token` (generated via the
+     * CryptographyManager) and `X-Request-ID` (a random UUID). It also attaches a BASIC-level
+     * HttpLoggingInterceptor and enforces 30-second connect, read, and write timeouts.
+     *
+     * @return A configured OkHttpClient instance.
      */
     @Provides
     @Singleton
@@ -79,9 +93,9 @@ companion object {
     }
 
     /**
-     * Provides a singleton instance of CryptographyManager using the application context.
+     * Returns the singleton CryptographyManager initialized with the application context.
      *
-     * @return The singleton CryptographyManager instance.
+     * @return The shared CryptographyManager instance.
      */
     @Provides
     @Singleton
@@ -92,7 +106,7 @@ companion object {
     }
 
     /**
-     * Provides a singleton instance of SecureStorage initialized with the application context and cryptography manager.
+     * Provides the singleton SecureStorage used by the module, initialized with the application Context and CryptographyManager.
      *
      * @return The singleton SecureStorage instance.
      */
@@ -106,9 +120,12 @@ companion object {
     }
 
     /**
-     * Provides a singleton instance of `GenesisSecureFileService` initialized with the application context, cryptography manager, and secure storage.
+     * Provides a singleton GenesisSecureFileService for secure file operations.
      *
-     * @return A configured `GenesisSecureFileService` for secure file operations.
+     * This provider constructs and returns the application-scoped GenesisSecureFileService used
+     * by the DI graph to perform encrypted file storage and retrieval.
+     *
+     * @return A configured GenesisSecureFileService instance.
      */
     @Provides
     @Singleton
@@ -121,7 +138,9 @@ companion object {
     }
 
     /**
-     * Provides a singleton instance of OracleDriveApi configured with a base URL from the security context, the specified OkHttpClient, and Gson serialization.
+     * Provides a singleton OracleDriveApi backed by Retrofit.
+     *
+     * Builds a Retrofit instance using the security context's API base URL with "/oracle/drive/" appended, the supplied OkHttpClient, and Gson for JSON serialization.
      *
      * @return An implementation of OracleDriveApi for making Oracle Drive network requests.
      */
@@ -140,9 +159,12 @@ companion object {
     }
 
     /**
-     * Provides a singleton instance of `OracleDriveServiceImpl` configured with the required agents, security context, and Oracle Drive API.
+     * Provides a singleton OracleDriveServiceImpl wired with the required agents, security context, and API.
      *
-     * @return A singleton `OracleDriveServiceImpl` for Oracle Drive operations.
+     * This provider constructs the service implementation using the supplied Genesis, Aura, and Kai agents,
+     * the SecurityContext, and the OracleDriveApi. Intended for injection as a singleton.
+     *
+     * @return A singleton instance of OracleDriveServiceImpl.
      */
     @Provides
     @Singleton

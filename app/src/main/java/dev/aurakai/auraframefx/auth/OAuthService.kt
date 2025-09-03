@@ -16,7 +16,13 @@ class OAuthService @Inject constructor(
 ) {
 
     /**
-     * Initiates OAuth login flow.
+     * Initiates the OAuth login flow for the given provider and returns a URL to start authentication.
+     *
+     * The returned string is the authorization/login URL that the caller should open (e.g., in a browser
+     * or webview) to begin the OAuth flow.
+     *
+     * @param provider Identifier of the OAuth provider (e.g., "google", "github").
+     * @return The authorization/login URL to start the OAuth flow. (Currently a placeholder URL.)
      */
     suspend fun startOAuthLogin(provider: String): String {
         // Placeholder - implement OAuth login logic
@@ -24,7 +30,12 @@ class OAuthService @Inject constructor(
     }
 
     /**
-     * Handles OAuth callback.
+     * Handles the OAuth callback by exchanging the authorization `code` for tokens and updating authentication state.
+     *
+     * @param code The authorization code received from the OAuth provider callback.
+     * @return `true` if the callback processing results in a successful authentication; `false` otherwise.
+     *
+     * Note: Current implementation is a placeholder and always returns `false`.
      */
     suspend fun handleOAuthCallback(code: String): Boolean {
         // Placeholder - implement OAuth callback handling
