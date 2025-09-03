@@ -39,6 +39,17 @@ import androidx.compose.ui.unit.sp
  * positioning from the caller.
 
  */
+/**
+ * Renders a full-screen debug DataVein UI: a centered, translucent card showing a mocked
+ * "DataVein Sphere Grid" status dashboard used as a fallback/debug screen.
+ *
+ * The card contains a title and subtitle, a thin cyan divider, an overall system status line,
+ * three small status chips (Core Nodes, Active Flows, Data Streams), multiline status details,
+ * an action button (placeholder, no navigation/effects), and a build note about KSP issues.
+ *
+ * @param modifier Optional Modifier applied to the outer container; use it to control sizing,
+ * positioning, or additional decoration of the full-screen Box that hosts the card.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleDataVeinScreen(

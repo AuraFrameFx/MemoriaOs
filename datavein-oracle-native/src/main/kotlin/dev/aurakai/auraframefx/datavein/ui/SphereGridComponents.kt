@@ -90,6 +90,16 @@ import dev.aurakai.auraframefx.datavein.model.NodeType
  * with a horizontal progress bar. If the node has non-empty data, a Data row is shown. A one-line status message is rendered
  * at the bottom and varies by node state: locked, dormant (unlocked but not activated), or active.
  */
+/**
+ * Renders a stylized Card showing detailed information for a single DataVeinNode.
+ *
+ * Displays the node's type name and a status indicator (green = activated, yellow = unlocked, red = locked),
+ * identification rows (tag, id, ring, level), the node description, and a status line describing lock/activation state.
+ * If the node is unlocked, an XP row and a horizontal XP progress bar are shown. If the node contains data, a "Data" row is rendered.
+ *
+ * @param node The DataVeinNode to display; its fields (type, activated, isUnlocked, xp, data, tag, id, ring, level, description)
+ *             determine which rows and visual states are shown.
+ */
 @Composable
 fun NodeInfoPanel(
     node: DataVeinNode,
