@@ -57,10 +57,6 @@ private external fun nativeProcessRequest(request: String): String
  * Implemented via JNI in the native library; invokes native-side cleanup and stops native processing. */
 private external fun nativeShutdown()
 
-    init {
-        System.loadLibrary("cascade_ai")
-        nativeInitialize()
-    }
 
     init {
         try {
@@ -113,18 +109,6 @@ private external fun nativeShutdown()
 
     private val state = mutableMapOf<String, Any>()
     
-    /**
-     * Retrieves the capabilities of this agent.
-     *
-     * @return A map of capability names to their descriptions.
-     */
-    fun getCapabilities(): Map<String, String> {
-        return mapOf(
-            "ai_processing" to "Basic AI request processing",
-            "context_awareness" to "Basic context handling",
-            "error_handling" to "Basic error handling"
-        )
-    }
     
     /**
      * Returns an immutable snapshot of the agent's continuous memory.
