@@ -34,8 +34,26 @@ class CascadeAIService @Inject constructor(
 
     // JNI Native Methods
     private external fun nativeInitialize()
-    private external fun nativeProcessRequest(request: String): String
-    private external fun nativeShutdown()
+    /**
+ * Calls the native (JNI) implementation to process a serialized AI request and returns a serialized response.
+ *
+ * The `request` parameter is expected to be a JSON string representing an AiRequest. The return value is a JSON
+ * string representing an AgentResponse that the Kotlin code will parse.
+ *
+ * Implemented in the native "cascade_ai" library.
+ *
+ * @param request JSON-serialized AiRequest
+ * @return JSON-serialized AgentResponse
+ */
+private external fun nativeProcessRequest(request: String): String
+    /**
+ * Requests the native library to perform shutdown and release any native resources.
+ *
+ * This external JNI entry triggers native-side cleanup (for example freeing native memory,
+ * stopping background native threads, and closing native handles). It does not return a value
+ * and should be called when the service is being destroyed to avoid native resource leaks.
+ */
+private external fun nativeShutdown()
 
     init {
         System.loadLibrary("cascade_ai")
