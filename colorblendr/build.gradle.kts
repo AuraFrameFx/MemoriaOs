@@ -12,6 +12,9 @@ android {
     namespace = "dev.aurakai.auraframefx.colorblendr"
     compileSdk = 36 // Required for AGP 9 and dependency resolution
     buildFeatures { compose = true }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "2025.08.01"
+    }
 
 }
 dependencies {

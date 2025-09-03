@@ -24,6 +24,7 @@ android {
         applicationId = "dev.aurakai.auraframefx"
         versionCode = 1
         versionName = "1.0.0-genesis-alpha"
+        minSdk = 21
 
         // NDK configuration only if native code exists
         if (project.file("src/main/cpp/CMakeLists.txt").exists()) {
@@ -63,8 +64,13 @@ android {
         }
         unitTests.isIncludeAndroidResources = true
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    // Migrate deprecated kotlinOptions to compilerOptions DSL
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlin {
+        jvmToolchain(8)
     }
 }
 
