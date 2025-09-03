@@ -52,9 +52,10 @@ class CascadeAIService @Inject constructor(
  */
 private external fun nativeProcessRequest(request: String): String
     /**
- * Requests the native "cascade_ai" runtime to shut down and release native resources.
+ * Instructs the native Cascade AI runtime to shut down and release native resources.
  *
- * Implemented via JNI in the native library; invokes native-side cleanup and stops native processing. */
+ * Implemented in the native "cascade_ai" library via JNI; calling this triggers native-side cleanup
+ * and stops any native processing. */
 private external fun nativeShutdown()
 
     init {
@@ -114,9 +115,12 @@ private external fun nativeShutdown()
     private val state = mutableMapOf<String, Any>()
     
     /**
-     * Retrieves the capabilities of this agent.
+     * Return a human-readable map of this agent's capabilities.
      *
-     * @return A map of capability names to their descriptions.
+     * The map keys identify capability categories (e.g., `ai_processing`, `context_awareness`, `error_handling`)
+     * and the values are short, user-facing descriptions of each capability.
+     *
+     * @return Map where each key is a capability identifier and each value is a brief description.
      */
     fun getCapabilities(): Map<String, String> {
         return mapOf(
