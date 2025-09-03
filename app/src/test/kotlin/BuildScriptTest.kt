@@ -2,17 +2,17 @@
 
 package dev.aurakai.auraframefx
 
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
 
 /**
  * Note: Tests use JUnit 5 (Jupiter), consistent with the repository's configured test libraries.
@@ -90,14 +90,10 @@ class BuildScriptTest {
 
         @Test
         fun `ndk and external native build gated by CMakeLists presence`() {
-            val gate =
-                Regex("""if\s*\(project\.file\("src/main/cpp/CMakeLists\.txt"\)\.exists\(\)\)""")
+            val gate = Regex("""if\s*\(project\.file\("src/main/cpp/CMakeLists\.txt"\)\.exists\(\)\)""")
             // Should appear twice (NDK config + externalNativeBuild)
             val occurrences = content.countOf(gate)
-            assertTrue(
-                occurrences >= 2,
-                "Expected at least two native build gates, found $occurrences"
-            )
+            assertTrue(occurrences >= 2, "Expected at least two native build gates, found $occurrences")
 
             // Specifics
             assertTrue(content.contains("""abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))"""))
@@ -155,18 +151,9 @@ class BuildScriptTest {
 
         @Test
         fun `negative assertions - ensure no conflicting settings`() {
-            assertFalse(
-                Regex("""isMinifyEnabled\s*=\s*false""").containsMatchIn(content),
-                "Release should not disable minify"
-            )
-            assertFalse(
-                Regex("""viewBinding\s*=\s*true""").containsMatchIn(content),
-                "viewBinding should be disabled"
-            )
-            assertFalse(
-                Regex("""useLegacyPackaging\s*=\s*true""").containsMatchIn(content),
-                "Legacy JNI packaging should be false"
-            )
+            assertFalse(Regex("""isMinifyEnabled\s*=\s*false""").containsMatchIn(content), "Release should not disable minify")
+            assertFalse(Regex("""viewBinding\s*=\s*true""").containsMatchIn(content), "viewBinding should be disabled")
+            assertFalse(Regex("""useLegacyPackaging\s*=\s*true""").containsMatchIn(content), "Legacy JNI packaging should be false")
         }
     }
 

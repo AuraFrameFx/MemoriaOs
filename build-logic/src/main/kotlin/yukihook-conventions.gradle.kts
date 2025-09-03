@@ -2,7 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("org.lsposed.lsparanoid")
+    // id("org.lsposed.lsparanoid") // Plugin not available, commented out
 }
 
 android {
@@ -43,29 +43,23 @@ android {
 
 dependencies {
     // Xposed Framework - YukiHookAPI (Standardized)
-    implementation(libs.bundles.xposed)
+    implementation("com.github.yukihookapi:yuki:1.0.0")
+    ksp("com.github.yukihookapi:yuki-ksp-xposed:1.0.0")
 
     // Legacy Xposed API (compatibility)
     implementation(files("${project.rootDir}/Libs/api-82.jar"))
     implementation(files("${project.rootDir}/Libs/api-82-sources.jar"))
 
     // Core Android dependencies
-    implementation(libs.bundles.androidx.core)
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
     // Testing
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
 
-// LSParanoid configuration
-lsparanoid {
-    seed = 0x2A // Consistent seed across all modules
-    includeAsSharedUuid = true
-}
-
-// KSP configuration
-ksp {
-    // Add any KSP arguments here if needed
-    arg("YUKIHOOK_PACKAGE_NAME", project.group.toString())
-}
+// Remove any lsparanoid configuration blocks if present

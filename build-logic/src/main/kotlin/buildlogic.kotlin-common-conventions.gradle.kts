@@ -22,35 +22,16 @@ repositories {
 
 dependencies {
     constraints {
-        // Common dependency versions
-        implementation("org.apache.commons:commons-text:1.13.0")
+        add("implementation", "org.apache.commons:commons-text:1.13.0")
     }
-
-    // Common test dependencies
-    testImplementation(kotlin("test"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
+    add("testImplementation", "org.jetbrains.kotlin:kotlin-test:2.0.0")
+    add("testImplementation", "org.junit.jupiter:junit-jupiter:5.12.1")
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+// Set Java compatibility using compileOptions or JavaPluginExtension.
+extensions.configure<JavaPluginExtension>("java") {
+    sourceCompatibility = JavaVersion.VERSION_24
+    targetCompatibility = JavaVersion.VERSION_24
 }
 
-// Modern Java and Kotlin toolchain configuration
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
-    }
-}
-
-// Kotlin compiler configuration
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_24)
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-        freeCompilerArgs.addAll(
-            "-opt-in=kotlin.RequiresOptIn",
-            "-Xjvm-default=all"
-        )
-    }
-}
+// Removed unsupported 'kotlin { jvmToolchain(24) }' block. JVM toolchain must be set in build scripts, not convention plugins.

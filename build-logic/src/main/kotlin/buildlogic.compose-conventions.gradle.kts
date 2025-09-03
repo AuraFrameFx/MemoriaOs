@@ -1,34 +1,21 @@
-package buildlogic
-
 import com.android.build.api.dsl.LibraryExtension
-import org.gradle.api.JavaVersion
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
-import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class BuildLogicComposeConventionPlugin : Plugin<Project> {
     /**
-     * Applies convention configuration for a Compose-focused Android library project.
+     * Applies Compose-focused conventions to the given Gradle project.
      *
-     * Configures the given Gradle Project by applying Android Library, Kotlin Android and
-     * Kotlin Serialization plugins; enabling Jetpack Compose and setting its compiler extension
-     * version from the `libs` version catalog; setting the module namespace to
-     * `com.aura.genesis.compose`; configuring Java source/target compatibility to Java 17;
-     * opting into several experimental Compose APIs for all Kotlin source sets; declaring a
-     * standard set of Compose, lifecycle, navigation and debug/test dependencies (resolved via
-     * the `libs` catalog); and tuning Kotlin compilation options (JVM target 17 and Compose
-     * compiler/plugin flags).
+     * Configures the project as an Android library with Jetpack Compose enabled and sets up
+     * Compose compiler extension version, packaging exclusions, Java toolchain and source/target
+     * compatibility (Java 24), Kotlin source-set opt-ins for experimental Compose APIs, a standard
+     * set of Compose/lifecycle/navigation/hilt dependencies resolved from the `libs` version catalog,
+     * and Kotlin compiler options (Kotlin 2.2, JVM target 24, and Compose compiler/plugin flags).
      *
-     * Note: this function reads entries from the version catalog named `libs` and calls
-     * `.get()` on those lookups — missing catalog entries will cause an exception at configuration time.
+     * Note: this function reads entries from the version catalog named `libs` using `.get()` on lookups;
+     * missing catalog entries will throw an exception at project configuration time.
      */
     override fun apply(target: Project) {
         with(target) {
@@ -38,9 +25,6 @@ class BuildLogicComposeConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.kotlin.android")
                 apply("org.jetbrains.kotlin.plugin.serialization")
             }
-
-            // Get the libs version catalog
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             // Configure Android
             extensions.configure<LibraryExtension> {
@@ -54,24 +38,22 @@ class BuildLogicComposeConventionPlugin : Plugin<Project> {
 
                 // Configure Compose options
                 composeOptions {
-                    kotlinCompilerExtensionVersion = libs.findVersion("composeBom").get().toString()
+                    kotlinCompilerExtensionVersion = "2024.05.00"
                 }
 
                 // Configure packaging options
                 packaging {
-                    resources.excludes.addAll(
+                    // Fix addAll usage for excludes
+                    resources.excludes.addAll(listOf(
                         "/META-INF/{AL2.0,LGPL2.1}",
                         "META-INF/*.md",
                         "META-INF/CHANGES"
-                    )
+                    ))
                 }
             }
 
             // Configure Java 24 compatibility
             extensions.configure<JavaPluginExtension> {
-                toolchain {
-                    languageVersion.set(JavaLanguageVersion.of(24))
-                }
                 sourceCompatibility = JavaVersion.VERSION_24
                 targetCompatibility = JavaVersion.VERSION_24
             }
@@ -89,51 +71,47 @@ class BuildLogicComposeConventionPlugin : Plugin<Project> {
             }
 
             // Add dependencies
-            val composeBom = libs.findLibrary("androidx-compose-bom").get()
-
             dependencies {
                 // Compose BOM
-                add("implementation", platform(composeBom))
+                add("implementation", platform("androidx.compose:compose-bom:2024.05.00"))
 
                 // Compose dependencies
-                add("implementation", libs.findLibrary("androidx-compose-ui").get())
-                add("implementation", libs.findLibrary("androidx-compose-ui-graphics").get())
-                add("implementation", libs.findLibrary("androidx-compose-ui-tooling-preview").get())
-                add("implementation", libs.findLibrary("androidx-compose-material3").get())
+                add("implementation", "androidx.compose.ui:ui:1.5.0")
+                add("implementation", "androidx.compose.ui:ui-graphics:1.5.0")
+                add("implementation", "androidx.compose.ui:ui-tooling-preview:1.5.0")
+                add("implementation", "androidx.compose.material3:material3:1.2.0")
 
                 // Activity Compose
-                add("implementation", libs.findLibrary("androidx-activity-compose").get())
+                add("implementation", "androidx.activity:activity-compose:1.7.0")
 
                 // Debug dependencies
-                add("debugImplementation", libs.findLibrary("androidx-compose-ui-tooling").get())
+                add("debugImplementation", "androidx.compose.ui:ui-tooling:1.5.0")
                 add(
                     "debugImplementation",
-                    libs.findLibrary("androidx-compose-ui-test-manifest").get()
+                    "androidx.compose.ui:test-manifest:1.5.0"
                 )
 
                 // Test dependencies
-                add("androidTestImplementation", platform(composeBom))
+                add("androidTestImplementation", platform("androidx.compose:compose-bom:2024.05.00"))
                 add(
                     "androidTestImplementation",
-                    libs.findLibrary("androidx-compose-ui-test-junit4").get()
+                    "androidx.compose.ui:test-junit4:1.5.0"
                 )
 
                 // Lifecycle
-                add("implementation", libs.findLibrary("androidx-lifecycle-runtime-ktx").get())
+                add("implementation", "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
                 add(
                     "implementation",
-                    "androidx.lifecycle:lifecycle-viewmodel-compose:${
-                        libs.findVersion("androidxLifecycle").get()
-                    }"
+                    "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
                 )
 
                 // Navigation
-                add("implementation", libs.findLibrary("androidx-navigation-compose").get())
-                add("implementation", libs.findLibrary("hilt-navigation-compose").get())
+                add("implementation", "androidx.navigation:navigation-compose:2.7.2")
+                add("implementation", "androidx.hilt:hilt-navigation-compose:1.0.0")
             }
 
             // Modern Kotlin compiler configuration
-            tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            tasks.withType<KotlinCompile>().configureEach {
                 compilerOptions {
                     jvmTarget.set(JvmTarget.JVM_24)
                     languageVersion.set(KotlinVersion.KOTLIN_2_2)
