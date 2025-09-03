@@ -2,7 +2,8 @@
 // Visual regression testing for Genesis UI components
 
 plugins {
-    id("genesis.android.library") 
+    id("genesis.android.library")
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
