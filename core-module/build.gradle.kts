@@ -1,126 +1,72 @@
-// ==== GENESIS PROTOCOL - CORE MODULE ====
-// Foundation module using convention plugins
-
 plugins {
-    // Use Genesis convention plugins
-    id("genesis.android.compose")
-    
-    // Additional plugins specific to core
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.kotlin.android)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
+    }
 }
 
 android {
     namespace = "dev.aurakai.auraframefx.core"
+    compileSdk = 36
 
-    // Configure source sets for OpenAPI generated code
+    defaultConfig {
+        minSdk = 33
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+
+
     sourceSets {
         getByName("main") {
-            java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
+            java.srcDirs("build/generated/source/openapi/src/main/kotlin")
         }
     }
 }
 
-// OpenAPI Generator configuration for unified API
-if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
-    configure<org.openapitools.generator.gradle.plugin.extensions.OpenApiGeneratorGenerateExtension> {
-        generatorName.set("kotlin")
-        inputSpec.set(rootProject.file("app/api/unified-aegenesis-api.yml").absolutePath)
-        outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
-        
-        apiPackage.set("dev.aurakai.aegenesis.api.generated.api")
-        modelPackage.set("dev.aurakai.aegenesis.api.generated.model")
-        
-        configOptions.set(mapOf(
-            "library" to "jvm-retrofit2",
-            "useCoroutines" to "true",
-            "serializationLibrary" to "kotlinx_serialization",
-            "dateLibrary" to "kotlinx-datetime",
-            "sourceFolder" to "src/main/kotlin",
-            "generateSupportingFiles" to "true",
-            "enumPropertyNaming" to "UPPERCASE",
-            "collectionType" to "list"
-        ))
-    }
-}
-
-// Ensure Kotlin compilation depends on OpenAPI generation
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
-        dependsOn(":openApiGenerate")
-    }
-}
-
 dependencies {
-    // ===== NO MODULE DEPENDENCIES =====
-    // Core module is the foundation - it doesn't depend on other project modules
-    
-    // ===== ANDROIDX CORE =====
-    implementation(libs.bundles.androidx.core)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-
-    // ===== COMPOSE =====
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.bundles.compose)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.compose.material.icons.extended)
-
-    // ===== DEPENDENCY INJECTION - HILT =====
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // ===== COROUTINES & ASYNC =====
+    // Core Kotlin libraries
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.reflect)
     implementation(libs.bundles.coroutines)
+    implementation(libs.kotlinx.serialization.json)
 
-    // ===== SERIALIZATION =====
-    api(libs.kotlinx.serialization.json) // Exposed to dependent modules
-    
-    // ===== NETWORKING =====
-    api(libs.bundles.network) // Exposed to dependent modules
-    
-    // ===== DATABASE - ROOM =====
-    implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
+    // Networking (for the generated Retrofit client)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
+    implementation(libs.okhttp3.logging.interceptor)
 
-    // ===== UTILITIES =====
-    api(libs.timber) // Logging exposed to all modules
+    // Utilities
     implementation(libs.gson)
-    
-    // ===== TESTING DEPENDENCIES =====
-    testImplementation(libs.bundles.testing)
-    testImplementation(libs.hilt.android.testing)
-    kspTest(libs.hilt.compiler)
-    
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
-    kspAndroidTest(libs.hilt.compiler)
-    
-    // ===== DEBUG TOOLS =====
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation(libs.androidx.core.ktx)
+
+    // Security
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.androidx.test.core)
+
 }
 
-// Status task
-tasks.register("coreModuleStatus") {
-    group = "aegenesis"
-    description = "Show core module status"
-    
-    doLast {
-        println("🏗️  CORE MODULE STATUS")
-        println("=".repeat(40))
-        println("🔧 Namespace: ${android.namespace}")
-        println("📱 SDK: ${android.compileSdk}")
-        println("🎨 Compose: ✅ Via Convention Plugin")
-        println("🔗 API Generation: ${if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) "✅ Enabled" else "❌ No spec"}")
-        println("✨ Status: Core Foundation Ready with Convention Plugins!")
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(24))
     }
+
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    dependsOn(":openApiGenerate")
 }

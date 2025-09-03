@@ -53,16 +53,6 @@ import androidx.compose.ui.unit.sp
  * @param modifier Modifier applied to the outermost Box container (use to customize sizing,
  * padding, or alignment of the whole composable).
  */
-/**
- * A centered, read-only overview card that displays a stylized "DataVein Sphere Grid" system status.
- *
- * The composable renders a full-screen dark background with a semi-transparent black Card centered at 80% width.
- * Inside the card it shows a title, subtitle, a cyan divider, an overall system status line, a row of compact
- * status chips (Core Nodes, Active Flows, Data Streams), a multiline status overview, an action button placeholder,
- * and a small informational note about KSP compilation availability.
- *
- * @param modifier Optional [Modifier] to be applied to the root Box container.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleDataVeinScreen(
