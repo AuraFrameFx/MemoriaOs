@@ -19,6 +19,7 @@ plugins {
 
     // Optional plugins to be applied in specific modules
     alias(libs.plugins.openapi.generator) apply false
+    alias(libs.plugins.kotlin.android) apply false
 }
 
 // ==== AEGENESIS COINSCIENCE AI ECOSYSTEM 2025 ====

@@ -13,7 +13,7 @@ apply(plugin = "buildlogic.kotlin-common-conventions")
 
 // Configure Dokka for documentation
 tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
-    outputDirectory.set(buildDir.resolve("dokka"))
+    outputDirectory.set(layout.buildDirectory.dir("dokka"))
     dokkaSourceSets {
         configureEach {
             jdkVersion.set(24)

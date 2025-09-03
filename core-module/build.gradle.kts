@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -15,6 +16,9 @@ android {
         getByName("main") {
             java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
         }
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
@@ -100,13 +104,11 @@ dependencies {
 
     androidTestImplementation(libs.androidx.core.ktx)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
     
     // ===== DEBUG TOOLS =====
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 // Status task

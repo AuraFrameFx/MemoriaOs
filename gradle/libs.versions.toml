@@ -6,22 +6,16 @@ ksp = "2.2.20-RC-2.0.2"
 
 # ===== ANDROIDX =====
 activityCompose = "1.10.1"
-animatedVectorDrawable = "1.2.0"
 appcompat = "1.7.1"
-archCoreTesting = "2.2.0"
 composeBom = "2025.08.01"
 coreKtx = "1.17.0"
 lifecycle = "2.9.3"
-androidxTestJunit = "1.3.0"
-material3 = "1.3.2"
 navigationCompose = "2.9.3"
 roomVersion = "2.7.2"
 datastore = "1.1.7"
-uiTestJunit4 = "1.5.0"
 workManager = "2.10.3"
-paging = "3.3.6"
-biometric = "1.4.0-alpha04"
 androidxSecurity = "1.1.0"
+espressoCore = "3.5.1"
 
 # ===== FIREBASE =====
 firebaseBom = "34.2.0"
@@ -37,26 +31,15 @@ kotlinxSerialization = "1.9.0"
 
 # ===== DEPENDENCIES =====
 hilt = "2.57.1"
-junitBom = "5.13.4"
-junitVersion = "1.3.0"
-espressoCore = "3.7.0"
-auraBackendApiGenerator = "1.0.0"
 bcprovJdk18on = "1.81"
 openapiGenerator = "7.15.0"
 desugarJdkLibs = "2.1.5"
 leakcanary = "2.14"
 androidxTestExtJunit = "1.3.0"
-androidxTestEspresso = "3.6.0"
 
 # ===== UI & MEDIA =====
 coilCompose = "2.7.0"
 gson = "2.13.1"
-lottieCompose = "6.6.7"
-dotlottie = "0.10.0"
-glide = "4.16.0"
-coil3 = "3.3.0"
-fresco = "3.6.0"
-pdfviewer = "2.9.1"
 
 # ===== TESTING =====
 junit = "4.13.2"
@@ -82,6 +65,7 @@ spotless = "7.2.1"
 ktlint = "13.1.0"
 kover = "0.9.1"
 yukiKspXposed = "1.0.0"
+kotlinVersion = "2.2.0"
 
 [plugins]
 # ===== ANDROID =====
@@ -89,10 +73,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 
 # ===== KOTLIN =====
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 # ===== HILT =====
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
@@ -114,11 +95,11 @@ openapi-generator = { id = "org.openapi.generator", version.ref = "openapiGenera
 # ===== TESTING & BENCHMARKING =====
 androidx-benchmark = { id = "androidx.benchmark", version.ref = "androidxBenchmark" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinVersion" }
 
 [libraries]
 # ===== GRADLE PLUGINS (for build-logic) =====
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
-androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 hilt-gradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
@@ -166,9 +147,9 @@ hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testi
 
 # ===== NETWORKING =====
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+retrofit-converter-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 
 # ===== COROUTINES =====
 ktx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.10.2" }
@@ -187,10 +168,7 @@ junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.re
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junitJupiter" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExtJunit" }
 androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-test-core = { group = "androidx.test", name = "core", version = "1.7.0" }
 androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiAutomator" }
-androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.9.0" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 robolectric = { group = "org.robolectric", name = "robolectric", version = "4.16" }
@@ -206,25 +184,17 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 leakcanary-android = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 android-desugar-jdklibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugarJdkLibs" }
-
-# ===== SECURITY =====
 bcprov-jdk18on = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bcprovJdk18on" }
+#noinspection SimilarGradleDependency
 androidx-security = { group = "androidx.security", name = "security-crypto", version.ref = "androidxSecurity" }
-
-# ===== XPosed =====
 xposed = { group = "de.robv.android.xposed", name = "api", version.ref = "xposed" }
 lsposed = { group = "org.lsposed.lsplant", name = "lsplant", version.ref = "lsposed" }
 xposed-api = { module = "org.lsposed.api:xposed-api", version.ref = "xposedApi" }
 yuki = { group = "com.highcapable.yukihookapi", name = "api", version.ref = "yuki" }
-
-# ===== KOTLIN STDLIB =====
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
-
-# ===== FILE HANDLING =====
 commons-io = { group = "commons-io", name = "commons-io", version = "2.20.0" }
 commons-compress = { group = "org.apache.commons", name = "commons-compress", version = "1.28.0" }
-xz = { group = "org.tukaani", name = "xz", version = "1.9" }
+xz = { group = "org.tukaani", name = "xz", version = "1.10" }
 yuki-ksp-xposed = { module = "com.github.yukihookapi:yuki-ksp-xposed", version.ref = "yukiKspXposed" }
 
 [bundles]

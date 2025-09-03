@@ -5,6 +5,7 @@ plugins {
     id("genesis.android.library") 
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -15,9 +16,13 @@ android {
     buildFeatures {
         compose = true
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
+    implementation(libs.androidx.core.ktx)
     // Project modules to test
     testImplementation(project(":core-module"))
     testImplementation(project(":sandbox-ui"))
@@ -27,8 +32,7 @@ dependencies {
     // Compose testing
     testImplementation(platform(libs.androidx.compose.bom))
     testImplementation(libs.bundles.compose)
-    testImplementation(libs.androidx.compose.ui.test.junit4)
-    
+
     // Testing framework
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.ext.junit)

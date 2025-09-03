@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -61,6 +62,9 @@ android {
             it.useJUnitPlatform()
         }
         unitTests.isIncludeAndroidResources = true
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
@@ -124,14 +128,13 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
     // ===== DEBUG TOOLS =====
     debugImplementation(libs.leakcanary.android)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui)
 }
 
 // Build integration with root project tasks

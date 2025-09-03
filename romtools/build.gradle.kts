@@ -9,11 +9,16 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "dev.aurakai.auraframefx.romtools"
-    compileSdk = 36 // Required for AGP 9 and dependency resolution
+    compileSdk = 36
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    // Required for AGP 9 and dependency resolution
 }
 
 // ROM Tools output directory configuration
@@ -23,6 +28,7 @@ val romToolsOutputDirectory: DirectoryProperty =
 dependencies {
     api(project(":core-module"))
     implementation(project(":secure-comm"))
+    implementation(libs.androidx.core.ktx)
     dependencies {
         // Xposed & LSPosed Framework APIs (Provided at runtime, not bundled)
         // Note: For YukiHookAPI, ensure jitpack.io is in your settings.gradle.kts
@@ -60,7 +66,6 @@ dependencies {
         // Debugging Tools
         debugImplementation(libs.leakcanary.android)
         debugImplementation(libs.androidx.compose.ui.tooling)
-        debugImplementation(libs.androidx.compose.ui.test.manifest)
 
         // Unit Testing
         testImplementation(libs.bundles.testing)
@@ -68,7 +73,6 @@ dependencies {
 
         // Instrumented Testing
         androidTestImplementation(platform(libs.androidx.compose.bom))
-        androidTestImplementation(libs.androidx.compose.ui.test.junit4)
         androidTestImplementation(libs.hilt.android.testing)
         kspAndroidTest(libs.hilt.compiler)
     }
