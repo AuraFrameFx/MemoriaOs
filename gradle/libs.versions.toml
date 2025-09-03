@@ -224,7 +224,7 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", vers
 # ===== FILE HANDLING =====
 commons-io = { group = "commons-io", name = "commons-io", version = "2.20.0" }
 commons-compress = { group = "org.apache.commons", name = "commons-compress", version = "1.28.0" }
-xz = { group = "org.tukaani", name = "xz", version = "1.9" }
+xz = { group = "org.tukaani", name = "xz", version = "1.10" }
 yuki-ksp-xposed = { module = "com.github.yukihookapi:yuki-ksp-xposed", version.ref = "yukiKspXposed" }
 
 [bundles]
