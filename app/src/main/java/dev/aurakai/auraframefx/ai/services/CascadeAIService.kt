@@ -32,7 +32,11 @@ class CascadeAIService @Inject constructor(
     private val kaiService: KaiAIService
 ) : Agent {
 
-    // JNI Native Methods
+    /**
+ * Initializes native JNI resources required by CascadeAIService.
+ *
+ * Called during service construction to set up native library state before processing requests.
+ */
     private external fun nativeInitialize()
     /**
  * Calls the native (JNI) implementation to process a serialized AI request and returns a serialized response.
@@ -93,9 +97,14 @@ private external fun nativeShutdown()
     private val state = mutableMapOf<String, Any>()
     
     /**
-     * Retrieves the capabilities of this agent.
+     * Return the agent's exposed capability descriptions.
      *
-     * @return A map of capability names to their descriptions.
+     * The map contains human-readable descriptions keyed by capability identifiers:
+     * - "ai_processing": request handling and response generation
+     * - "context_awareness": use of provided context when processing requests
+     * - "error_handling": how the agent reports or handles errors
+     *
+     * @return A map from capability identifier to its short description.
      */
     fun getCapabilities(): Map<String, String> {
         return mapOf(
