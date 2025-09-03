@@ -36,6 +36,16 @@ private val LightColorScheme = lightColorScheme(
     error = Color(0xFFB00020)
 )
 
+/**
+ * Applies the AuraFrameFX Material 3 theme to [content], selecting a light or dark color scheme.
+ *
+ * If [darkTheme] is true (by default determined via the system setting), the dark color scheme is used;
+ * otherwise the light color scheme is applied. The composable content is wrapped with MaterialTheme
+ * using the selected color scheme and the module's default typography.
+ *
+ * @param darkTheme When true, use the dark color scheme. Defaults to the system dark theme setting.
+ * @param content Composable content that will be styled with the AuraFrameFX theme.
+ */
 @Composable
 fun AuraFrameFXTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

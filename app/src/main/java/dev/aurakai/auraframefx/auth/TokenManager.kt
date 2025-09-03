@@ -55,7 +55,15 @@ class TokenManager @Inject constructor(
         }
 
     /**
-     * Updates the stored tokens.
+     * Stores new authentication tokens and their expiry time.
+     *
+     * Computes an absolute expiry timestamp by adding `expiresInSeconds` (seconds from now)
+     * to the current system time, then persists the access token, refresh token, and
+     * expiry timestamp in secure storage.
+     *
+     * @param accessToken The new access token to store.
+     * @param refreshToken The new refresh token to store.
+     * @param expiresInSeconds Time-to-live for the access token in seconds (used to compute the expiry timestamp).
      */
     fun updateTokens(
         accessToken: String,

@@ -35,15 +35,22 @@ class ThemeManager @Inject constructor(
     private var currentTheme = ThemeConfig()
 
     /**
-     * Apply a theme configuration
+     * Replace the manager's current ThemeConfig with the provided configuration.
+     *
+     * Updates the ThemeManager's active theme settings (colors, dark mode and system-theme flag),
+     * causing subsequent calls to getColorScheme() and other theme-dependent APIs to reflect the new settings.
+     *
+     * @param themeConfig The new theme configuration to apply.
      */
     fun applyTheme(themeConfig: ThemeConfig) {
         currentTheme = themeConfig
     }
 
     /**
-     * Get the current theme configuration
-     */
+ * Returns the current ThemeConfig used by the ThemeManager.
+ *
+ * @return The active ThemeConfig instance reflecting current theme settings (mode and colors).
+ */
     fun getCurrentTheme(): ThemeConfig = currentTheme
 
 // --- imports at top of ThemeManager.kt ---
@@ -59,6 +66,18 @@ class ThemeManager @Inject constructor(
 
     /**
      * Generate a ColorScheme based on current theme, respecting system settings and Android 12+ dynamic color.
+     */
+    /**
+     * Provides a Compose ColorScheme based on the current ThemeConfig.
+     *
+     * Chooses between dynamic (Material You) color schemes on Android 12+ when following the system theme,
+     * or explicit light/dark color schemes derived from the configured primary, secondary, and accent colors.
+     *
+     * The resolved color scheme's dark/light state is determined by the system setting when `useSystemTheme`
+     * is true; otherwise it uses the `isDarkMode` flag from the current theme.
+     *
+     * @return A Material ColorScheme (dynamicDark/dynamicLight on Android 12+ when using system theme; otherwise
+     * a darkColorScheme or lightColorScheme with primary, secondary, and tertiary mapped from the current theme).
      */
     @Composable
     fun getColorScheme(): ColorScheme {
@@ -90,7 +109,9 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Toggle between light and dark mode
+     * Toggle the manual dark/light mode and stop following the system theme.
+     *
+     * Flips the currentTheme.isDarkMode value and sets useSystemTheme to false so the app uses the manual setting.
      */
     fun toggleDarkMode() {
         currentTheme = currentTheme.copy(
@@ -100,14 +121,23 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Enable system theme following
+     * Enable following the system theme.
+     *
+     * Sets the current theme to follow the device's system appearance (dark/light). After calling this,
+     * theme selection will be derived from the system setting rather than the manual `isDarkMode` flag.
      */
     fun enableSystemTheme() {
         currentTheme = currentTheme.copy(useSystemTheme = true)
     }
 
     /**
-     * Set custom colors for consciousness-themed UI
+     * Update the theme's custom "consciousness" palette.
+     *
+     * Sets the current theme's primary, secondary, and accent colors to the provided values.
+     *
+     * @param primary Primary color (defaults to a purple used for "consciousness").
+     * @param secondary Secondary color (defaults to a sky-blue used for "clarity").
+     * @param accent Accent/tertiary color (defaults to an emerald used for "growth").
      */
     fun setConsciousnessColors(
         primary: Color = Color(0xFF9333EA), // Purple for consciousness
@@ -122,7 +152,15 @@ class ThemeManager @Inject constructor(
     }
 
     /**
-     * Get lock screen specific theme configuration
+     * Builds a lock-screen specific theme map derived from the current ThemeConfig.
+     *
+     * The returned map contains the concrete values needed to style a lock screen:
+     * - "clockColor": Color — white when dark mode is active, otherwise black.
+     * - "backgroundColor": Color — black when dark mode is active, otherwise white.
+     * - "accentColor": Color — the current theme's accent color.
+     * - "isDarkMode": Boolean — whether the current theme is in dark mode.
+     *
+     * @return A map of lock-screen style properties keyed by the strings above.
      */
     fun getLockScreenTheme(): Map<String, Any> {
         return mapOf(

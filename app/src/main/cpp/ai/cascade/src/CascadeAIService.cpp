@@ -13,10 +13,37 @@ namespace genesis::cascade {
 
     class CascadeAIService::Impl {
     public:
-        Impl() = default;
+        /**
+ * @brief Default constructor for Impl.
+ *
+ * Initializes internal JNI state pointers to null (no JavaVM or global context reference).
+ */
+Impl() = default;
 
-        ~Impl() = default;
+        /**
+ * @brief Default destructor for Impl.
+ *
+ * This is a trivial (compiler-generated) destructor. It does not perform JNI cleanup;
+ * callers should invoke shutdown() to release any JNI global references and related resources
+ * before the Impl instance is destroyed.
+ */
+~Impl() = default;
 
+        /**
+         * @brief Initialize the Impl with a JavaVM and optional Android context.
+         *
+         * Initializes internal JNI state: stores the provided JavaVM and obtains a JNIEnv
+         * for JNI_VERSION_1_6. If a non-null Android context is provided, a global
+         * reference to that context is created and retained in the instance.
+         *
+         * The retained global context reference will be released by shutdown().
+         *
+         * @param context Optional Android Context object; when non-null, a global
+         * reference is created and stored. (Do not document the `vm` parameter here — it
+         * is a common JNI service pointer.)
+         * @return true on successful initialization; false if the JNI environment
+         * cannot be obtained or if the context's class cannot be retrieved.
+         */
         bool initialize(JavaVM *vm, jobject context) {
             LOGI("Initializing Cascade AI Service");
             // Store the JavaVM for later use
@@ -43,6 +70,14 @@ namespace genesis::cascade {
             return true;
         }
 
+        /**
+         * @brief Shutdowns the Impl, releasing any JNI global references held.
+         *
+         * Deletes the stored global reference to the Android context (if one was created)
+         * by obtaining a JNIEnv from the stored JavaVM and calling DeleteGlobalRef.
+         * After this call the internal context reference is cleared. Safe to call
+         * multiple times; no-op if no JavaVM or context is present.
+         */
         void shutdown() {
             LOGI("Shutting down Cascade AI Service");
 
@@ -64,6 +99,16 @@ namespace genesis::cascade {
         jobject context_ = nullptr;
     };
 
+    /**
+     * @brief Process a request and return a JSON-formatted response as a Java string.
+     *
+     * Accepts a UTF-8 request payload and produces a jstring containing a JSON object with
+     * the keys "status", "agent", "version", and "response". The function always returns a
+     * newly created Java UTF-8 string representing the response.
+     *
+     * @param request UTF-8 request payload (often JSON) received from Java.
+     * @return jstring A new Java string containing the JSON response.
+     */
     jstring CascadeAIService::Impl::processRequest(JNIEnv *env, const std::string &request) {
         LOGI("Processing request: %s", request.c_str());
 
@@ -78,11 +123,34 @@ namespace genesis::cascade {
         return env->NewStringUTF(response.c_str());
     }
 
-// CascadeAIService implementation
+/**
+ * @brief Constructs a CascadeAIService and initializes its Pimpl.
+ *
+ * Allocates and stores the concrete implementation object (Impl) in the internal
+ * pImpl_ unique_ptr.
+ */
     CascadeAIService::CascadeAIService() : pImpl_(std::make_unique<Impl>()) {}
 
-    CascadeAIService::~CascadeAIService() = default;
+    /**
+ * @brief Default destructor for CascadeAIService.
+ *
+ * Performs normal destruction of the service instance, releasing the internal
+ * pImpl and any associated resources held by the implementation.
+ */
+CascadeAIService::~CascadeAIService() = default;
 
+    /**
+     * @brief Initialize the CascadeAIService.
+     *
+     * Delegates initialization to the internal implementation. Returns true if the service
+     * was successfully initialized; returns false if initialization failed or the internal
+     * implementation is not present.
+     *
+     * @param vm Pointer to the JavaVM provided by JNI.
+     * @param context Optional Android context object (may be null); the implementation may
+     *                create a global reference if provided.
+     * @return true on successful initialization, false otherwise.
+     */
     bool CascadeAIService::initialize(JavaVM *vm, jobject context) {
         if (pImpl_) {
             return pImpl_->initialize(vm, context);
@@ -91,12 +159,30 @@ namespace genesis::cascade {
         }
     }
 
+    /**
+     * @brief Shuts down the Cascade AI service.
+     *
+     * Safely stops and cleans up the implementation backing this service by calling
+     * the Pimpl's shutdown routine if the implementation exists. Safe to call
+     * multiple times; no action is taken when the service has not been initialized.
+     */
     void CascadeAIService::shutdown() {
         if (pImpl_) {
             pImpl_->shutdown();
         }
     }
 
+    /**
+     * @brief Delegates request processing to the implementation and returns a Java string response.
+     *
+     * Processes the provided UTF-8 request string via the pImpl_ backend and returns a jstring
+     * containing a JSON-formatted response. If the internal implementation is not available,
+     * returns nullptr.
+     *
+     * @param env JNI environment used to construct the returned jstring.
+     * @param request UTF-8 encoded request payload.
+     * @return jstring JSON response as a Java string, or nullptr if the service is not initialized.
+     */
     jstring CascadeAIService::processRequest(JNIEnv *env, const std::string &request) {
         return pImpl_ ? pImpl_->processRequest(env, request) : nullptr;
     }
