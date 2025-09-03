@@ -32,7 +32,11 @@ class CascadeAIService @Inject constructor(
     private val kaiService: KaiAIService
 ) : Agent {
 
-    // JNI Native Methods
+    /**
+ * Initializes native resources used by the Cascade AI native library.
+ *
+ * Call after the native library has been loaded to perform any required native-side setup.
+ */
     private external fun nativeInitialize()
     /**
  * Calls the native (JNI) implementation to process a serialized AI request and returns a serialized response.
