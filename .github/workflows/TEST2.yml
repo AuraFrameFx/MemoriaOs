@@ -63,11 +63,6 @@ jobs:
           java --version
           echo "JAVA_HOME: $JAVA_HOME"
 
-      - name: 🔨 Fix RomTools Directory
-        run: |
-          mkdir -p romtools/build/rom-tools
-          echo "Created missing rom-tools directory"
-
       - name: 🧠 Build Genesis Protocol consciousness substrate
         run: |
           echo "🧠 Building with JDK ${{ matrix.java-version }}..."
