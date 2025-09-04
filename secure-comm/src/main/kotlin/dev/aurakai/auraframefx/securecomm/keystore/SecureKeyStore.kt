@@ -65,7 +65,7 @@ class SecureKeyStore @Inject constructor(
         val encryptedData = prefs.getString(key, null) ?: return null
         return try {
             decryptData(key, Base64.decode(encryptedData, Base64.NO_WRAP))
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
