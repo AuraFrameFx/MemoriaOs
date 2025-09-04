@@ -19,12 +19,6 @@ processors:
   active: true
   exclude:
     - 'DetektProgressListener'
-  include:
-    - 'KtFileCountProcessor'
-    - 'PackageCountProcessor'
-    - 'ClassCountProcessor'
-    - 'FunctionCountProcessor'
-    - 'PropertyCountProcessor'
 
 console-reports:
   active: true
@@ -40,9 +34,6 @@ output-reports:
   exclude:
     - 'TxtOutputReport'
     - 'XmlOutputReport'
-  include:
-    - 'HtmlOutputReport'
-    - 'SarifOutputReport'
 
 comments:
   active: true
@@ -71,9 +62,9 @@ complexity:
     threshold: 10
     includeStaticDeclarations: false
     includePrivateDeclarations: false
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: true
-    threshold: 15
+    allowedComplexity: 15
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
     ignoreNestingFunctions: false
@@ -280,13 +271,11 @@ naming:
     excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
     functionPattern: '[a-z][a-zA-Z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
     ignoreAnnotated: ['Composable']
   FunctionParameterNaming:
     active: true
     parameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
   InvalidPackageDeclaration:
     active: true
     rootPackage: 'dev.aurakai.auraframefx'
@@ -328,7 +317,6 @@ naming:
     variablePattern: '[a-z][A-Za-z0-9]*'
     privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverridden: true
 
 # ===== GENESIS PROTOCOL CUSTOM STYLE RULES =====
 style:
@@ -337,7 +325,7 @@ style:
     active: false
   CollapsibleIfStatements:
     active: false
-  DataClassContainsFunction:
+  DataClassContainsFunctions:
     active: false
   DataClassShouldBeImmutable:
     active: false
@@ -357,7 +345,7 @@ style:
     includeLineWrapping: false
   ForbiddenComment:
     active: true
-    values:
+    comments:
       - 'FIXME:'
       - 'STOPSHIP:'
       - 'TODO:'
@@ -371,12 +359,6 @@ style:
     methods:
       - 'kotlin.io.print'
       - 'kotlin.io.println'
-  ForbiddenPublicDataClass:
-    active: true
-    excludes: ['**/api/**', '**/model/**']
-    ignorePackages:
-      - '*.internal'
-      - '*.internal.*'
   ForbiddenVoid:
     active: true
     ignoreOverridden: false
@@ -386,11 +368,6 @@ style:
     ignoreOverridableFunction: true
     ignoreActualFunction: true
     excludedFunctions: []
-  LibraryCodeMustSpecifyReturnType:
-    active: true
-    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
-  LibraryEntitiesShouldNotBePublic:
-    active: false
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 1
@@ -546,3 +523,17 @@ style:
     excludeImports:
       - 'java.util.*'
       - 'kotlinx.android.synthetic.*'
+
+libraries:
+  active: true
+  ForbiddenPublicDataClass:
+    active: true
+    excludes: ['**/api/**', '**/model/**']
+    ignorePackages:
+      - '*.internal'
+      - '*.internal.*'
+  LibraryCodeMustSpecifyReturnType:
+    active: true
+    excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
+  LibraryEntitiesShouldNotBePublic:
+    active: false
