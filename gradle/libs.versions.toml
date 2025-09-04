@@ -179,7 +179,7 @@ jetbrains-kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-juni
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junitBom" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junitBom" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
-junit-platform-suite = { module = "org.junit.platform:junit-platform-suite" }
+junit-platform-suite = { module = "org.junit.platform:junit-platform-suite", version.ref = "junitBom" }
 kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 timber = { module = "com.jakewharton.timber:timber", version = "5.0.1" }
