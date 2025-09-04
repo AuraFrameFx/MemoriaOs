@@ -1,7 +1,12 @@
 # --- Secure Comms ProGuard Rules (Scoped) ---
 
 # 1. Keep only classes annotated for DI or serialization
--keep @javax.inject.Inject class * { *; }
+-keepclasseswithmembers class * {
+    @javax.inject.Inject <init>(...);
+}
+-keepclasseswithmembers class * {
+    @javax.inject.Inject ***;
+}
 -keep @kotlinx.serialization.Serializable class * { *; }
 
 # 2. Keep only SecureCommManager and its public methods
