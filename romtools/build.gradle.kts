@@ -1,13 +1,13 @@
 import dev.aurakai.gradle.tasks.VerifyRomToolsTask
 
 plugins {
+plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.android)
 }
 
