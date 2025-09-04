@@ -8,11 +8,16 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "dev.aurakai.auraframefx.featuremodule"
-    compileSdk = 36 // Required for AGP 9 and dependency resolution
+    compileSdk = 36
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+    // Required for AGP 9 and dependency resolution
 }
 
 dependencies {
@@ -43,12 +48,10 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
     debugImplementation(libs.leakcanary.android)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 tasks.register("featureStatus") {

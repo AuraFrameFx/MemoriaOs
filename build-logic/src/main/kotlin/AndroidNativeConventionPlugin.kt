@@ -5,7 +5,6 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.*
-import org.gradle.api.tasks.Delete
 
 class AndroidNativeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -23,6 +22,7 @@ class AndroidNativeConventionPlugin : Plugin<Project> {
                     }
 
                     // External native build configuration
+                    // NOTE: The following APIs are marked as @Incubating in AGP 9
                     externalNativeBuild {
                         cmake {
                             path = file("src/main/cpp/CMakeLists.txt")
@@ -32,6 +32,7 @@ class AndroidNativeConventionPlugin : Plugin<Project> {
 
                     buildTypes {
                         release {
+                            // NOTE: The following APIs are marked as @Incubating in AGP 9
                             externalNativeBuild {
                                 cmake {
                                     cppFlags += listOf("-std=c++23", "-fPIC", "-O3", "-DNDEBUG")
@@ -47,6 +48,7 @@ class AndroidNativeConventionPlugin : Plugin<Project> {
                         }
                         
                         debug {
+                            // NOTE: The following APIs are marked as @Incubating in AGP 9
                             externalNativeBuild {
                                 cmake {
                                     cppFlags += listOf("-std=c++23", "-fPIC", "-O0", "-g")

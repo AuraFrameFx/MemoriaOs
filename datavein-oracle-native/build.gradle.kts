@@ -2,7 +2,8 @@ plugins {
     id("genesis.android.library")
     id("genesis.android.compose") // Assuming a convention plugin for Compose setup
     id("genesis.android.hilt")    // Assuming a convention plugin for Hilt
-    id("com.google.devtools.ksp") // Explicitly apply KSP here
+    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.android) // Explicitly apply KSP here
 }
 
 android {
@@ -23,6 +24,9 @@ android {
             // Extracts and repackages native libraries from dependencies
             useLegacyPackaging = false
         }
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 

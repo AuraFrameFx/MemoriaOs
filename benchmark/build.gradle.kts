@@ -4,6 +4,7 @@
 plugins {
     id("com.android.library")
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -21,6 +22,9 @@ android {
     defaultConfig {
         testInstrumentationRunnerArguments["android.experimental.self-instrumenting"] = "true"
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -28,7 +32,7 @@ dependencies {
     implementation(libs.androidx.test.ext.junit)
     implementation(libs.androidx.test.espresso.core)
     implementation(libs.androidx.test.uiautomator)
-    
+
     // Project modules to benchmark
     implementation(project(":core-module"))
     implementation(project(":datavein-oracle-native"))
@@ -38,7 +42,8 @@ dependencies {
     // Coroutines for async benchmarks
     implementation(libs.bundles.coroutines)
     implementation(libs.kotlinx.coroutines.test)
-    
+    implementation(libs.androidx.core.ktx)
+
     // Basic testing
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

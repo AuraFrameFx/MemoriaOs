@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.dokka)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -24,6 +25,7 @@ android {
         applicationId = "dev.aurakai.auraframefx"
         versionCode = 1
         versionName = "1.0.0-genesis-alpha"
+        minSdk = 34
 
         // NDK configuration only if native code exists
         if (project.file("src/main/cpp/CMakeLists.txt").exists()) {
@@ -63,6 +65,14 @@ android {
             it.useJUnitPlatform()
         }
         unitTests.isIncludeAndroidResources = true
+    }
+    // Migrate deprecated kotlinOptions to compilerOptions DSL
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+    kotlin {
+        jvmToolchain(24)
     }
 }
 
@@ -126,14 +136,13 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
 
     // ===== DEBUG TOOLS =====
     debugImplementation(libs.leakcanary.android)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui)
 }
 
 // Build integration with root project tasks

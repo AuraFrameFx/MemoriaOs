@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.openapi.generator)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -16,6 +17,13 @@ android {
             java.srcDir(layout.buildDirectory.dir("generated/openapi/src/main/kotlin"))
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+    kotlin {
+        jvmToolchain(24)
+    }
 }
 
 // OpenAPI Generator configuration for unified API
@@ -26,8 +34,8 @@ if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
         outputDir.set(layout.buildDirectory.dir("generated/openapi").get().asFile.absolutePath)
         validateSpec.set(false)
 
-        apiPackage.set("dev.aurakai.aegenesis.api.generated.api")
-        modelPackage.set("dev.aurakai.aegenesis.api.generated.model")
+        apiPackage.set("dev.aurakai.auraframefx.api.generated.api")
+        modelPackage.set("dev.aurakai.auraframefx.api.generated.model")
         
         configOptions.set(mapOf(
             "library" to "jvm-retrofit2",
@@ -42,8 +50,8 @@ if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
     }
 }
 
-// Ensure Kotlin compilation depends on OpenAPI generation
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+// Ensure KSP processing depends on OpenAPI generation
+tasks.withType<com.google.devtools.ksp.gradle.KspTask>().configureEach {
     if (rootProject.file("app/api/unified-aegenesis-api.yml").exists()) {
         dependsOn(":openApiGenerate")
     }
@@ -83,6 +91,12 @@ dependencies {
     // ===== NETWORKING =====
     api(libs.bundles.network) // Exposed to dependent modules
     
+    // ===== OpenAPI Required Dependencies =====
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.retrofit.converter.scalars)
+    implementation(libs.apache.oltu.oauth2.common)
+    implementation(libs.apache.oltu.oauth2.client)
+    
     // ===== DATABASE - ROOM =====
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
@@ -100,13 +114,11 @@ dependencies {
 
     androidTestImplementation(libs.androidx.core.ktx)
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.hilt.android.testing)
     kspAndroidTest(libs.hilt.compiler)
     
     // ===== DEBUG TOOLS =====
     debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 // Status task

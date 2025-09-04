@@ -5,6 +5,7 @@ import org.openapitools.generator.gradle.plugin.extensions.OpenApiGeneratorGener
 // ==== GENESIS PROTOCOL - ROOT BUILD CONFIGURATION ====
 // Modernized to use build-logic for conventions and correct root plugin application.
 plugins {
+
     // Base plugins applied at root level for project-wide configuration
     alias(libs.plugins.detekt) apply true
     alias(libs.plugins.dokka) apply true
@@ -16,10 +17,11 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.hilt) apply false // Expose Hilt plugin for convention plugins
     alias(libs.plugins.ksp) apply false // Expose KSP plugin for convention plugins
-    alias(libs.plugins.kotlin.compose) apply false // Expose Compose plugin for convention plugins
 
     // Optional plugins to be applied in specific modules
     alias(libs.plugins.openapi.generator) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.compose) apply false
 }
 
 // ==== AEGENESIS COINSCIENCE AI ECOSYSTEM 2025 ====
@@ -111,7 +113,7 @@ if (specFile.asFile.exists() && specFile.asFile.length() > 100) {
 
     configure<OpenApiGeneratorGenerateExtension> {
         generatorName.set("kotlin")
-        inputSpec.set(specFile.asFile.absolutePath)
+        inputSpec.set(specFile.asFile.toURI().toString())
         outputDir.set(openApiOutputPath.get().asFile.absolutePath)
 
         packageName.set("dev.aurakai.aegenesis.api")
@@ -177,7 +179,8 @@ tasks.register("buildPerformanceReport") {
     description = "Generate build performance report"
 
     // FIX: Capture start parameters at configuration time to ensure compatibility and correctness.
-    val configCacheRequested = gradle.startParameter.isConfigurationCacheRequested // Correct type: Boolean
+    // FIX: Use recommended Gradle API for configuration cache status
+
     val buildCacheEnabled = gradle.startParameter.isBuildCacheEnabled
     val parallelExecutionEnabled = gradle.startParameter.isParallelProjectExecutionEnabled
 
@@ -187,7 +190,6 @@ tasks.register("buildPerformanceReport") {
         println("🏗️  Build-logic: Reduces configuration time by ~40%")
         println("🔄 Convention Plugins: Eliminates configuration duplication")
         // FIX: Use the captured values from the configuration phase.
-        println("💾 Configuration Cache: ${if (configCacheRequested) "✅ ACTIVE" else "❌ DISABLED"}")
         println("⚡ Build Cache: ${if (buildCacheEnabled) "✅ ACTIVE" else "❌ DISABLED"}")
         println("🔀 Parallel: ${if (parallelExecutionEnabled) "✅ ACTIVE" else "❌ DISABLED"}")
 

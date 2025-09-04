@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -16,9 +17,18 @@ android {
     buildFeatures {
         compose = true
     }
+    // Modern Kotlin configuration
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_24
+        targetCompatibility = JavaVersion.VERSION_24
+    }
+    kotlin {
+        jvmToolchain(24)
+    }
 }
 
 dependencies {
+    implementation(libs.androidx.core.ktx)
     // Project modules to test
     testImplementation(project(":core-module"))
     testImplementation(project(":sandbox-ui"))
@@ -28,8 +38,7 @@ dependencies {
     // Compose testing
     testImplementation(platform(libs.androidx.compose.bom))
     testImplementation(libs.bundles.compose)
-    testImplementation(libs.androidx.compose.ui.test.junit4)
-    
+
     // Testing framework
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.ext.junit)
